@@ -70,8 +70,7 @@ CodeBuddy is a  ** collaborative coding ** platform where students can:
   - > 🔒 Example:
     
 
-    
-- ![image](https://github.com/user-attachments/assets/06139d5a-4126-4483-b96d-1c200d2f5351)
+  - ![image](https://github.com/user-attachments/assets/06139d5a-4126-4483-b96d-1c200d2f5351)
 
   ---
   
@@ -79,8 +78,6 @@ CodeBuddy is a  ** collaborative coding ** platform where students can:
 Passwords are hashed using `bcrypt` before saving to MongoDB.
 
 ---
-
-```bash
 Input Password: test123
 Stored Hash: $2b$10$1aLPmFhsyhRFULppfdaMJuN...
 ---
@@ -89,7 +86,6 @@ Stored Hash: $2b$10$1aLPmFhsyhRFULppfdaMJuN...
 ![image](https://github.com/user-attachments/assets/444bf563-3e2b-44c0-924b-e6261020b35e)
 ---
 
-```bash
 
 Visit: http://localhost:8000
 
