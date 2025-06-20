@@ -3,7 +3,6 @@ const bcrypt = require('bcrypt');
 const jwt  = require('jsonwebtoken');
 const path  = require('path');
 require('dotenv').config({ path: path.join(__dirname, '../../.env') });
-console.log(process.env.JWT_SECRET);
 const userSchema = new mongoose.Schema({
   username: {
     type: String,
@@ -52,7 +51,7 @@ const userSchema = new mongoose.Schema({
     enum: ['user', 'admin'],
     default: 'user',
   },
-
+   
   friends: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User', 

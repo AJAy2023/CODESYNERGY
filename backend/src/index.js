@@ -3,6 +3,7 @@ const app = express();
 const path  = require('path');
 const connectDB = require('./config/db');
 const authRoutes = require('./routes/authRoutes');
+const problemsroutes = require("./routes/problemsroutes");
 // Load environment variables
 require('dotenv').config({path:path.join(__dirname , '../.env')});
 const PORT = process.env.PORT||8000;
@@ -15,7 +16,8 @@ connectDB();
 app.use(express.json());
 
 // Routes
-app.use('/auth', authRoutes);
+app.use('/', authRoutes);
+app.use('/', problemsroutes)
 
 // home route
 app.get('/', (req, res)=>{

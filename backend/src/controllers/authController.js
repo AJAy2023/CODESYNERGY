@@ -43,7 +43,7 @@ const login = async (req, res) => {
     }
 
     const token = existUser.generateToken();
-
+   
     res.status(200).json({
       msg: 'Login successful',
       token,
