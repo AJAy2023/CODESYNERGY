@@ -115,6 +115,39 @@ GET /user-profile → Returns profile info (JWT protected)
 - Data Seeding: JSON + Custom Script
 
 
+##  API Endpoints - Problem Routes
+
+###  GET all problems
+http://localhost:8000/problems
+---
+![image](https://github.com/user-attachments/assets/dd66b54b-1720-42fe-878f-31c71a28090f)
+
+---
+
+###  Filter problems by difficulty
+
+http://localhost:8000/difficulty/Easy
+
+- Case-sensitive (use "Easy", "Medium", "Hard")
+
+![image](https://github.com/user-attachments/assets/36d862ab-da59-447d-9add-1f0eabb2a945)
+
+---
+
+###  Filter problems by tag
+
+---
+- Tags like: `Array`, `String`, `Stack`, `Queue`
+
+
+```markdown
+> ⚠️ Note: All filters are case-sensitive. Use "Easy" not "easy", "Array" not "array
+
+---
+http://localhost:8000/problemType/Array
+![image](https://github.com/user-attachments/assets/0ec7388b-00ac-4bd8-9454-5db088ccf007)
+
+
 
 
 
