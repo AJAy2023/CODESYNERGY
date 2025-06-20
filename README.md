@@ -75,18 +75,19 @@ CodeBuddy is a  ** collaborative coding ** platform where students can:
   ---
   
   ## 🔐 How Passwords are Secured (bcrypt)
-Passwords are hashed using `bcrypt` before saving to MongoDB.
 
 ---
 Input Password: test123
 Stored Hash: $2b$10$1aLPmFhsyhRFULppfdaMJuN...
 ---
+
 #Schema's
 - > 🔒 Example:
+
 ![image](https://github.com/user-attachments/assets/444bf563-3e2b-44c0-924b-e6261020b35e)
+
+
 ---
-
-
 Visit: http://localhost:8000
 
 ---
@@ -94,7 +95,8 @@ Visit: http://localhost:8000
 Step 1: Add problem sets in data/problems.json
 Step 2: Run the seeder script
 
-```bash
+
+
 node utils/seedProblems.js
 
 ---
@@ -132,21 +134,25 @@ GET `/user-profile` → Returns profile info (JWT protected)
 ## 📘 API Endpoints - Problem Routes
 
 ### 🔍 GET all problems
-`http://localhost:8000/problems`  
+`http://localhost:8000/problems` 
+
 ![image](https://github.com/user-attachments/assets/dd66b54b-1720-42fe-878f-31c71a28090f)
 
 ---
 
 ### 🎯 Filter problems by difficulty
 `http://localhost:8000/problems/difficulty/Easy`  
-- Case-sensitive (use `"Easy"`, `"Medium"`, `"Hard"`)  
+
+- Case-sensitive (use `"Easy"`, `"Medium"`, `"Hard"`)
+-  
 ![image](https://github.com/user-attachments/assets/36d862ab-da59-447d-9add-1f0eabb2a945)
 
 ---
 
 ### 🧠 Filter problems by tag
 `http://localhost:8000/problems/tag/Array`  
-- Tags like: `Array`, `String`, `Stack`, `Queue`  
+- Tags like: `Array`, `String`, `Stack`, `Queue`
+
 ![image](https://github.com/user-attachments/assets/0ec7388b-00ac-4bd8-9454-5db088ccf007)
 
 > ⚠️ **Note**: All filters are case-sensitive. Use `"Array"` not `"array"`, `"Easy"` not `"easy"`
