@@ -69,7 +69,7 @@ CodeBuddy is a  ** collaborative coding ** platform where students can:
 - this will first check the jwt token if the token is valid  and  internally  it verify
   - > 🔒 Example:
     
-    ```bash
+
     
 - ![image](https://github.com/user-attachments/assets/06139d5a-4126-4483-b96d-1c200d2f5351)
 
