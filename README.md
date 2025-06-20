@@ -70,6 +70,7 @@ CodeBuddy is a  ** collaborative coding ** platform where students can:
   - > 🔒 Example:
     
     ```bash
+    
 - ![image](https://github.com/user-attachments/assets/06139d5a-4126-4483-b96d-1c200d2f5351)
 
   ---
@@ -145,6 +146,7 @@ http://localhost:8000/difficulty/Easy
 
 ---
 http://localhost:8000/problemType/Array
+
 ![image](https://github.com/user-attachments/assets/0ec7388b-00ac-4bd8-9454-5db088ccf007)
 
 
