@@ -46,6 +46,7 @@ const userSchema = new mongoose.Schema({
     default: 0,
   },
 
+
   role: {
     type: String,
     enum: ['user', 'admin'],
@@ -61,7 +62,9 @@ const userSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Problem', 
   }],
-
+  unlockedProblems: [{ type: mongoose.Schema.Types.ObjectId,
+     ref: 'Problem'
+     }],
   badges: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Badge', 

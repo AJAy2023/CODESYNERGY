@@ -25,6 +25,10 @@ const problemSchema = new mongoose.Schema({
       output: { type: String, required: true }
     }
   ],
+  expectedOutput: {
+  type: String,
+  required: true,
+},
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
