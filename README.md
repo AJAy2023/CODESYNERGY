@@ -159,11 +159,22 @@ GET `/user-profile` → Returns profile info (JWT protected)
 
 
 
+## submit &  viewUserSubmissions
 
+---
+# the submit route use to submit the problem form the  frontend ....
+** http://localhost:8000/submit ** 
 
+---
+![image](https://github.com/user-attachments/assets/d09f89c0-e6fb-421e-9fb7-c6957adc6b2b)
 
+---
 
+# viewUserSubmission  
+http://localhost:8000/user/67f7fb174021a47937c78e09   (67f7fb174021a47937c78e09) this is the use id with this user_id  we can view the past solve problems  from the users 
 
+----
+![image](https://github.com/user-attachments/assets/5ecef13f-374f-48c2-87c8-83b5ea6c6976)
 
 
 
