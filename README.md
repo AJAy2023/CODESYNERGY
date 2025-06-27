@@ -183,6 +183,15 @@ http://localhost:8000/user/67f7fb174021a47937c78e09   (67f7fb174021a47937c78e09)
 
 ![image](https://github.com/user-attachments/assets/9bc9b104-025a-4e42-9e91-c8f339ba6386)
 
+---
+
+# ** unlock -problems : **  POST:http://localhost:8000/unlock 
+---
+# This the  Unlock route which we use  to unlock the  problems  before that  db  has to get  user_id for  whom  is  unlock and  problem_id which problems  does he want to unlock 
+
+![image](https://github.com/user-attachments/assets/2e5e37b6-c074-4464-94f4-588f24679229)
+
+
 
 
 
