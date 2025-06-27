@@ -16,7 +16,7 @@ const problemSchema = new mongoose.Schema({
   },
   problemType: {
     type: String,
-    enum: ["Array", "String", "Math", "Tree", "Stack", "Queue", "Graph", "Matrix", "Dynamic Programming", "DFS", "LinkedList"],
+    enum: ["Array", "String", "Math", "Tree", "Stack", "Queue", "Graph", "Matrix", "Dynamic Programming", "DFS", "LinkedList","Design" ],
     required: false,
   },
   examples: [
@@ -27,7 +27,11 @@ const problemSchema = new mongoose.Schema({
   ],
   expectedOutput: {
   type: String,
-  required: true,
+  // required: true,
+},
+isFree: {
+  type: Boolean,
+  default: false 
 },
   user: {
     type: mongoose.Schema.Types.ObjectId,

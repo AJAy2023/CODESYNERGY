@@ -17,6 +17,9 @@ const register = async (req, res) => {
 
     res.status(201).json({ msg: "User registered successfully" });
 
+    //after the  user created here we have to give the 10 coins 
+    
+
   } catch (err) {
     console.error(err);
     res.status(500).json({ msg: "Internal server error" });
@@ -43,6 +46,15 @@ const login = async (req, res) => {
     }
 
     const token = existUser.generateToken();
+
+    const today = new Date().toDateString(); // current day string
+    
+    if (!existUser.lastLoginReward || new Date(existUser.lastLoginReward).toDateString() !== today) {
+      existUser.coins += 5;
+      existUser.lastLoginReward = new Date();
+      await existUser.save();
+    }
+
    
     res.status(200).json({
       msg: 'Login successful',
@@ -51,7 +63,8 @@ const login = async (req, res) => {
         id: existUser._id,
         username: existUser.username,
         email: existUser.email,
-        role: existUser.role
+        role: existUser.role,
+         coins: existUser.coins,
       },
     });
 

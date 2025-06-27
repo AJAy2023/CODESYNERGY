@@ -279,5 +279,1350 @@
                 "output": "true"
             }
         ]
+    },
+
+    {
+        "id": 21,
+        "title": "Valid Sudoku",
+        "description": "Placeholder description for Valid Sudoku.",
+        "difficulty": "Medium",
+        "problemType": "Matrix",
+        "tags": [
+            "Array",
+            "Hash Table"
+        ],
+        "examples": [
+            {
+                "input": "Example input",
+                "output": "Expected output"
+            }
+        ]
+    },
+    {
+        "id": 22,
+        "title": "Missing Number",
+        "description": "Placeholder description for Missing Number.",
+        "difficulty": "Easy",
+        "problemType": "Array",
+        "tags": [
+            "Array",
+            "Math"
+        ],
+        "examples": [
+            {
+                "input": "Example input",
+                "output": "Expected output"
+            }
+        ]
+    },
+    {
+        "id": 23,
+        "title": "Intersection of Two Linked Lists",
+        "description": "Placeholder description for Intersection of Two Linked Lists.",
+        "difficulty": "Hard",
+        "problemType": "LinkedList",
+        "tags": [
+            "Linked List",
+            "Two Pointers"
+        ],
+        "examples": [
+            {
+                "input": "Example input",
+                "output": "Expected output"
+            }
+        ]
+    },
+    {
+        "id": 24,
+        "title": "Linked List Cycle",
+        "description": "Placeholder description for Linked List Cycle.",
+        "difficulty": "Medium",
+        "problemType": "LinkedList",
+        "tags": [
+            "Linked List",
+            "Two Pointers"
+        ],
+        "examples": [
+            {
+                "input": "Example input",
+                "output": "Expected output"
+            }
+        ]
+    },
+    {
+        "id": 25,
+        "title": "Maximum Depth of Binary Tree",
+        "description": "Placeholder description for Maximum Depth of Binary Tree.",
+        "difficulty": "Hard",
+        "problemType": "Tree",
+        "tags": [
+            "Tree",
+            "DFS"
+        ],
+        "examples": [
+            {
+                "input": "Example input",
+                "output": "Expected output"
+            }
+        ]
+    },
+    {
+        "id": 26,
+        "title": "Binary Tree Level Order Traversal",
+        "description": "Placeholder description for Binary Tree Level Order Traversal.",
+        "difficulty": "Easy",
+        "problemType": "Tree",
+        "tags": [
+            "Tree",
+            "BFS"
+        ],
+        "examples": [
+            {
+                "input": "Example input",
+                "output": "Expected output"
+            }
+        ]
+    },
+    {
+        "id": 27,
+        "title": "Path Sum",
+        "description": "Placeholder description for Path Sum.",
+        "difficulty": "Medium",
+        "problemType": "Tree",
+        "tags": [
+            "Tree",
+            "DFS"
+        ],
+        "examples": [
+            {
+                "input": "Example input",
+                "output": "Expected output"
+            }
+        ]
+    },
+    {
+        "id": 28,
+        "title": "Count Primes",
+        "description": "Placeholder description for Count Primes.",
+        "difficulty": "Easy",
+        "problemType": "Math",
+        "tags": [
+            "Math",
+            "Sieve"
+        ],
+        "examples": [
+            {
+                "input": "Example input",
+                "output": "Expected output"
+            }
+        ]
+    },
+    {
+        "id": 29,
+        "title": "Single Number",
+        "description": "Placeholder description for Single Number.",
+        "difficulty": "Hard",
+        "problemType": "Array",
+        "tags": [
+            "Array",
+            "Bit Manipulation"
+        ],
+        "examples": [
+            {
+                "input": "Example input",
+                "output": "Expected output"
+            }
+        ]
+    },
+    {
+        "id": 30,
+        "title": "Happy Number",
+        "description": "Placeholder description for Happy Number.",
+        "difficulty": "Medium",
+        "problemType": "Math",
+        "tags": [
+            "Math"
+        ],
+        "examples": [
+            {
+                "input": "Example input",
+                "output": "Expected output"
+            }
+        ]
+    },
+    {
+        "id": 31,
+        "title": "Power of Two",
+        "description": "Placeholder description for Power of Two.",
+        "difficulty": "Hard",
+        "problemType": "Math",
+        "tags": [
+            "Math",
+            "Bit Manipulation"
+        ],
+        "examples": [
+            {
+                "input": "Example input",
+                "output": "Expected output"
+            }
+        ]
+    },
+    {
+        "id": 32,
+        "title": "Majority Element",
+        "description": "Placeholder description for Majority Element.",
+        "difficulty": "Easy",
+        "problemType": "Array",
+        "tags": [
+            "Array",
+            "Hash Table"
+        ],
+        "examples": [
+            {
+                "input": "Example input",
+                "output": "Expected output"
+            }
+        ]
+    },
+    {
+        "id": 33,
+        "title": "House Robber",
+        "description": "Placeholder description for House Robber.",
+        "difficulty": "Medium",
+        "problemType": "Dynamic Programming",
+        "tags": [
+            "Dynamic Programming"
+        ],
+        "examples": [
+            {
+                "input": "Example input",
+                "output": "Expected output"
+            }
+        ]
+    },
+    {
+        "id": 34,
+        "title": "Best Time to Buy and Sell Stock",
+        "description": "Placeholder description for Best Time to Buy and Sell Stock.",
+        "difficulty": "Easy",
+        "problemType": "Array",
+        "tags": [
+            "Array",
+            "Dynamic Programming"
+        ],
+        "examples": [
+            {
+                "input": "Example input",
+                "output": "Expected output"
+            }
+        ]
+    },
+    {
+        "id": 35,
+        "title": "Min Stack",
+        "description": "Placeholder description for Min Stack.",
+        "difficulty": "Hard",
+        "problemType": "Stack",
+        "tags": [
+            "Stack",
+            "Design"
+        ],
+        "examples": [
+            {
+                "input": "Example input",
+                "output": "Expected output"
+            }
+        ]
+    },
+    {
+        "id": 36,
+        "title": "Evaluate Reverse Polish Notation",
+        "description": "Placeholder description for Evaluate Reverse Polish Notation.",
+        "difficulty": "Medium",
+        "problemType": "Stack",
+        "tags": [
+            "Stack"
+        ],
+        "examples": [
+            {
+                "input": "Example input",
+                "output": "Expected output"
+            }
+        ]
+    },
+    {
+        "id": 37,
+        "title": "Basic Calculator",
+        "description": "Placeholder description for Basic Calculator.",
+        "difficulty": "Hard",
+        "problemType": "Stack",
+        "tags": [
+            "Stack",
+            "String"
+        ],
+        "examples": [
+            {
+                "input": "Example input",
+                "output": "Expected output"
+            }
+        ]
+    },
+    {
+        "id": 38,
+        "title": "Meeting Rooms",
+        "description": "Placeholder description for Meeting Rooms.",
+        "difficulty": "Easy",
+        "problemType": "Array",
+        "tags": [
+            "Array",
+            "Sorting"
+        ],
+        "examples": [
+            {
+                "input": "Example input",
+                "output": "Expected output"
+            }
+        ]
+    },
+    {
+        "id": 39,
+        "title": "Group Anagrams",
+        "description": "Placeholder description for Group Anagrams.",
+        "difficulty": "Medium",
+        "problemType": "String",
+        "tags": [
+            "Array",
+            "Hash Table",
+            "String"
+        ],
+        "examples": [
+            {
+                "input": "Example input",
+                "output": "Expected output"
+            }
+        ]
+    },
+    {
+        "id": 40,
+        "title": "Binary Search Tree Iterator",
+        "description": "Placeholder description for Binary Search Tree Iterator.",
+        "difficulty": "Easy",
+        "problemType": "Tree",
+        "tags": [
+            "Tree",
+            "Design"
+        ],
+        "examples": [
+            {
+                "input": "Example input",
+                "output": "Expected output"
+            }
+        ]
+    },
+    {
+        "id": 41,
+        "title": "Lowest Common Ancestor of BST",
+        "description": "Placeholder description for Lowest Common Ancestor of BST.",
+        "difficulty": "Hard",
+        "problemType": "Tree",
+        "tags": [
+            "Tree",
+            "DFS"
+        ],
+        "examples": [
+            {
+                "input": "Example input",
+                "output": "Expected output"
+            }
+        ]
+    },
+    {
+        "id": 42,
+        "title": "Construct Binary Tree",
+        "description": "Placeholder description for Construct Binary Tree.",
+        "difficulty": "Medium",
+        "problemType": "Tree",
+        "tags": [
+            "Tree",
+            "DFS"
+        ],
+        "examples": [
+            {
+                "input": "Example input",
+                "output": "Expected output"
+            }
+        ]
+    },
+    {
+        "id": 43,
+        "title": "Serialize and Deserialize Binary Tree",
+        "description": "Placeholder description for Serialize and Deserialize Binary Tree.",
+        "difficulty": "Hard",
+        "problemType": "Tree",
+        "tags": [
+            "Tree",
+            "DFS",
+            "Design"
+        ],
+        "examples": [
+            {
+                "input": "Example input",
+                "output": "Expected output"
+            }
+        ]
+    },
+    {
+        "id": 44,
+        "title": "Word Search",
+        "description": "Placeholder description for Word Search.",
+        "difficulty": "Easy",
+        "problemType": "Matrix",
+        "tags": [
+            "DFS",
+            "Backtracking",
+            "Matrix"
+        ],
+        "examples": [
+            {
+                "input": "Example input",
+                "output": "Expected output"
+            }
+        ]
+    },
+    {
+        "id": 45,
+        "title": "Course Schedule",
+        "description": "Placeholder description for Course Schedule.",
+        "difficulty": "Medium",
+        "problemType": "Graph",
+        "tags": [
+            "Graph",
+            "DFS",
+            "BFS"
+        ],
+        "examples": [
+            {
+                "input": "Example input",
+                "output": "Expected output"
+            }
+        ]
+    },
+    {
+        "id": 46,
+        "title": "Number of Islands",
+        "description": "Placeholder description for Number of Islands.",
+        "difficulty": "Easy",
+        "problemType": "Matrix",
+        "tags": [
+            "DFS",
+            "Graph",
+            "Matrix"
+        ],
+        "examples": [
+            {
+                "input": "Example input",
+                "output": "Expected output"
+            }
+        ]
+    },
+    {
+        "id": 47,
+        "title": "Clone Graph",
+        "description": "Placeholder description for Clone Graph.",
+        "difficulty": "Hard",
+        "problemType": "Graph",
+        "tags": [
+            "Graph",
+            "BFS"
+        ],
+        "examples": [
+            {
+                "input": "Example input",
+                "output": "Expected output"
+            }
+        ]
+    },
+    {
+        "id": 48,
+        "title": "Topological Sort",
+        "description": "Placeholder description for Topological Sort.",
+        "difficulty": "Medium",
+        "problemType": "Graph",
+        "tags": [
+            "Graph",
+            "BFS"
+        ],
+        "examples": [
+            {
+                "input": "Example input",
+                "output": "Expected output"
+            }
+        ]
+    },
+    {
+        "id": 49,
+        "title": "Pacific Atlantic Water Flow",
+        "description": "Placeholder description for Pacific Atlantic Water Flow.",
+        "difficulty": "Hard",
+        "problemType": "Matrix",
+        "tags": [
+            "DFS",
+            "Matrix"
+        ],
+        "examples": [
+            {
+                "input": "Example input",
+                "output": "Expected output"
+            }
+        ]
+    },
+    {
+        "id": 50,
+        "title": "Unique Paths",
+        "description": "Placeholder description for Unique Paths.",
+        "difficulty": "Easy",
+        "problemType": "Matrix",
+        "tags": [
+            "Dynamic Programming",
+            "Math"
+        ],
+        "examples": [
+            {
+                "input": "Example input",
+                "output": "Expected output"
+            }
+        ]
+    },
+    {
+        "id": 51,
+        "title": "Coin Change",
+        "description": "Placeholder description for Coin Change.",
+        "difficulty": "Medium",
+        "problemType": "Dynamic Programming",
+        "tags": [
+            "Dynamic Programming"
+        ],
+        "examples": [
+            {
+                "input": "Example input",
+                "output": "Expected output"
+            }
+        ]
+    },
+    {
+        "id": 52,
+        "title": "Word Ladder",
+        "description": "Placeholder description for Word Ladder.",
+        "difficulty": "Easy",
+        "problemType": "Graph",
+        "tags": [
+            "BFS",
+            "Graph"
+        ],
+        "examples": [
+            {
+                "input": "Example input",
+                "output": "Expected output"
+            }
+        ]
+    },
+    {
+        "id": 53,
+        "title": "Validate Binary Search Tree",
+        "description": "Placeholder description for Validate Binary Search Tree.",
+        "difficulty": "Hard",
+        "problemType": "Tree",
+        "tags": [
+            "Tree",
+            "DFS"
+        ],
+        "examples": [
+            {
+                "input": "Example input",
+                "output": "Expected output"
+            }
+        ]
+    },
+    {
+        "id": 54,
+        "title": "Balanced Binary Tree",
+        "description": "Placeholder description for Balanced Binary Tree.",
+        "difficulty": "Medium",
+        "problemType": "Tree",
+        "tags": [
+            "Tree",
+            "DFS"
+        ],
+        "examples": [
+            {
+                "input": "Example input",
+                "output": "Expected output"
+            }
+        ]
+    },
+    {
+        "id": 55,
+        "title": "Binary Tree Zigzag Level Order",
+        "description": "Placeholder description for Binary Tree Zigzag Level Order.",
+        "difficulty": "Hard",
+        "problemType": "Tree",
+        "tags": [
+            "Tree",
+            "BFS"
+        ],
+        "examples": [
+            {
+                "input": "Example input",
+                "output": "Expected output"
+            }
+        ]
+    },
+    {
+        "id": 56,
+        "title": "Invert Binary Tree",
+        "description": "Placeholder description for Invert Binary Tree.",
+        "difficulty": "Easy",
+        "problemType": "Tree",
+        "tags": [
+            "Tree",
+            "DFS"
+        ],
+        "examples": [
+            {
+                "input": "Example input",
+                "output": "Expected output"
+            }
+        ]
+    },
+    {
+        "id": 57,
+        "title": "Longest Increasing Subsequence",
+        "description": "Placeholder description for Longest Increasing Subsequence.",
+        "difficulty": "Medium",
+        "problemType": "Array",
+        "tags": [
+            "Dynamic Programming",
+            "Binary Search"
+        ],
+        "examples": [
+            {
+                "input": "Example input",
+                "output": "Expected output"
+            }
+        ]
+    },
+    {
+        "id": 58,
+        "title": "Minimum Path Sum",
+        "description": "Placeholder description for Minimum Path Sum.",
+        "difficulty": "Easy",
+        "problemType": "Matrix",
+        "tags": [
+            "Dynamic Programming",
+            "Matrix"
+        ],
+        "examples": [
+            {
+                "input": "Example input",
+                "output": "Expected output"
+            }
+        ]
+    },
+    {
+        "id": 59,
+        "title": "Rotate Image",
+        "description": "Placeholder description for Rotate Image.",
+        "difficulty": "Hard",
+        "problemType": "Matrix",
+        "tags": [
+            "Matrix"
+        ],
+        "examples": [
+            {
+                "input": "Example input",
+                "output": "Expected output"
+            }
+        ]
+    },
+    {
+        "id": 60,
+        "title": "Spiral Matrix",
+        "description": "Placeholder description for Spiral Matrix.",
+        "difficulty": "Medium",
+        "problemType": "Matrix",
+        "tags": [
+            "Matrix"
+        ],
+        "examples": [
+            {
+                "input": "Example input",
+                "output": "Expected output"
+            }
+        ]
+    },
+    {
+        "id": 61,
+        "title": "Set Matrix Zeroes",
+        "description": "Placeholder description for Set Matrix Zeroes.",
+        "difficulty": "Hard",
+        "problemType": "Matrix",
+        "tags": [
+            "Matrix"
+        ],
+        "examples": [
+            {
+                "input": "Example input",
+                "output": "Expected output"
+            }
+        ]
+    },
+    {
+        "id": 62,
+        "title": "Search a 2D Matrix",
+        "description": "Placeholder description for Search a 2D Matrix.",
+        "difficulty": "Easy",
+        "problemType": "Matrix",
+        "tags": [
+            "Matrix",
+            "Binary Search"
+        ],
+        "examples": [
+            {
+                "input": "Example input",
+                "output": "Expected output"
+            }
+        ]
+    },
+    {
+        "id": 63,
+        "title": "Sudoku Solver",
+        "description": "Placeholder description for Sudoku Solver.",
+        "difficulty": "Medium",
+        "problemType": "Matrix",
+        "tags": [
+            "DFS",
+            "Backtracking",
+            "Matrix"
+        ],
+        "examples": [
+            {
+                "input": "Example input",
+                "output": "Expected output"
+            }
+        ]
+    },
+    {
+        "id": 64,
+        "title": "Number of Connected Components",
+        "description": "Placeholder description for Number of Connected Components.",
+        "difficulty": "Easy",
+        "problemType": "Graph",
+        "tags": [
+            "Graph",
+            "BFS",
+            "DFS"
+        ],
+        "examples": [
+            {
+                "input": "Example input",
+                "output": "Expected output"
+            }
+        ]
+    },
+    {
+        "id": 65,
+        "title": "Longest Consecutive Sequence",
+        "description": "Placeholder description for Longest Consecutive Sequence.",
+        "difficulty": "Hard",
+        "problemType": "Array",
+        "tags": [
+            "Array",
+            "Hash Table"
+        ],
+        "examples": [
+            {
+                "input": "Example input",
+                "output": "Expected output"
+            }
+        ]
+    },
+    {
+        "id": 66,
+        "title": "Merge Intervals",
+        "description": "Placeholder description for Merge Intervals.",
+        "difficulty": "Medium",
+        "problemType": "Array",
+        "tags": [
+            "Array",
+            "Sorting"
+        ],
+        "examples": [
+            {
+                "input": "Example input",
+                "output": "Expected output"
+            }
+        ]
+    },
+    {
+        "id": 67,
+        "title": "Meeting Rooms II",
+        "description": "Placeholder description for Meeting Rooms II.",
+        "difficulty": "Hard",
+        "problemType": "Array",
+        "tags": [
+            "Array",
+            "Heap"
+        ],
+        "examples": [
+            {
+                "input": "Example input",
+                "output": "Expected output"
+            }
+        ]
+    },
+    {
+        "id": 68,
+        "title": "Serialize and Deserialize N-ary Tree",
+        "description": "Placeholder description for Serialize and Deserialize N-ary Tree.",
+        "difficulty": "Easy",
+        "problemType": "Tree",
+        "tags": [
+            "Tree",
+            "DFS"
+        ],
+        "examples": [
+            {
+                "input": "Example input",
+                "output": "Expected output"
+            }
+        ]
+    },
+    {
+        "id": 69,
+        "title": "Longest Palindromic Substring",
+        "description": "Placeholder description for Longest Palindromic Substring.",
+        "difficulty": "Medium",
+        "problemType": "String",
+        "tags": [
+            "String",
+            "DP"
+        ],
+        "examples": [
+            {
+                "input": "Example input",
+                "output": "Expected output"
+            }
+        ]
+    },
+    {
+        "id": 70,
+        "title": "Word Pattern",
+        "description": "Placeholder description for Word Pattern.",
+        "difficulty": "Easy",
+        "problemType": "String",
+        "tags": [
+            "String",
+            "Hash Table"
+        ],
+        "examples": [
+            {
+                "input": "Example input",
+                "output": "Expected output"
+            }
+        ]
+    },
+    {
+        "id": 71,
+        "title": "Palindrome Partitioning",
+        "description": "Placeholder description for Palindrome Partitioning.",
+        "difficulty": "Hard",
+        "problemType": "String",
+        "tags": [
+            "DFS",
+            "DP"
+        ],
+        "examples": [
+            {
+                "input": "Example input",
+                "output": "Expected output"
+            }
+        ]
+    },
+    {
+        "id": 72,
+        "title": "Valid Palindrome",
+        "description": "Placeholder description for Valid Palindrome.",
+        "difficulty": "Medium",
+        "problemType": "String",
+        "tags": [
+            "String",
+            "Two Pointers"
+        ],
+        "examples": [
+            {
+                "input": "Example input",
+                "output": "Expected output"
+            }
+        ]
+    },
+    {
+        "id": 73,
+        "title": "Longest Substring Without Repeating Characters",
+        "description": "Placeholder description for Longest Substring Without Repeating Characters.",
+        "difficulty": "Hard",
+        "problemType": "String",
+        "tags": [
+            "String",
+            "Sliding Window"
+        ],
+        "examples": [
+            {
+                "input": "Example input",
+                "output": "Expected output"
+            }
+        ]
+    },
+    {
+        "id": 74,
+        "title": "Minimum Window Substring",
+        "description": "Placeholder description for Minimum Window Substring.",
+        "difficulty": "Easy",
+        "problemType": "String",
+        "tags": [
+            "String",
+            "Two Pointers"
+        ],
+        "examples": [
+            {
+                "input": "Example input",
+                "output": "Expected output"
+            }
+        ]
+    },
+    {
+        "id": 75,
+        "title": "Maximum Product Subarray",
+        "description": "Placeholder description for Maximum Product Subarray.",
+        "difficulty": "Medium",
+        "problemType": "Array",
+        "tags": [
+            "Array",
+            "DP"
+        ],
+        "examples": [
+            {
+                "input": "Example input",
+                "output": "Expected output"
+            }
+        ]
+    },
+    {
+        "id": 76,
+        "title": "Subsets",
+        "description": "Placeholder description for Subsets.",
+        "difficulty": "Easy",
+        "problemType": "Array",
+        "tags": [
+            "DFS",
+            "Backtracking"
+        ],
+        "examples": [
+            {
+                "input": "Example input",
+                "output": "Expected output"
+            }
+        ]
+    },
+    {
+        "id": 77,
+        "title": "Permutations",
+        "description": "Placeholder description for Permutations.",
+        "difficulty": "Hard",
+        "problemType": "Array",
+        "tags": [
+            "DFS",
+            "Backtracking"
+        ],
+        "examples": [
+            {
+                "input": "Example input",
+                "output": "Expected output"
+            }
+        ]
+    },
+    {
+        "id": 78,
+        "title": "Combination Sum",
+        "description": "Placeholder description for Combination Sum.",
+        "difficulty": "Medium",
+        "problemType": "Array",
+        "tags": [
+            "DFS",
+            "Backtracking"
+        ],
+        "examples": [
+            {
+                "input": "Example input",
+                "output": "Expected output"
+            }
+        ]
+    },
+    {
+        "id": 79,
+        "title": "Letter Combinations of a Phone Number",
+        "description": "Placeholder description for Letter Combinations of a Phone Number.",
+        "difficulty": "Hard",
+        "problemType": "String",
+        "tags": [
+            "DFS",
+            "Backtracking"
+        ],
+        "examples": [
+            {
+                "input": "Example input",
+                "output": "Expected output"
+            }
+        ]
+    },
+    {
+        "id": 80,
+        "title": "Insert Interval",
+        "description": "Placeholder description for Insert Interval.",
+        "difficulty": "Easy",
+        "problemType": "Array",
+        "tags": [
+            "Array",
+            "Sorting"
+        ],
+        "examples": [
+            {
+                "input": "Example input",
+                "output": "Expected output"
+            }
+        ]
+    },
+    {
+        "id": 81,
+        "title": "Find Peak Element",
+        "description": "Placeholder description for Find Peak Element.",
+        "difficulty": "Medium",
+        "problemType": "Array",
+        "tags": [
+            "Array",
+            "Binary Search"
+        ],
+        "examples": [
+            {
+                "input": "Example input",
+                "output": "Expected output"
+            }
+        ]
+    },
+    {
+        "id": 82,
+        "title": "Search in Rotated Sorted Array",
+        "description": "Placeholder description for Search in Rotated Sorted Array.",
+        "difficulty": "Easy",
+        "problemType": "Array",
+        "tags": [
+            "Array",
+            "Binary Search"
+        ],
+        "examples": [
+            {
+                "input": "Example input",
+                "output": "Expected output"
+            }
+        ]
+    },
+    {
+        "id": 83,
+        "title": "H-index",
+        "description": "Placeholder description for H-index.",
+        "difficulty": "Hard",
+        "problemType": "Array",
+        "tags": [
+            "Array",
+            "Sorting"
+        ],
+        "examples": [
+            {
+                "input": "Example input",
+                "output": "Expected output"
+            }
+        ]
+    },
+    {
+        "id": 84,
+        "title": "Evaluate Division",
+        "description": "Placeholder description for Evaluate Division.",
+        "difficulty": "Medium",
+        "problemType": "Graph",
+        "tags": [
+            "Graph",
+            "DFS",
+            "BFS"
+        ],
+        "examples": [
+            {
+                "input": "Example input",
+                "output": "Expected output"
+            }
+        ]
+    },
+    {
+        "id": 85,
+        "title": "N-ary Tree Preorder Traversal",
+        "description": "Placeholder description for N-ary Tree Preorder Traversal.",
+        "difficulty": "Hard",
+        "problemType": "Tree",
+        "tags": [
+            "Tree",
+            "DFS"
+        ],
+        "examples": [
+            {
+                "input": "Example input",
+                "output": "Expected output"
+            }
+        ]
+    },
+    {
+        "id": 86,
+        "title": "N-ary Tree Level Order Traversal",
+        "description": "Placeholder description for N-ary Tree Level Order Traversal.",
+        "difficulty": "Easy",
+        "problemType": "Tree",
+        "tags": [
+            "Tree",
+            "BFS"
+        ],
+        "examples": [
+            {
+                "input": "Example input",
+                "output": "Expected output"
+            }
+        ]
+    },
+    {
+        "id": 87,
+        "title": "Generate Parentheses",
+        "description": "Placeholder description for Generate Parentheses.",
+        "difficulty": "Medium",
+        "problemType": "String",
+        "tags": [
+            "DFS",
+            "Backtracking"
+        ],
+        "examples": [
+            {
+                "input": "Example input",
+                "output": "Expected output"
+            }
+        ]
+    },
+    {
+        "id": 88,
+        "title": "Find Minimum in Rotated Sorted Array",
+        "description": "Placeholder description for Find Minimum in Rotated Sorted Array.",
+        "difficulty": "Easy",
+        "problemType": "Array",
+        "tags": [
+            "Array",
+            "Binary Search"
+        ],
+        "examples": [
+            {
+                "input": "Example input",
+                "output": "Expected output"
+            }
+        ]
+    },
+    {
+        "id": 89,
+        "title": "3Sum",
+        "description": "Placeholder description for 3Sum.",
+        "difficulty": "Hard",
+        "problemType": "Array",
+        "tags": [
+            "Array",
+            "Two Pointers"
+        ],
+        "examples": [
+            {
+                "input": "Example input",
+                "output": "Expected output"
+            }
+        ]
+    },
+    {
+        "id": 90,
+        "title": "Longest Valid Parentheses",
+        "description": "Placeholder description for Longest Valid Parentheses.",
+        "difficulty": "Medium",
+        "problemType": "String",
+        "tags": [
+            "String",
+            "Stack"
+        ],
+        "examples": [
+            {
+                "input": "Example input",
+                "output": "Expected output"
+            }
+        ]
+    },
+    {
+        "id": 91,
+        "title": "Sum Root to Leaf Numbers",
+        "description": "Placeholder description for Sum Root to Leaf Numbers.",
+        "difficulty": "Hard",
+        "problemType": "Tree",
+        "tags": [
+            "Tree",
+            "DFS"
+        ],
+        "examples": [
+            {
+                "input": "Example input",
+                "output": "Expected output"
+            }
+        ]
+    },
+    {
+        "id": 92,
+        "title": "Flatten Binary Tree to Linked List",
+        "description": "Placeholder description for Flatten Binary Tree to Linked List.",
+        "difficulty": "Easy",
+        "problemType": "Tree",
+        "tags": [
+            "Tree",
+            "DFS"
+        ],
+        "examples": [
+            {
+                "input": "Example input",
+                "output": "Expected output"
+            }
+        ]
+    },
+    {
+        "id": 93,
+        "title": "Populating Next Right Pointers",
+        "description": "Placeholder description for Populating Next Right Pointers.",
+        "difficulty": "Medium",
+        "problemType": "Tree",
+        "tags": [
+            "Tree",
+            "BFS"
+        ],
+        "examples": [
+            {
+                "input": "Example input",
+                "output": "Expected output"
+            }
+        ]
+    },
+    {
+        "id": 94,
+        "title": "Largest Rectangle in Histogram",
+        "description": "Placeholder description for Largest Rectangle in Histogram.",
+        "difficulty": "Easy",
+        "problemType": "Stack",
+        "tags": [
+            "Stack",
+            "Array"
+        ],
+        "examples": [
+            {
+                "input": "Example input",
+                "output": "Expected output"
+            }
+        ]
+    },
+    {
+        "id": 95,
+        "title": "Maximal Rectangle",
+        "description": "Placeholder description for Maximal Rectangle.",
+        "difficulty": "Hard",
+        "problemType": "Matrix",
+        "tags": [
+            "Matrix",
+            "Stack"
+        ],
+        "examples": [
+            {
+                "input": "Example input",
+                "output": "Expected output"
+            }
+        ]
+    },
+    {
+        "id": 96,
+        "title": "Sliding Window Maximum",
+        "description": "Placeholder description for Sliding Window Maximum.",
+        "difficulty": "Medium",
+        "problemType": "Array",
+        "tags": [
+            "Array",
+            "Deque"
+        ],
+        "examples": [
+            {
+                "input": "Example input",
+                "output": "Expected output"
+            }
+        ]
+    },
+    {
+        "id": 97,
+        "title": "Design Twitter",
+        "description": "Placeholder description for Design Twitter.",
+        "difficulty": "Hard",
+        "problemType": "Design",
+        "tags": [
+            "Hash Table",
+            "Design"
+        ],
+        "examples": [
+            {
+                "input": "Example input",
+                "output": "Expected output"
+            }
+        ]
+    },
+    {
+        "id": 98,
+        "title": "Design LRU Cache",
+        "description": "Placeholder description for Design LRU Cache.",
+        "difficulty": "Easy",
+        "problemType": "Design",
+        "tags": [
+            "Hash Table",
+            "LinkedList"
+        ],
+        "examples": [
+            {
+                "input": "Example input",
+                "output": "Expected output"
+            }
+        ]
+    },
+    {
+        "id": 99,
+        "title": "Median of Two Sorted Arrays",
+        "description": "Placeholder description for Median of Two Sorted Arrays.",
+        "difficulty": "Medium",
+        "problemType": "Array",
+        "tags": [
+            "Array",
+            "Binary Search"
+        ],
+        "examples": [
+            {
+                "input": "Example input",
+                "output": "Expected output"
+            }
+        ]
     }
 ]
