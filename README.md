@@ -177,6 +177,14 @@ http://localhost:8000/user/67f7fb174021a47937c78e09   (67f7fb174021a47937c78e09)
 ![image](https://github.com/user-attachments/assets/5ecef13f-374f-48c2-87c8-83b5ea6c6976)
 
 
+## Unlock -problems and get unlock problems
+ 
+#   ** get unlock problems : **   http://localhost:8000/unlock/problems/685c472e864ece981927457b (if the user  hits  this  routes then they will get  unlockproblems  
+
+![image](https://github.com/user-attachments/assets/9bc9b104-025a-4e42-9e91-c8f339ba6386)
+
+
+
 
 
 👨‍💻 Author
