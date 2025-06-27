@@ -6,6 +6,7 @@ const connectDB = require('./config/db');
 const authRoutes = require('./routes/authRoutes');
 const problemsroutes = require("./routes/problemsroutes");
 const submissionController = require("./routes/problemsubmission");
+const problemunlock = require("./routes/unlockproblems");
 require('dotenv').config({path:path.join(__dirname , '../.env')});
 const PORT = process.env.PORT||8000;
 
@@ -27,6 +28,7 @@ app.use(express.json());
 app.use('/', authRoutes);
 app.use('/', problemsroutes)
 app.use('/',submissionController);
+app.use('/',problemunlock);
 // home route
 app.get('/', (req, res)=>{
     res.send("welcome to home page...!!");

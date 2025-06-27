@@ -24,13 +24,23 @@ const submitProblem = async (req, res) => {
     });
 
     await submission.save();
+    
+    // Inside submitProblem after saving submission
+if (!user.solvedProblems.includes(problem_id)) {
+  user.solvedProblems.push(problem_id);
 
-    if (!alreadySolved) {
-      user.solvedProblems.push(problem_id);
-      user.coins += 10;
-      await user.save();
-    }
+  if (problem.difficulty === "Easy") {
+    user.coins += 5;
+  } else if (problem.difficulty === "Medium") {
+    user.coins += 10;
+  } else if (problem.difficulty === "Hard") {
+    user.coins += 15;
+  }
 
+  await user.save();
+}
+
+    
     return res.status(200).json({ msg: "Submitted successfully", submission });
 
   } catch (error) {
