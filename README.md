@@ -192,6 +192,13 @@ http://localhost:8000/user/67f7fb174021a47937c78e09   (67f7fb174021a47937c78e09)
 ![image](https://github.com/user-attachments/assets/2e5e37b6-c074-4464-94f4-588f24679229)
 
 
+---
+ ##  Leaderboard  or ranking of users ** GET:http://localhost:8000/rank/leaderboard**
+ ![image](https://github.com/user-attachments/assets/af7971c7-f3de-489d-8ba2-86afcc02a5e3)
+
+ 
+
+
 
 
 
