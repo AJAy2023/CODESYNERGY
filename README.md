@@ -200,7 +200,28 @@ http://localhost:8000/user/67f7fb174021a47937c78e09   (67f7fb174021a47937c78e09)
 
  ## friends system ** send **, ** accept** , ** rejected** , **delete**
 
+---
 
+##  SEND : post: http://localhost:8000/friends/send  ** here  it will take  sender and receiver id  ** 
+---
+![image](https://github.com/user-attachments/assets/16280267-ca56-4d12-a3a9-edc656b31e38)
+
+---
+## ACCEPT : post:http://localhost:8000/friends/accept/686d52e59aef4cd6784eb332   ** here  using this  id  it will find  accept the apecific  user's request **
+---
+![image](https://github.com/user-attachments/assets/d15940e8-3ce5-43a3-b2b2-6763c86f477c)
+
+---
+## REJECT : post:http://localhost:8000/friends/reject/686d53839aef4cd6784eb337  
+---
+![image](https://github.com/user-attachments/assets/d79249f3-c163-4be8-92ba-efc48a12b147)
+
+---
+## DELETE : POST: http://localhost:8000/friends/delete
+---
+![image](https://github.com/user-attachments/assets/f7a522cc-f5b0-4c14-b7e2-018e6c04957a)
+
+---
 
 
 
