@@ -207,7 +207,7 @@ http://localhost:8000/user/67f7fb174021a47937c78e09   (67f7fb174021a47937c78e09)
 ![image](https://github.com/user-attachments/assets/16280267-ca56-4d12-a3a9-edc656b31e38)
 
 ---
-## ACCEPT : post:http://localhost:8000/friends/accept/686d52e59aef4cd6784eb332   ** here  using this  id  it will find  accept the apecific  user's request **
+## ACCEPT : post:http://localhost:8000/friends/accept/686d52e59aef4cd6784eb332   ** here  using this  id  it will find  accept the specific  user's request **
 ---
 ![image](https://github.com/user-attachments/assets/d15940e8-3ce5-43a3-b2b2-6763c86f477c)
 
