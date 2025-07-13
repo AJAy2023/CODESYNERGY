@@ -1,13 +1,14 @@
 const express = require("express");
 const  router = express.Router();
 
-const {sendRequest, acceptRequest, rejectRequest ,getFriendList,unfriend } = require("../controllers/friendRequests");
+const {sendRequest, acceptRequest, rejectRequest ,getFriendList,unfriend , searchquery} = require("../controllers/friendRequests");
 
 router.post('/friends/send', sendRequest);
 router.post('/friends/accept/:id', acceptRequest);
 router.post('/friends/reject/:id', rejectRequest);
 router.get('/friends/list/:userId' , getFriendList);
 router.post('/friends/delete' , unfriend);  // delete the  friend  from  the friendlist 
+router.get('/friends/search',searchquery );
 
 
 module.exports=router;

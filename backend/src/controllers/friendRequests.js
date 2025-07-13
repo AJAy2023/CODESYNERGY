@@ -125,11 +125,31 @@ const unfriend = async (req, res) => {
   }
 };
 
+// get friend through the  search  
+
+const searchquery = async (req, res) => {
+  try {
+    const { query } = req.query;
+
+    if (!query) {
+      return res.status(400).json({ msg: "Search query is required" });
+    }
+
+    const users = await User.find({
+      username: { $regex: query, $options: "i" }
+    }).select("username profilePic");
+
+    res.status(200).json({ msg: "Users fetched successfully", users });
+  } catch (err) {
+    res.status(500).json({ msg: "Server error", error: err.message });
+  }
+};
 
 module.exports = {
   sendRequest,
   acceptRequest,
   rejectRequest,
   getFriendList,
-  unfriend
+  unfriend,
+  searchquery
 };
