@@ -1,0 +1,17 @@
+@import "tailwindcss";
+
+@import "tw-animate-css";
+
+.remote-cursor {
+  background-color: rgba(255, 255, 0, 0.4);
+  border-left: 2px solid yellow;
+}
+
+.remote-label {
+  font-size: 11px;
+  background-color: #facc15;
+  color: #000;
+  padding: 0 4px;
+  border-radius: 4px;
+}
+
