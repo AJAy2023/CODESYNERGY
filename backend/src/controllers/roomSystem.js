@@ -1,10 +1,10 @@
 const User = require("../models/user");
 const Room  = require("../models/room");
 const Friend = require("../models/friendSystem");
-
+const Problem = require("../models/room");
 const createroom = async (req, res) => {  
   try {
-    const { userId, roomname, roomId, problem, roomType, peoplecount } = req.body;
+    const { userId, roomname, roomId, problem, roomType, peoplecount,videoEnabled, audioEnabled } = req.body;
 
     const user = await User.findById(userId);
     if (!user) return res.status(404).json({ msg: "User not found" });
@@ -21,6 +21,11 @@ const createroom = async (req, res) => {
       return res.status(400).json({ msg: "Discussion room must have at least 2 people" });
     }
 
+    // here  i need to select the  problems from the db  
+
+    const selectproblems  = await  Problem.find({
+      
+    })
     const newroom = await Room.create({
       roomName: roomname,
       roomId: roomId,
@@ -29,7 +34,9 @@ const createroom = async (req, res) => {
       peopleCount: peoplecount,
       createdBy: userId,
       roomStatus: 'waiting',
-      isActive: true
+      isActive: true,
+      videoEnabled: videoEnabled ?? true,
+     audioEnabled: audioEnabled ?? true
     });
 
     return res.status(201).json({ msg: "Room created successfully", room: newroom });
@@ -45,7 +52,7 @@ const createroom = async (req, res) => {
 
 const joinRoom = async (req, res) => {
   try {
-    const { userId, roomId } = req.body;
+    const { userId, roomId , videoEnabled, audioEnabled} = req.body;
 
     //  Check if the room exists
     const room = await Room.findOne({ roomId });
@@ -80,7 +87,10 @@ const joinRoom = async (req, res) => {
     );
 
     if (!alreadyJoined) {
-      room.participants.push({ userId, joinedAt: new Date() });
+      room.participants.push({ userId, joinedAt: new Date(),
+        videoEnabled,
+        audioEnabled
+       });
       await room.save();
     }
 
@@ -148,4 +158,28 @@ const getRoomStatus = async (req, res) => {
   }
 };
 
-module.exports={createroom , joinRoom, leaveRoom,getRoomById,getRoomStatus}
+
+//  now i create the  get room which  status  is  waiting  
+
+const getUsersRooms = async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    const rooms = await Room.find({
+      createdBy: userId,
+      isActive: true,
+    }).select('roomname roomStatus createdAt');
+
+    return res.status(200).json({
+      myRooms: rooms,
+      msg:"Active rooms "
+    });
+  } catch (error) {
+    console.error("Error in getUsersRooms:", error.message);
+    return res.status(500).json({
+      msg: "Server error",
+      error: error.message,
+    });
+  }
+};
+module.exports={createroom , joinRoom, leaveRoom,getRoomById,getRoomStatus , getUsersRooms}
