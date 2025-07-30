@@ -12,29 +12,26 @@ function Login() {
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    try {
-      const res = await axios.post(`${BASE_URL}/login`, { email, password });
-      const token = res.data.token;
+  try {
+    const res = await axios.post(`${BASE_URL}/login`, { email, password });
 
-      // Store token
-      localStorage.setItem("token", token);
+    const token = res.data.token;
+    const userId = res.data.user.id; // ✅ Extract correct user ID
 
-      // ✅ Trigger daily login reward (5 coins if not already given today)
-      // await axios.post(
-      //   `${BASE_URL}/daily-login-reward`,
-      //   {},
-      //   {
-      //     headers: { Authorization: `Bearer ${token}` },
-      //   }
-      // );
+    localStorage.setItem("token", token);
+    localStorage.setItem("userId", userId); // ✅ Fixed this line
 
-      navigate("/dashboard");
-    } catch (err) {
-      setError("Invalid credentials or server error.");
-    }
-  };
+    // (Optional) store full user data if needed later
+    localStorage.setItem("userData", JSON.stringify(res.data.user));
+
+    navigate("/dashboard");
+  } catch (err) {
+    setError("Invalid credentials or server error.");
+  }
+};
+
 
   return (
     <div className="min-h-screen flex justify-center items-center bg-gradient-to-br from-indigo-900 to-black text-white">

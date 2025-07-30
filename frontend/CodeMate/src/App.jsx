@@ -10,11 +10,14 @@ import Problems from "./pages/Problems";
 import SolveProblem from "./pages/SolveProblem";
 import Leaderboard from "./pages/Leaderboard";
 import { Toaster } from "react-hot-toast";
-import CreateRoom from "./Collab/CreateRoom";
+// import CreateRoom from "./Collab/CreateRoom";
+import CodingRooms from "./pages/CodingRooms";
 import JoinRoom from "./Collab/JoinRoom";
 import RoomPage from "./Collab/RoomPage";
 import SearchFriend from "./components/friends/SearchFriend";
-import WaitingRoom from "./Collab/WaitingRoom";
+// import WaitingRoom from "./Collab/WaitingRoom";
+
+
 
 function App() {
   const location = window.location.pathname;
@@ -22,7 +25,7 @@ function App() {
 
   return (
     <div className="bg-white text-black dark:bg-black dark:text-white transition-all duration-300 min-h-screen">
-      <Router>
+      {/* <Router> */}
         {showNavbar && <Navbar />}
         <Toaster position="top-right" reverseOrder={false} />
         <Routes>
@@ -32,11 +35,13 @@ function App() {
           <Route path="/problems" element={<Problems />} />
           <Route path="/:id" element={<SolveProblem />} />
           <Route path="/leaderboard" element={<Leaderboard />} />
-          <Route path="/create-room" element={<CreateRoom />} />
-          <Route path="/join-room" element={<JoinRoom />} />
+          {/* <Route path="/create-room" element={<CreateRoom />} />
+           */}
+          <Route path="/rooms/createroom" element={<CodingRooms />} />
+          <Route path="/rooms/joinroom" element={<JoinRoom />} />
           <Route path="/room/:roomId" element={<RoomPage />} />
           <Route path="/search" element={<SearchFriend />} />
-          <Route path="/waitingroom/:roomId" element={<WaitingRoom />} />
+          {/* <Route path="/waitingroom/:roomId" element={<WaitingRoom />} /> */}
 
           <Route
             path="/dashboard"
@@ -47,7 +52,7 @@ function App() {
             }
           />
         </Routes>
-      </Router>
+      {/* </Router> */}
     </div>
   );
 }

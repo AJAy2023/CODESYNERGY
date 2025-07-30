@@ -249,7 +249,8 @@ const Problems = () => {
               className="grid grid-cols-4 gap-4 px-6 py-4 border-b border-zinc-800 hover:bg-zinc-800 transition text-sm items-center"
             >
               <span className="flex items-center gap-2 font-semibold text-green-300">
-                {problem.title} {solved && <CheckCircle size={16} className="text-green-400" />}
+                {problem.title}{" "}
+                {solved && <CheckCircle size={16} className="text-green-400" />}
               </span>
               <span
                 className={`font-semibold ${
@@ -263,16 +264,23 @@ const Problems = () => {
                 {problem.difficulty}
               </span>
               <span className="text-blue-400">{problem.problemType}</span>
+
+              {/* ACTION BUTTON */}
               {unlocked ? (
                 location.state?.fromCreateRoom ? (
                   <button
                     onClick={() => {
-                      localStorage.setItem("selectedProblem", problem.title);
-                      navigate("/create-room");
+                      localStorage.setItem(
+                        "selectedProblem",
+                        JSON.stringify(problem)
+                      );
+                      navigate("/rooms/createroom", {
+                        state: { reopenPopup: true },
+                      });
                     }}
                     className="bg-emerald-600 hover:bg-emerald-500 px-3 py-1 text-sm rounded shadow"
                   >
-                     Use This
+                    ✅ Use This
                   </button>
                 ) : (
                   <button

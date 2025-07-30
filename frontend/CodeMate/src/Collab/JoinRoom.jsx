@@ -1,51 +1,61 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { socket } from "./socket";
 import axios from "axios";
-import { ArrowLeftCircle } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { BASE_URL } from "../api/config";
+import  socket  from "./socket";
 
 const JoinRoom = () => {
   const [roomId, setRoomId] = useState("");
   const navigate = useNavigate();
 
-  const handleJoinRoom = async () => {
-    const trimmedId = roomId.trim();
+  const handleJoin = async () => {
     const userId = localStorage.getItem("userId");
+    const token = localStorage.getItem("token");
 
-    if (!trimmedId) return alert("Please enter Room ID");
+    if (!roomId || !userId || !token) {
+      alert("Missing credentials or room ID.");
+      return;
+    }
 
     try {
-      const res = await axios.post("http://localhost:8000/rooms/joinroom", {
-        userId,
-        roomId: trimmedId,
-      });
+      const res = await axios.post(
+        `${BASE_URL}/rooms/joinroom`,
+        { roomId, userId },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
 
-      socket.connect();
-      socket.emit("join-room", { userId, roomId: trimmedId });
+      if (res.status === 200) {
+        const { room, isCreator } = res.data;
 
-      navigate(`/waitingroom/${roomId}`);
+        socket.emit("joinRoom", { roomId: room.roomId, userId });
+
+        navigate("/roompage", {
+          state: {
+            room,
+            isCreator,
+          },
+        });
+      }
     } catch (err) {
-      alert(err.response?.data?.msg || "Server error");
+      console.error(err);
+      alert("Failed to join room. Are you friends with the room creator?");
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-black text-white">
-      <div className="max-w-md w-full bg-zinc-800 border border-zinc-700 p-6 rounded-lg shadow-lg">
-        <button onClick={() => navigate("/dashboard")} className="mb-4 text-cyan-400 flex items-center">
-          <ArrowLeftCircle size={18} className="mr-2" /> Back
-        </button>
-        <h2 className="text-center text-2xl font-bold mb-6">Join Room</h2>
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-purple-900 to-black text-white">
+      <div className="bg-zinc-900 p-6 rounded shadow-md w-full max-w-md text-center">
+        <h2 className="text-2xl font-bold mb-4 text-teal-400">🚪 Join Coding Room</h2>
         <input
           type="text"
           placeholder="Enter Room ID"
           value={roomId}
           onChange={(e) => setRoomId(e.target.value)}
-          className="p-3 bg-zinc-700 rounded w-full mb-4"
+          className="w-full p-3 mb-4 rounded bg-zinc-800 border border-zinc-600"
         />
         <button
-          onClick={handleJoinRoom}
-          className="bg-gradient-to-r from-cyan-600 to-emerald-500 p-3 rounded w-full text-white font-bold"
+          onClick={handleJoin}
+          className="w-full bg-blue-700 hover:bg-blue-600 text-white font-semibold py-2 rounded"
         >
           🔗 Join Room
         </button>

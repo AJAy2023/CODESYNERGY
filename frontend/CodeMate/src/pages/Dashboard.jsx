@@ -6,30 +6,14 @@ import { motion } from "framer-motion";
 import Lottie from "lottie-react";
 import rewardAnimation from "../assets/reward.json";
 import { BASE_URL } from "../api/config";
-
 import {
-  Flame,
-  Coins,
-  Bell,
-  MessageSquare,
-  User,
-  PlayCircle,
-  Plus,
-  LogIn,
-  ShieldCheck,
-  Gift,
-  Activity,
-  Search,
+  Flame, Coins, Bell, MessageSquare, User,
+  PlayCircle, Plus, LogIn, Gift, Activity, Search,
 } from "lucide-react";
 
 import {
   ResponsiveContainer,
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
+  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip,
 } from "recharts";
 
 const Dashboard = () => {
@@ -48,6 +32,7 @@ const Dashboard = () => {
         console.error("Failed to load user", err);
       }
     };
+
     fetchUser();
   }, []);
 
@@ -65,17 +50,11 @@ const Dashboard = () => {
     <div className="bg-gradient-to-br from-black via-gray-900 to-zinc-900 min-h-screen text-white p-6">
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
-        {/* Left */}
         <div className="flex items-center gap-6">
-          <h1
-            onClick={() => navigate("/dashboard")}
-            className="text-3xl font-extrabold text-cyan-400 tracking-wide cursor-pointer"
-          >
-            CodeMate
-          </h1>
+          <h1 onClick={() => navigate("/dashboard")} className="text-3xl font-extrabold text-cyan-400 tracking-wide cursor-pointer">CodeMate</h1>
           <div className="flex items-center gap-1 animate-pulse text-yellow-400">
             <Flame size={20} />
-            <span className="text-sm">🔥 5-Day Streak</span>
+            <span className="text-sm"> 5-Day Streak</span>
           </div>
           {user && (
             <div className="flex items-center gap-1 bg-zinc-800 px-2 py-1 rounded text-green-400">
@@ -84,12 +63,7 @@ const Dashboard = () => {
             </div>
           )}
         </div>
-
-        {/* Search Bar */}
-        <div
-          onClick={() => navigate("/search")}
-          className="relative w-72 cursor-pointer"
-        >
+        <div onClick={() => navigate("/search")} className="relative w-72 cursor-pointer">
           <div className="flex items-center bg-zinc-800 px-3 py-2 rounded-lg border border-zinc-700 shadow hover:border-cyan-500">
             <Search size={18} className="text-gray-400" />
             <input
@@ -99,19 +73,14 @@ const Dashboard = () => {
             />
           </div>
         </div>
-
-        {/* Icons */}
         <div className="flex items-center gap-4">
           <Bell className="cursor-pointer hover:text-yellow-300" />
           <MessageSquare className="cursor-pointer hover:text-blue-400" />
-          <User
-            className="cursor-pointer hover:text-blue-400"
-            onClick={() => navigate("/profile")}
-          />
+          <User onClick={() => navigate("/profile")} className="cursor-pointer hover:text-blue-400" />
         </div>
       </div>
 
-      <h2 className="text-3xl font-bold mb-4">Welcome, {user?.username || "User"}!</h2>
+      <h2 className="text-3xl font-bold mb-4">Welcome, {user?.username}!</h2>
 
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
@@ -132,7 +101,7 @@ const Dashboard = () => {
         ))}
       </div>
 
-      {/* Buttons */}
+      {/* Action Buttons */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
         <motion.button
           whileHover={{ scale: 1.05 }}
@@ -144,7 +113,7 @@ const Dashboard = () => {
 
         <motion.div
           whileHover={{ scale: 1.02 }}
-          onClick={() => navigate("/create-room")}
+          onClick={() => navigate("/rooms/createroom")}
           className="cursor-pointer bg-gradient-to-r from-cyan-600 to-sky-500 text-white p-5 rounded-lg shadow-md border border-zinc-700 hover:border-white"
         >
           <div className="flex items-center gap-2 text-lg font-semibold">
@@ -157,7 +126,7 @@ const Dashboard = () => {
 
         <motion.div
           whileHover={{ scale: 1.02 }}
-          onClick={() => navigate("/join-room")}
+          onClick={() => navigate("/rooms/joinroom")}
           className="cursor-pointer bg-gradient-to-r from-purple-600 to-fuchsia-500 text-white p-5 rounded-lg shadow-md border border-zinc-700 hover:border-white"
         >
           <div className="flex items-center gap-2 text-lg font-semibold">
@@ -169,7 +138,7 @@ const Dashboard = () => {
         </motion.div>
       </div>
 
-      {/* Progress */}
+      {/* Progress Section */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
         <motion.div
           whileHover={{ scale: 1.02 }}
@@ -195,9 +164,9 @@ const Dashboard = () => {
             <Activity size={20} /> <h3 className="text-lg font-semibold">Live Tracker</h3>
           </div>
           <p className="text-sm text-gray-300">
-            🚀 Ajay solved “Two Sum” just now.  
+            🚀 Ajay solved “Two Sum” just now.
             <br />
-            📊 You are currently ranked #7.  
+            📊 You are currently ranked #7.
             <br />
             ⏰ 2 users active in your friend list.
           </p>

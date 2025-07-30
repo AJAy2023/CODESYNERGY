@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import socket from "./socket";
+// import socket from "./socket";
 import { Mic, MicOff, UserCircle, Loader, DoorOpen, Rocket } from "lucide-react";
 
 const WaitingRoom = () => {

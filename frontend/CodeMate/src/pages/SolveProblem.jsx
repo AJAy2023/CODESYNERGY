@@ -38,24 +38,26 @@ const SolveProblem = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchAll = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        const [problemRes, userRes] = await Promise.all([
-          axios.get(`${BASE_URL}/${id}`),
-          axios.get(`${BASE_URL}/user-profile`, {
-            headers: { Authorization: `Bearer ${token}` },
-          }),
-        ]);
+   const fetchAll = async () => {
+  try {
+    const token = localStorage.getItem("token");
 
-        setProblem(problemRes.data);
-        setUser(userRes.data);
-      } catch (err) {
-        console.error("Failed to fetch data", err);
-      } finally {
-        setLoading(false);
-      }
-    };
+    const [problemRes, userRes] = await Promise.all([
+      axios.get(`${BASE_URL}/${id}`), 
+      axios.get(`${BASE_URL}/user-profile`, {
+        headers: { Authorization: `Bearer ${token}` },
+      }),
+    ]);
+
+    setProblem(problemRes.data);
+    setUser(userRes.data);
+  } catch (err) {
+    console.error("Failed to fetch data", err);
+  } finally {
+    setLoading(false);
+  }
+};
+
     fetchAll();
   }, [id]);
 
