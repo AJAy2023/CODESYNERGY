@@ -182,4 +182,44 @@ const getUsersRooms = async (req, res) => {
     });
   }
 };
-module.exports={createroom , joinRoom, leaveRoom,getRoomById,getRoomStatus , getUsersRooms}
+
+
+// kill the  rooom  
+
+const deleteroom  =  async (req, res)=>{
+  console.log("the room  is entering  in the room ");
+try{
+  
+  const userId = req.user.id; 
+  const roomid = req.params.roomid;     
+  
+  if(!roomid)
+  {
+    return res.status(400).json({
+      msg:"wrong room id",
+    })
+  }
+  // find room and delete  
+  const room = await Room.findOneAndDelete({
+      _id: roomid,
+      createdBy: userId
+    });
+
+  if(!room)
+  {
+    return res.status(400).json({
+      msg:"room not found or unathorized"
+    });
+  }
+  return res.status(200).json({
+    msg:"room deleted succssefully.."
+  });
+}catch(err)
+{
+  return res.status(500).json({
+    msg:"internal server error",
+    error:err.message
+  })
+}
+}
+module.exports={createroom , joinRoom, leaveRoom,getRoomById,getRoomStatus , getUsersRooms, deleteroom}
