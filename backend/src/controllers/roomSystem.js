@@ -89,7 +89,7 @@ const joinRoom = async (req, res) => {
 
     if (!alreadyJoined) {
       room.participants.push({
-        userId: new mongoose.Types.ObjectId(userId),
+       userId,
          joinedAt: new Date(),
         videoEnabled,
         audioEnabled
