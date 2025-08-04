@@ -17,10 +17,19 @@ const RoomWaitingLobby = () => {
   const [creatorId, setCreatorId] = useState(null);
 
   useEffect(() => {
+<<<<<<< Updated upstream
   if (!roomId || !userId) {
     console.warn("Missing roomId or userId");
     return;
   }
+=======
+    if (!roomId || !userId) {
+    console.warn("Missing roomId or userId");
+    return;
+  }
+  socket.emit("join-room", { roomId, userId });
+
+>>>>>>> Stashed changes
 
   socket.emit("join-room", roomId, userId);
 

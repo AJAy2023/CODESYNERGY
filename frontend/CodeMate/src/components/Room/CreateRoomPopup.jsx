@@ -14,6 +14,7 @@ const CreateRoomPopup = ({ onClose }) => {
   const [membersCount, setMembersCount] = useState("2");
   const [video, setVideo] = useState(true);
   const [audio, setAudio] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     setRoomName(localStorage.getItem("roomName") || "");
@@ -32,11 +33,23 @@ const CreateRoomPopup = ({ onClose }) => {
         setSelectedProblem({ title: storedProblem });
       }
     }
+
+    // Auto-focus first input
+    setTimeout(() => {
+      document.querySelector("input[placeholder='Room Name']")?.focus();
+    }, 0);
   }, []);
 
   const handleCreate = async () => {
+    if (loading) return;
+
     if (!roomName || !roomId || !selectedProblem || !roomType || !membersCount) {
       alert("Please fill in all fields!");
+      return;
+    }
+
+    if (!/^[a-zA-Z0-9_-]{3,}$/.test(roomId)) {
+      alert("Room ID must be at least 3 characters and contain only letters, numbers, hyphens, or underscores.");
       return;
     }
 
@@ -58,6 +71,7 @@ const CreateRoomPopup = ({ onClose }) => {
     };
 
     try {
+      setLoading(true);
       const res = await axios.post(`${BASE_URL}/rooms/createroom`, payload, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -77,7 +91,7 @@ const CreateRoomPopup = ({ onClose }) => {
 
         localStorage.setItem("createdRoomData", JSON.stringify(createdRoom));
 
-        // ✅ Clear old data
+        // ✅ Clear old form data
         [
           "roomName",
           "roomId",
@@ -88,10 +102,15 @@ const CreateRoomPopup = ({ onClose }) => {
           "selectedProblem",
         ].forEach((key) => localStorage.removeItem(key));
 
+<<<<<<< Updated upstream
         //  Navigate to waiting room with roomId
         navigate(`/waitingroom/${res.data.room.roomId}`);
 
         //  Optional: Close modal after navigation
+=======
+        navigate(`/waitingroom/${res.data.room.roomId}`);
+
+>>>>>>> Stashed changes
         if (typeof onClose === "function") {
           onClose();
         }
@@ -102,6 +121,8 @@ const CreateRoomPopup = ({ onClose }) => {
         err.response?.data?.msg ||
           "Room creation failed. Please check room ID and try again."
       );
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -143,7 +164,11 @@ const CreateRoomPopup = ({ onClose }) => {
           onClick={goToProblemSelection}
           className="cursor-pointer w-full p-2 mb-3 rounded bg-zinc-700 hover:bg-zinc-600 border border-zinc-500 text-left"
         >
+<<<<<<< Updated upstream
            Problem: {selectedProblem ? selectedProblem.title : "Select Problem"}
+=======
+          Problem: {selectedProblem ? selectedProblem.title : "Select Problem"}
+>>>>>>> Stashed changes
         </div>
 
         <select
@@ -192,15 +217,20 @@ const CreateRoomPopup = ({ onClose }) => {
                 localStorage.setItem("audio", e.target.checked);
               }}
             />
-            🎙️ Audio ON
+            🎙 Audio ON
           </label>
         </div>
 
         <button
           onClick={handleCreate}
-          className="w-full bg-green-700 hover:bg-green-600 text-white font-semibold py-2 rounded"
+          disabled={loading}
+          className="w-full bg-green-700 hover:bg-green-600 text-white font-semibold py-2 rounded disabled:opacity-50"
         >
+<<<<<<< Updated upstream
           Create Room
+=======
+          {loading ? "Creating..." : "Create Room"}
+>>>>>>> Stashed changes
         </button>
       </div>
     </div>
