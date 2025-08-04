@@ -1,7 +1,7 @@
 const User = require("../models/user");
 const Room  = require("../models/room");
 const Friend = require("../models/friendSystem");
-const Problem = require("../models/room");
+const Problem = require("../models/problems");
 const createroom = async (req, res) => {  
   try {
     const { userId, roomname, roomId, problem, roomType, peoplecount,videoEnabled, audioEnabled } = req.body;
@@ -87,7 +87,9 @@ const joinRoom = async (req, res) => {
     );
 
     if (!alreadyJoined) {
-      room.participants.push({ userId, joinedAt: new Date(),
+      room.participants.push({
+        userId: new mongoose.Types.ObjectId(userId),
+         joinedAt: new Date(),
         videoEnabled,
         audioEnabled
        });
@@ -130,18 +132,35 @@ const leaveRoom = async (req, res) => {
 
 // /  GET ROOM BY ID
 const getRoomById = async (req, res) => {
+  console.log("enters  into the  getroom logic...")
   try {
     const { roomId } = req.params;
+console.log("getRoomById triggered with:", roomId);
 
-    const room = await Room.findOne({ roomId }).populate('participants.userId', 'username email');
-    if (!room) return res.status(404).json({ msg: 'Room not found' });
+    const room = await Room.findOne({ roomId })
+      .populate('participants.userId', 'username email')
+      .populate('createdBy', ' username email'); // Populate creator
 
-    return res.status(200).json({ room });
+      console.log("the room id  : ", room);
+    if (!room) {
+      return res.status(404).json({ msg: 'Room not found' });
+    }
+
+    // Convert to plain object and attach `creator` field from `createdBy`
+    const roomData = room.toObject();
+    roomData.creator = roomData.createdBy;
+    delete roomData.createdBy;
+
+    return res.status(200).json({ room: roomData });
   } catch (err) {
-    console.error(err);
-    return res.status(500).json({ msg: 'Server error', error: err.message });
+    console.error("Get room by ID error:", err.message);
+    return res.status(500).json({
+      msg: 'Server error',
+      error: err.message,
+    });
   }
 };
+
 
 //GET ROOM STATUS
 const getRoomStatus = async (req, res) => {
