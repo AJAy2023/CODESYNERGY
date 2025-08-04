@@ -14,7 +14,12 @@ import CodingRooms from "./pages/CodingRooms";
 import JoinRoom from "./Collab/JoinRoom";
 import RoomPage from "./Collab/RoomPage";
 import SearchFriend from "./components/friends/SearchFriend";
+<<<<<<< Updated upstream
  import RoomWaitingLobby from "./components/Room/RoomWaitingLobby";
+=======
+import RoomWaitingLobby from "./components/Room/RoomWaitingLobby";
+// import WaitingRoom from "./Collab/WaitingRoom";
+>>>>>>> Stashed changes
 
 
 
@@ -39,6 +44,10 @@ function App() {
           <Route path="/room/:roomId" element={<RoomPage />} />
           <Route path="/search" element={<SearchFriend />} />
           <Route path="/waitingroom/:roomId" element={<RoomWaitingLobby />} />
+<<<<<<< Updated upstream
+=======
+          {/* <Route path="/waitingroom/:roomId" element={<WaitingRoom />} /> */}
+>>>>>>> Stashed changes
 
           <Route
             path="/dashboard"

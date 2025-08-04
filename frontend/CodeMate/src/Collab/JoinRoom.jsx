@@ -29,8 +29,7 @@ const JoinRoom = () => {
       if (res.status === 200) {
         const { room } = res.data;
 
-        // ✅ Emit real-time join to socket server
-        socket.emit("join-room", { roomId, userId });
+        socket.emit("joinRoom", { roomId: room.roomId, userId });
 
         // ✅ Navigate to new waiting room route
         navigate(`/waitingroom/${room._id}`);
