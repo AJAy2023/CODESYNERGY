@@ -17,38 +17,41 @@ const RoomWaitingLobby = () => {
   const [creatorId, setCreatorId] = useState(null);
 
   useEffect(() => {
-    // Join room socket
-    socket.emit("join-room", roomId, userId);
+  if (!roomId || !userId) {
+    console.warn("Missing roomId or userId");
+    return;
+  }
 
-    // Fetch room data
-    const fetchRoomInfo = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        const res = await axios.get(`${BASE_URL}/rooms/${roomId}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        const data = res.data.room;
-        setCreator(data.creator);
-        setCreatorId(data.creator._id);
-        setParticipant(data.participant || null);
-        setProblem(data.problem);
-      } catch (err) {
-        console.error("Error fetching room:", err.message);
-      }
-    };
+  socket.emit("join-room", roomId, userId);
 
-    fetchRoomInfo();
+  const fetchRoomInfo = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const res = await axios.get(`${BASE_URL}/rooms/${roomId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = res.data.room;
+      setCreator(data.creator);
+      setCreatorId(data.creator._id);
+      setParticipant(data.participant || null);
+      setProblem(data.problem);
+    } catch (err) {
+      console.error("Error fetching room:", err.message);
+    }
+  };
 
-    // Listen for real-time participant join
-    socket.on("room-updated", ({ creator, participant }) => {
-      setCreator(creator);
-      setParticipant(participant);
-    });
+  fetchRoomInfo();
 
-    return () => {
-      socket.off("room-updated");
-    };
-  }, [roomId, userId]);
+  socket.on("room-updated", ({ creator, participant }) => {
+    setCreator(creator);
+    setParticipant(participant);
+  });
+
+  return () => {
+    socket.off("room-updated");
+  };
+}, [roomId, userId]);
+
 
   const handleToggleMic = (type) => {
     setMicStatus((prev) => ({

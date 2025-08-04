@@ -1,8 +1,9 @@
+// src/Collab/JoinRoom.jsx
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { BASE_URL } from "../api/config";
-import  socket  from "./socket";
+import socket from "./socket";
 
 const JoinRoom = () => {
   const [roomId, setRoomId] = useState("");
@@ -13,32 +14,30 @@ const JoinRoom = () => {
     const token = localStorage.getItem("token");
 
     if (!roomId || !userId || !token) {
-      alert("Missing credentials or room ID.");
+      alert("Missing credentials or Room ID.");
       return;
     }
 
     try {
+      // 🔐 Backend join room request
       const res = await axios.post(
-        `${BASE_URL}/rooms/joinroom`,
+        `${BASE_URL}/rooms/join-room`,
         { roomId, userId },
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
       if (res.status === 200) {
-        const { room, isCreator } = res.data;
+        const { room } = res.data;
 
-        socket.emit("joinRoom", { roomId: room.roomId, userId });
+        // ✅ Emit real-time join to socket server
+        socket.emit("join-room", { roomId, userId });
 
-        navigate("/roompage", {
-          state: {
-            room,
-            isCreator,
-          },
-        });
+        // ✅ Navigate to new waiting room route
+        navigate(`/waitingroom/${room._id}`);
       }
     } catch (err) {
-      console.error(err);
-      alert("Failed to join room. Are you friends with the room creator?");
+      console.error("Join room failed:", err.message);
+      alert("Failed to join room. Are you sure the Room ID is correct?");
     }
   };
 
