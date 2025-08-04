@@ -1,3 +1,4 @@
+const mongoose = require("mongoose");
 const User = require("../models/user");
 const Room  = require("../models/room");
 const Friend = require("../models/friendSystem");
