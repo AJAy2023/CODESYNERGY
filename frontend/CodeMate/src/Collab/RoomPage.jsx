@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
-import  socket  from "./socket";
-import { Mic, MicOff, Video, VideoOff, ScreenShare } from "lucide-react";
+import socket from "./socket";
+import { Mic, MicOff, Video, VideoOff, ScreenShare, Clock, Play } from "lucide-react";
 import Editor from "@monaco-editor/react";
+import axios from "axios";
+import { BASE_URL } from "../api/config";
 
 const RoomPage = () => {
   const { roomId } = useParams();
@@ -10,21 +12,58 @@ const RoomPage = () => {
   const remoteVideoRef = useRef(null);
   const peerConnectionRef = useRef(null);
   const localStreamRef = useRef(null);
+
   const [micOn, setMicOn] = useState(true);
   const [camOn, setCamOn] = useState(true);
   const [codeUser1, setCodeUser1] = useState("// Your Code Here");
   const [codeUser2, setCodeUser2] = useState("// Opponent's Code");
+  const [problem, setProblem] = useState(null);
+  const [timer, setTimer] = useState(15 * 60); // 15 minutes
 
   const config = {
     iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
+  };
+
+  // Timer logic
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTimer((prev) => {
+        if (prev <= 1) {
+          clearInterval(interval);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  const formatTime = (seconds) => {
+    const m = String(Math.floor(seconds / 60)).padStart(2, "0");
+    const s = String(seconds % 60).padStart(2, "0");
+    return `${m}:${s}`;
   };
 
   useEffect(() => {
     const userId = localStorage.getItem("userId");
     socket.emit("join-room", { roomId, userId });
 
-    socket.on("room-error", (data) => alert(data.msg));
+    // Fetch problem
+    const fetchProblem = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const res = await axios.get(`${BASE_URL}/rooms/${roomId}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setProblem(res.data.room.problem);
+      } catch (err) {
+        console.error("Problem fetch failed", err.message);
+      }
+    };
+    fetchProblem();
 
+    // Get media
     navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((stream) => {
       localStreamRef.current = stream;
       if (localVideoRef.current) {
@@ -132,10 +171,9 @@ const RoomPage = () => {
     try {
       const screenStream = await navigator.mediaDevices.getDisplayMedia({ video: true });
       const screenTrack = screenStream.getVideoTracks()[0];
-      const sender = peerConnectionRef.current.getSenders().find(s => s.track.kind === 'video');
+      const sender = peerConnectionRef.current.getSenders().find((s) => s.track.kind === "video");
       if (sender) sender.replaceTrack(screenTrack);
       screenTrack.onended = () => {
-        // Revert to camera
         const originalTrack = localStreamRef.current.getVideoTracks()[0];
         if (sender) sender.replaceTrack(originalTrack);
       };
@@ -145,36 +183,53 @@ const RoomPage = () => {
   };
 
   return (
-    <div className="bg-black text-white min-h-screen p-4 flex flex-col gap-4">
-      {/* Video Section */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="bg-zinc-800 p-3 rounded-lg">
-          <p className="text-center">You</p>
-          <video ref={localVideoRef} autoPlay muted className="w-full h-64 bg-black rounded-lg" />
+    <div className="bg-gradient-to-br from-[#0f0f0f] to-black min-h-screen p-6 text-white space-y-6">
+      {/* Header - Timer and Controls */}
+      <div className="flex justify-between items-center">
+        <div className="flex gap-3">
+          <button onClick={toggleMic} className="bg-gray-800 hover:bg-gray-700 p-2 rounded">
+            {micOn ? <Mic /> : <MicOff />}
+          </button>
+          <button onClick={toggleCam} className="bg-gray-800 hover:bg-gray-700 p-2 rounded">
+            {camOn ? <Video /> : <VideoOff />}
+          </button>
+          <button onClick={handleScreenShare} className="bg-indigo-600 hover:bg-indigo-500 p-2 rounded">
+            <ScreenShare />
+          </button>
         </div>
-        <div className="bg-zinc-800 p-3 rounded-lg">
-          <p className="text-center">Opponent</p>
-          <video ref={remoteVideoRef} autoPlay className="w-full h-64 bg-black rounded-lg" />
+        <div className="flex items-center gap-2 text-teal-400 text-xl font-bold">
+          <Clock /> {formatTime(timer)}
         </div>
       </div>
 
-      {/* Control Section */}
-      <div className="flex justify-center gap-6">
-        <button onClick={toggleMic} className="bg-gray-700 px-4 py-2 rounded-lg hover:bg-gray-600">
-          {micOn ? <Mic /> : <MicOff />}
-        </button>
-        <button onClick={toggleCam} className="bg-gray-700 px-4 py-2 rounded-lg hover:bg-gray-600">
-          {camOn ? <Video /> : <VideoOff />}
-        </button>
-        <button onClick={handleScreenShare} className="bg-indigo-600 px-4 py-2 rounded-lg hover:bg-indigo-500">
-          <ScreenShare />
-        </button>
+      {/* Problem Statement */}
+      <div className="bg-zinc-900 rounded-lg p-4 shadow">
+        <h2 className="text-2xl font-bold text-teal-300 mb-2">{problem?.title || "Loading Problem..."}</h2>
+        <p className="whitespace-pre-line text-zinc-300">{problem?.description || "Loading..."}</p>
+        {problem?.examples && (
+          <div className="mt-4 text-sm bg-zinc-800 p-3 rounded">
+            <h4 className="text-purple-400 font-semibold mb-1">Example:</h4>
+            <pre>{problem.examples}</pre>
+          </div>
+        )}
       </div>
 
-      {/* Code Editor Section */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="bg-zinc-900 p-2 rounded-lg">
-          <h3 className="text-sm text-cyan-300">Your Editor</h3>
+      {/* Video Section - Small and Side-by-Side */}
+      <div className="flex gap-6 justify-center items-center">
+        <div className="text-center animate-fade-in">
+          <p className="mb-1 text-sm text-zinc-400">You</p>
+          <video ref={localVideoRef} autoPlay muted className="w-40 h-28 bg-black rounded-xl" />
+        </div>
+        <div className="text-center animate-fade-in">
+          <p className="mb-1 text-sm text-zinc-400">Opponent</p>
+          <video ref={remoteVideoRef} autoPlay className="w-40 h-28 bg-black rounded-xl" />
+        </div>
+      </div>
+
+      {/* Editors */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="bg-zinc-900 rounded-lg p-2 shadow">
+          <h3 className="text-cyan-400 font-semibold mb-1">Your Editor</h3>
           <Editor
             height="300px"
             language="javascript"
@@ -182,9 +237,12 @@ const RoomPage = () => {
             value={codeUser1}
             onChange={(val) => setCodeUser1(val)}
           />
+          <button className="mt-3 bg-green-600 hover:bg-green-500 text-white font-semibold px-4 py-2 rounded flex items-center gap-2">
+            <Play size={18} /> Run
+          </button>
         </div>
-        <div className="bg-zinc-900 p-2 rounded-lg">
-          <h3 className="text-sm text-fuchsia-300">Opponent Editor</h3>
+        <div className="bg-zinc-900 rounded-lg p-2 shadow">
+          <h3 className="text-fuchsia-400 font-semibold mb-1">Opponent's Editor</h3>
           <Editor
             height="300px"
             language="javascript"

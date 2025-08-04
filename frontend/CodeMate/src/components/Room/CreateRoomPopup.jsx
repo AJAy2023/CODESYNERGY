@@ -15,7 +15,6 @@ const CreateRoomPopup = ({ onClose }) => {
   const [video, setVideo] = useState(true);
   const [audio, setAudio] = useState(true);
 
-  // ✅ Load form data and problem from localStorage
   useEffect(() => {
     setRoomName(localStorage.getItem("roomName") || "");
     setRoomId(localStorage.getItem("roomId") || "");
@@ -35,7 +34,6 @@ const CreateRoomPopup = ({ onClose }) => {
     }
   }, []);
 
-  // ✅ Room creation handler
   const handleCreate = async () => {
     if (!roomName || !roomId || !selectedProblem || !roomType || !membersCount) {
       alert("Please fill in all fields!");
@@ -43,9 +41,7 @@ const CreateRoomPopup = ({ onClose }) => {
     }
 
     const userId = localStorage.getItem("userId");
-    console.log("UserID:", userId);
     const token = localStorage.getItem("token");
-    console.log("Token:", token);
 
     if (!userId || !token) {
       alert("User not authenticated. Please login again.");
@@ -56,7 +52,7 @@ const CreateRoomPopup = ({ onClose }) => {
       userId,
       roomname: roomName,
       roomId,
-      problem: selectedProblem._id || selectedProblem.id || "", // 🔍 fallback for ID
+      problem: selectedProblem._id || selectedProblem.id || "",
       roomType: roomType.toLowerCase(),
       peoplecount: parseInt(membersCount),
     };
@@ -64,7 +60,7 @@ const CreateRoomPopup = ({ onClose }) => {
     try {
       const res = await axios.post(`${BASE_URL}/rooms/createroom`, payload, {
         headers: {
-          Authorization: `Bearer ${token}`, 
+          Authorization: `Bearer ${token}`,
         },
       });
 
@@ -92,7 +88,10 @@ const CreateRoomPopup = ({ onClose }) => {
           "selectedProblem",
         ].forEach((key) => localStorage.removeItem(key));
 
-        // ✅ Close modal
+        //  Navigate to waiting room with roomId
+        navigate(`/waitingroom/${res.data.room.roomId}`);
+
+        //  Optional: Close modal after navigation
         if (typeof onClose === "function") {
           onClose();
         }
@@ -101,12 +100,11 @@ const CreateRoomPopup = ({ onClose }) => {
       console.error("Room creation failed:", err);
       alert(
         err.response?.data?.msg ||
-        "Room creation failed. Please check room ID and try again."
+          "Room creation failed. Please check room ID and try again."
       );
     }
   };
 
-  // ✅ Redirect to problem selection
   const goToProblemSelection = () => {
     navigate("/problems", { state: { fromCreateRoom: true } });
   };
@@ -114,7 +112,9 @@ const CreateRoomPopup = ({ onClose }) => {
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-80">
       <div className="bg-zinc-900 text-white p-6 rounded shadow-md w-full max-w-md relative">
-        <button onClick={onClose} className="absolute top-2 right-2 text-white text-xl">✖</button>
+        <button onClick={onClose} className="absolute top-2 right-2 text-white text-xl">
+          ✖
+        </button>
         <h2 className="text-xl font-bold mb-4 text-center text-teal-300">🚀 Create Room</h2>
 
         <input
@@ -139,10 +139,11 @@ const CreateRoomPopup = ({ onClose }) => {
           className="w-full p-2 mb-3 rounded bg-zinc-800 border border-zinc-600"
         />
 
-        <div onClick={goToProblemSelection}
+        <div
+          onClick={goToProblemSelection}
           className="cursor-pointer w-full p-2 mb-3 rounded bg-zinc-700 hover:bg-zinc-600 border border-zinc-500 text-left"
         >
-          ✅ Problem: {selectedProblem ? selectedProblem.title : "Select Problem"}
+           Problem: {selectedProblem ? selectedProblem.title : "Select Problem"}
         </div>
 
         <select
@@ -199,7 +200,7 @@ const CreateRoomPopup = ({ onClose }) => {
           onClick={handleCreate}
           className="w-full bg-green-700 hover:bg-green-600 text-white font-semibold py-2 rounded"
         >
-          ✅ Create Room
+          Create Room
         </button>
       </div>
     </div>
