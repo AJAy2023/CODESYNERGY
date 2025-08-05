@@ -37,7 +37,13 @@ const createroom = async (req, res) => {
       roomStatus: 'waiting',
       isActive: true,
       videoEnabled: videoEnabled ?? true,
-     audioEnabled: audioEnabled ?? true
+     audioEnabled: audioEnabled ?? true,
+     participants: [
+    {
+      userId: userId,
+      joinedAt: new Date(),
+    },
+  ],
     });
 
     return res.status(201).json({ msg: "Room created successfully", room: newroom });
@@ -89,7 +95,7 @@ const joinRoom = async (req, res) => {
 
     if (!alreadyJoined) {
       room.participants.push({
-        userId: new mongoose.Types.ObjectId(userId),
+        userId,  // error 
          joinedAt: new Date(),
         videoEnabled,
         audioEnabled
