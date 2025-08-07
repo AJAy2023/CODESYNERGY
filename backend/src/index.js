@@ -54,7 +54,7 @@ app.use('/',problemunlock);
 app.use('/', leaderboardroutes);
 app.use('/', friendRequests);
 app.use('/', roomsystem);
-app.use('/', profileSystem);
+// app.use('/', profileSystem);
 // home route
 app.get('/', (req, res)=>{
     res.send("welcome to home page...!!");
