@@ -2,6 +2,10 @@ const express  =  require("express");
 const app = express();
 const cors = require("cors");
 const path  = require('path');
+const http = require('http');
+const {Server} = require("socket.io");
+const server = http.createServer(app);
+
 const connectDB = require('./config/db');
 const authRoutes = require('./routes/authRoutes');
 const problemsroutes = require("./routes/problemsroutes");
@@ -10,11 +14,22 @@ const problemunlock = require("./routes/unlockproblems");
 const leaderboardroutes = require("./routes/leaderboard");
 const friendRequests = require("./routes/friendRequests");
 const roomsystem = require("./routes/roomsystem");
+const profileSystem =  require("./routes/profilesystem");
+
 require('dotenv').config({path:path.join(__dirname , '../.env')});
 const PORT = process.env.PORT||8000;
 
-//cors setup
 
+// socket.io setup for cors 
+const  io = new Server(server , {
+  cors:{
+     origin: "http://localhost:5173",  
+  credentials: true  ,
+  methods: ["GET", "POST"],
+  }
+})
+
+//cors setup
 
 app.use(cors({
   origin: "http://localhost:5173",  
@@ -23,6 +38,10 @@ app.use(cors({
 
 // conect db 
 connectDB();
+
+// socket.io
+const socketHandler = require("./sockets/scoketHandler");
+socketHandler(io) 
 
 // Middleware to parse JSON
 app.use(express.json());
@@ -35,11 +54,12 @@ app.use('/',problemunlock);
 app.use('/', leaderboardroutes);
 app.use('/', friendRequests);
 app.use('/', roomsystem);
+app.use('/', profileSystem);
 // home route
 app.get('/', (req, res)=>{
     res.send("welcome to home page...!!");
 })
 
-app.listen(PORT, () => {
-    console.log(` Server is running on port ${PORT}`);
+server.listen(PORT, () => {
+    console.log(` Server and socket  is running on port ${PORT}`);
 });

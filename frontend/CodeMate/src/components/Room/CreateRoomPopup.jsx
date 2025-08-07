@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { BASE_URL } from "../../api/config";
+import socket from "../../Collab/socket";
 
 const CreateRoomPopup = ({ onClose }) => {
   const navigate = useNavigate();
@@ -102,15 +103,20 @@ const CreateRoomPopup = ({ onClose }) => {
           "selectedProblem",
         ].forEach((key) => localStorage.removeItem(key));
 
-<<<<<<< Updated upstream
+        // emit socket join for creator 
+         socket.emit("join-room", {
+        roomId,
+          userId,
+        });
         //  Navigate to waiting room with roomId
-        navigate(`/waitingroom/${res.data.room.roomId}`);
+            
+         navigate(`/waitingroom/${roomId}`);
 
         //  Optional: Close modal after navigation
-=======
-        navigate(`/waitingroom/${res.data.room.roomId}`);
 
->>>>>>> Stashed changes
+        // navigate(`/waitingroom/${room.roomId}`);
+
+
         if (typeof onClose === "function") {
           onClose();
         }
@@ -164,11 +170,11 @@ const CreateRoomPopup = ({ onClose }) => {
           onClick={goToProblemSelection}
           className="cursor-pointer w-full p-2 mb-3 rounded bg-zinc-700 hover:bg-zinc-600 border border-zinc-500 text-left"
         >
-<<<<<<< Updated upstream
+
            Problem: {selectedProblem ? selectedProblem.title : "Select Problem"}
-=======
+
           Problem: {selectedProblem ? selectedProblem.title : "Select Problem"}
->>>>>>> Stashed changes
+
         </div>
 
         <select
@@ -226,11 +232,9 @@ const CreateRoomPopup = ({ onClose }) => {
           disabled={loading}
           className="w-full bg-green-700 hover:bg-green-600 text-white font-semibold py-2 rounded disabled:opacity-50"
         >
-<<<<<<< Updated upstream
-          Create Room
-=======
+
           {loading ? "Creating..." : "Create Room"}
->>>>>>> Stashed changes
+
         </button>
       </div>
     </div>
