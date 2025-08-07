@@ -51,7 +51,7 @@ const CodingRooms = () => {
           onClick={() => setShowPopup(true)}
           className="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-lg shadow-md"
         >
-          ➕ Create Room
+           Create Room
         </button>
       </div>
 

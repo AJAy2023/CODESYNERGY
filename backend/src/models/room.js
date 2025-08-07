@@ -66,8 +66,17 @@ const roomSchema = new mongoose.Schema(
     isActive: {
       type: Boolean,
       default: true
-    }
+    },
+    videoEnabled: {
+  type: Boolean,
+  default: true
+},
+audioEnabled: {
+  type: Boolean,
+  default: true
+},
   },
+  
   {
     timestamps: true 
   }

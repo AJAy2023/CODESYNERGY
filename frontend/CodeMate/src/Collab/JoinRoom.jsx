@@ -21,7 +21,7 @@ const JoinRoom = () => {
     try {
       // 🔐 Backend join room request
       const res = await axios.post(
-        `${BASE_URL}/rooms/join-room`,
+        `${BASE_URL}/rooms/joinroom`,
         { roomId, userId },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -29,10 +29,11 @@ const JoinRoom = () => {
       if (res.status === 200) {
         const { room } = res.data;
 
-        socket.emit("joinRoom", { roomId: room.roomId, userId });
+        //  Emit correct socket event
+        socket.emit("join-room", { roomId: room.roomId, userId });
 
-        // ✅ Navigate to new waiting room route
-        navigate(`/waitingroom/${room._id}`);
+        // Navigate to waiting room using roomId
+        navigate(`/waitingroom/${room.roomId}`);
       }
     } catch (err) {
       console.error("Join room failed:", err.message);
