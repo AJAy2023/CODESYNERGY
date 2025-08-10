@@ -29,6 +29,27 @@ const problemSchema = new mongoose.Schema({
   type: String,
   // required: true,
 },
+hiddenTestCases: [
+   {
+      input: { type: String, required: true },
+      output: { type: String, required: true }
+    }
+],
+boilerplateCode: {
+    type: Map, // key = language name
+    of: String,
+    default: {}
+  },
+  functionSignature: {
+    type: Map,
+    of: String,
+    default: {}
+  },
+  wrapperCode: {
+    type: Map,
+    of: String,
+    default: {}
+  },
 isFree: {
   type: Boolean,
   default: false 
