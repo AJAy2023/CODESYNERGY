@@ -14,6 +14,7 @@ const problemunlock = require("./routes/unlockproblems");
 const leaderboardroutes = require("./routes/leaderboard");
 const friendRequests = require("./routes/friendRequests");
 const roomsystem = require("./routes/roomsystem");
+const hints = require("./routes/aihints");
 // const profileSystem =  require("./routes/profilesystem");
 
 require('dotenv').config({path:path.join(__dirname , '../.env')});
@@ -54,6 +55,7 @@ app.use('/',problemunlock);
 app.use('/', leaderboardroutes);
 app.use('/', friendRequests);
 app.use('/', roomsystem);
+app.use('/', hints);
 // app.use('/', profileSystem);
 // home route
 app.get('/', (req, res)=>{
