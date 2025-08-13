@@ -15,7 +15,7 @@ const leaderboardroutes = require("./routes/leaderboard");
 const friendRequests = require("./routes/friendRequests");
 const roomsystem = require("./routes/roomsystem");
 const hints = require("./routes/aihints");
-// const profileSystem =  require("./routes/profilesystem");
+const profileSystem =  require("./routes/profilesystem");
 
 require('dotenv').config({path:path.join(__dirname , '../.env')});
 const PORT = process.env.PORT||8000;
@@ -56,7 +56,7 @@ app.use('/', leaderboardroutes);
 app.use('/', friendRequests);
 app.use('/', roomsystem);
 app.use('/', hints);
-// app.use('/', profileSystem);
+app.use('/', profileSystem);
 // home route
 app.get('/', (req, res)=>{
     res.send("welcome to home page...!!");
