@@ -145,11 +145,124 @@ const searchquery = async (req, res) => {
   }
 };
 
+
+
+
+const incomingRequests = async (req, res) => {
+  try {
+    const userId = req.params.userId;
+
+    const requests = await FriendSchema.find({
+      receiver: userId,
+      status: "pending"
+    })
+    .populate("sender", "username profilePic");
+
+    return res.status(200).json({ 
+      msg: "Incoming friend requests fetched successfully", 
+      requests 
+    });
+  } catch (err) {
+    res.status(500).json({ msg: "Server error", error: err.message });
+  }
+};
+
+const outgoingRequests = async (req, res) => {
+  try {
+    const userId = req.params.userId;
+
+    const requests = await FriendSchema.find({
+      sender: userId,
+      status: "pending"
+    })
+    .populate("receiver", "username profilePic");
+
+    return res.status(200).json({ 
+      msg: "Outgoing friend requests fetched successfully", 
+      requests 
+    });
+  } catch (err) {
+    res.status(500).json({ msg: "Server error", error: err.message });
+  }
+};
+
+const cancelRequest = async (req, res) => {
+  try {
+    const requestId = req.params.id;
+
+    const request = await FriendSchema.findById(requestId);
+    if (!request || request.status !== "pending") {
+      return res.status(404).json({ msg: "Pending request not found" });
+    }
+
+    await FriendSchema.findByIdAndDelete(requestId);
+
+    return res.status(200).json({ msg: "Friend request canceled successfully" });
+  } catch (err) {
+    res.status(500).json({ msg: "Server error", error: err.message });
+  }
+};
+
+//get the  status 
+const getFriendStatus = async (req, res) => {
+  try {
+    const currentUserId = req.user.id; 
+    const otherUserId = req.params.userId;
+
+  
+    const areFriends = await FriendSchema.findOne({
+      $or: [
+        { sender: currentUserId, receiver: otherUserId },
+        { sender: otherUserId, receiver: currentUserId }
+      ],
+      status: "accepted"
+    });
+
+    if (areFriends) {
+      return res.json({ status: "friends" });
+    }
+
+  
+    const outgoing = await FriendSchema.findOne({
+      sender: currentUserId,
+      receiver: otherUserId,
+      status: "pending"
+    });
+
+    if (outgoing) {
+      return res.json({ status: "pending" });
+    }
+
+   
+    const incoming = await FriendSchema.findOne({
+      sender: otherUserId,
+      receiver: currentUserId,
+      status: "pending"
+    });
+
+    if (incoming) {
+      return res.json({ status: "incoming" });
+    }
+
+
+    return res.json({ status: "none" });
+
+  } catch (err) {
+    console.error("Error checking friend status:", err);
+    return res.status(500).json({ error: "Server error" });
+  }
+};
+
+
 module.exports = {
   sendRequest,
   acceptRequest,
   rejectRequest,
   getFriendList,
   unfriend,
-  searchquery
+  searchquery,
+  incomingRequests,
+  outgoingRequests,
+  cancelRequest,
+  getFriendStatus
 };
