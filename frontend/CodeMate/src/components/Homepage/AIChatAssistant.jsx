@@ -1,39 +1,245 @@
-// src/components/homepage/AIChatAssistant.jsx
-import { motion } from "framer-motion";
-import { Bot } from "lucide-react";
+// src/Components/HomePage/AIChatAssistant.jsx
+import React, { useState, useRef, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Send, Bot } from "lucide-react";
+
+/**
+ * Guardian accent color (used everywhere in this component)
+ * - Keep this single accent throughout the project for consistency
+ */
+const GUARDIAN = "#06B6D4";
+
+const messageVariants = {
+  hidden: { opacity: 0, y: 6, scale: 0.995 },
+  visible: { opacity: 1, y: 0, scale: 1 },
+  exit: { opacity: 0, y: -6 },
+};
 
 export default function AIChatAssistant() {
-  return (
-    <section className="py-24 px-4 bg-[#0a0a0a]">
-      <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-10 items-center">
-        <motion.div
-          initial={{ opacity: 0, x: -50 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.6 }}
-        >
-          <h3 className="text-3xl md:text-4xl font-bold text-white mb-4">
-            Your 24x7 AI Coding Assistant
-          </h3>
-          <p className="text-gray-400">
-            Get real-time hints, feedback, and debugging help from our AI bot during battles.
-          </p>
-        </motion.div>
+  const [messages, setMessages] = useState([
+    { id: 1, who: "assistant", text: "Hi — I’m your coding assistant. How can I help today?" },
+  ]);
+  const [input, setInput] = useState("");
+  const [typing, setTyping] = useState(false);
+  const listRef = useRef(null);
+  const idRef = useRef(2);
 
+  // Auto-scroll to bottom whenever messages change
+  useEffect(() => {
+    if (!listRef.current) return;
+    listRef.current.scrollTo({
+      top: listRef.current.scrollHeight,
+      behavior: "smooth",
+    });
+  }, [messages, typing]);
+
+  // Simulate assistant reply (replace with API call later)
+  const simulateAssistantReply = (userText) => {
+    setTyping(true);
+    // small "thinking" delay
+    setTimeout(() => {
+      const reply = generateReply(userText);
+      setMessages((m) => [
+        ...m,
+        { id: idRef.current++, who: "assistant", text: reply },
+      ]);
+      setTyping(false);
+    }, 900 + Math.min(1200, userText.length * 20));
+  };
+
+  // Very small reply generator placeholder (swap out with actual AI later)
+  const generateReply = (userText) => {
+    if (!userText.trim()) return "Could you share more details?";
+    if (userText.toLowerCase().includes("optimize")) {
+      return "Try reducing nested loops and using built-in methods like .map()/.reduce() where possible. Also profile hotspots.";
+    }
+    if (userText.toLowerCase().includes("two sum")) {
+      return "A hashmap (value->index) gives O(n) time — iterate once and check complements.";
+    }
+    return "Nice question — here's a short hint: break the problem into smaller steps, test each part, and debug with small inputs.";
+  };
+
+  const handleSend = () => {
+    const text = input.trim();
+    if (!text) return;
+    const userMsg = { id: idRef.current++, who: "user", text };
+    setMessages((m) => [...m, userMsg]);
+    setInput("");
+    simulateAssistantReply(text);
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSend();
+    }
+  };
+
+  return (
+    <section aria-labelledby="ai-assistant-heading" className="py-16 px-4">
+      <div className="max-w-4xl mx-auto">
         <motion.div
-          initial={{ opacity: 0, x: 50 }}
-          whileInView={{ opacity: 1, x: 0 }}
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="bg-[#111111] border border-[#333] p-6 rounded-xl shadow-xl"
+          className="relative"
         >
-          <div className="flex items-center gap-3 mb-4">
-            <Bot className="text-purple-400 w-6 h-6" />
-            <p className="text-white font-semibold">AI Bot:</p>
-          </div>
-          <div className="bg-[#1a1a1a] text-sm text-white p-4 rounded-lg border border-[#2e2e2e]">
-            "You forgot to close your loop — check line 14. Need help fixing it?"
+          {/* Glass card */}
+          <div
+            className="rounded-2xl overflow-hidden shadow-xl"
+            style={{
+              background: "linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01))",
+              border: `1px solid rgba(6,182,212,0.12)`,
+              boxShadow: `0 10px 30px rgba(6,182,212,0.04)`,
+              backdropFilter: "blur(8px)",
+            }}
+          >
+            {/* Header */}
+            <div className="flex items-center gap-3 px-6 py-5 border-b" style={{ borderColor: "rgba(255,255,255,0.04)" }}>
+              <div
+                className="flex-none rounded-lg p-2"
+                style={{
+                  background: "linear-gradient(180deg, rgba(6,182,212,0.12), rgba(6,182,212,0.06))",
+                  border: `1px solid rgba(6,182,212,0.14)`,
+                }}
+                aria-hidden
+              >
+                <Bot size={22} color={GUARDIAN} />
+              </div>
+
+              <div>
+                <h3 id="ai-assistant-heading" className="text-lg font-semibold text-white">
+                  AI Coding Assistant
+                </h3>
+                <p className="text-sm text-slate-300">
+                  Ask questions, get hints, and debug faster — instant help inside the flow.
+                </p>
+              </div>
+            </div>
+
+            {/* Chat list */}
+            <div
+              ref={listRef}
+              className="h-72 overflow-y-auto p-6 space-y-3"
+              style={{ background: "linear-gradient(180deg, rgba(255,255,255,0.005), rgba(255,255,255,0.002))" }}
+            >
+              <AnimatePresence initial={false}>
+                {messages.map((m) => (
+                  <motion.div
+                    key={m.id}
+                    initial="hidden"
+                    animate="visible"
+                    exit="exit"
+                    variants={messageVariants}
+                    transition={{ duration: 0.28 }}
+                    className={`flex ${m.who === "user" ? "justify-end" : "justify-start"}`}
+                  >
+                    <div
+                      className={`max-w-[78%] px-4 py-3 rounded-2xl text-sm leading-snug`}
+                      style={
+                        m.who === "user"
+                          ? {
+                              background: `linear-gradient(180deg, rgba(6,182,212,0.12), rgba(6,182,212,0.08))`,
+                              color: "#052027",
+                              border: `1px solid rgba(6,182,212,0.16)`,
+                              boxShadow: `0 8px 20px rgba(6,182,212,0.06)`,
+                            }
+                          : {
+                              background: "rgba(255,255,255,0.025)",
+                              color: "rgba(255,255,255,0.95)",
+                              border: "1px solid rgba(255,255,255,0.03)",
+                            }
+                      }
+                    >
+                      {m.text}
+                    </div>
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+
+              {/* typing indicator */}
+              {typing && (
+                <motion.div
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="flex justify-start"
+                >
+                  <div
+                    className="px-4 py-3 rounded-2xl"
+                    style={{
+                      background: "rgba(255,255,255,0.02)",
+                      border: "1px solid rgba(255,255,255,0.03)",
+                    }}
+                  >
+                    <div className="flex items-center gap-2">
+                      <div className="h-2 w-2 rounded-full bg-slate-300/40 animate-pulse" />
+                      <div className="h-2 w-2 rounded-full bg-slate-300/40 animate-pulse delay-75" />
+                      <div className="h-2 w-2 rounded-full bg-slate-300/40 animate-pulse delay-150" />
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+            </div>
+
+            {/* Input area */}
+            <div className="px-6 py-4 border-t" style={{ borderColor: "rgba(255,255,255,0.03)" }}>
+              <div className="flex items-center gap-3">
+                <textarea
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  placeholder="Ask the assistant (press Enter to send)"
+                  rows={1}
+                  className="flex-1 resize-none px-4 py-3 rounded-xl bg-transparent border border-white/6 text-white placeholder:text-slate-400 focus:outline-none focus:ring-2"
+                  style={{ borderColor: "rgba(255,255,255,0.04)" }}
+                />
+                <motion.button
+                  whileTap={{ scale: 0.96 }}
+                  onClick={handleSend}
+                  aria-label="Send message"
+                  className="h-10 w-10 rounded-lg flex items-center justify-center"
+                  style={{
+                    background: `linear-gradient(180deg, ${GUARDIAN}, ${shadeHex(GUARDIAN, -12)})`,
+                    boxShadow: `0 8px 20px ${hexToRgba(GUARDIAN, 0.18)}`,
+                  }}
+                >
+                  <Send size={18} color="#022022" />
+                </motion.button>
+              </div>
+            </div>
           </div>
         </motion.div>
       </div>
     </section>
   );
+}
+
+/* --------------------------
+  Small helper functions below
+  (No external packages needed)
+   - hexToRgba(hex, alpha)
+   - shadeHex(hex, percent)
+   These keep inline styles readable & consistent.
+   -------------------------- */
+
+function hexToRgba(hex, alpha = 1) {
+  const h = hex.replace("#", "");
+  const bigint = parseInt(h, 16);
+  const r = (bigint >> 16) & 255;
+  const g = (bigint >> 8) & 255;
+  const b = bigint & 255;
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
+
+// simple shade helper (lighten/darken by percent -100..100)
+function shadeHex(hex, percent) {
+  const h = hex.replace("#", "");
+  const num = parseInt(h, 16);
+  let r = (num >> 16) + Math.round((percent / 100) * 255);
+  let g = ((num >> 8) & 0x00ff) + Math.round((percent / 100) * 255);
+  let b = (num & 0x0000ff) + Math.round((percent / 100) * 255);
+  r = Math.max(Math.min(255, r), 0);
+  g = Math.max(Math.min(255, g), 0);
+  b = Math.max(Math.min(255, b), 0);
+  return `#${(r << 16 | g << 8 | b).toString(16).padStart(6, "0")}`;
 }

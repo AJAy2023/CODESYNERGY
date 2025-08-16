@@ -30,7 +30,15 @@ const JoinRoom = () => {
         const { room } = res.data;
 
         //  Emit correct socket event
-        socket.emit("join-room", { roomId: room.roomId, userId });
+        // Emit after socket is connected
+if (socket.connected) {
+  socket.emit("join-room", { roomId: room.roomId, userId });
+} else {
+  socket.on("connect", () => {
+    socket.emit("join-room", { roomId: room.roomId, userId });
+  });
+}
+
 
         // Navigate to waiting room using roomId
         navigate(`/waitingroom/${room.roomId}`);
