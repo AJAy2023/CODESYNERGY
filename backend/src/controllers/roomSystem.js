@@ -140,32 +140,26 @@ const leaveRoom = async (req, res) => {
 
 // /  GET ROOM BY ID
 const getRoomById = async (req, res) => {
-  console.log("enters  into the  getroom logic...")
   try {
-    const { roomId } = req.params;
-console.log("getRoomById triggered with:", roomId);
+    const param = req.params.roomId;
+    const query = mongoose.isValidObjectId(param)
+      ? { $or: [{ roomId: param }, { _id: param }] }
+      : { roomId: param };
 
-    const room = await Room.findOne({ roomId })
-      .populate('participants.userId', 'username email')
-      .populate('createdBy', ' username email'); // Populate creator
+    const room = await Room.findOne(query)
+      .populate("participants.userId", "username email")
+      .populate("createdBy", "username email");
 
-      console.log("the room id  : ", room);
-    if (!room) {
-      return res.status(404).json({ msg: 'Room not found' });
-    }
+    if (!room) return res.status(404).json({ msg: "Room not found" });
 
-    // Convert to plain object and attach `creator` field from `createdBy`
-    const roomData = room.toObject();
-    roomData.creator = roomData.createdBy;
-    delete roomData.createdBy;
+    const roomObj = room.toObject();
+    roomObj.creator = roomObj.createdBy;
+    delete roomObj.createdBy;
 
-    return res.status(200).json({ room: roomData });
+    return res.status(200).json({ room: roomObj });
   } catch (err) {
     console.error("Get room by ID error:", err.message);
-    return res.status(500).json({
-      msg: 'Server error',
-      error: err.message,
-    });
+    return res.status(500).json({ msg: "Server error", error: err.message });
   }
 };
 
@@ -213,40 +207,26 @@ const getUsersRooms = async (req, res) => {
 
 // kill the  rooom  
 
-const deleteroom  =  async (req, res)=>{
-  console.log("the room  is entering  in the room ");
-try{
-  
-  const userId = req.user.id; 
-  const roomid = req.params.roomid;     
-  
-  if(!roomid)
-  {
-    return res.status(400).json({
-      msg:"wrong room id",
-    })
-  }
-  // find room and delete  
-  const room = await Room.findOneAndDelete({
-      _id: roomid,
-      createdBy: userId
-    });
+const deleteroom = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const roomid = req.params.roomid;
 
-  if(!room)
-  {
-    return res.status(400).json({
-      msg:"room not found or unathorized"
-    });
+    if (!roomid) return res.status(400).json({ msg: "wrong room id" });
+
+    const query = mongoose.isValidObjectId(roomid)
+      ? { $or: [{ _id: roomid }, { roomId: roomid }], createdBy: userId }
+      : { roomId: roomid, createdBy: userId };
+
+    const room = await Room.findOneAndDelete(query);
+
+    if (!room) {
+      return res.status(400).json({ msg: "room not found or unauthorized" });
+    }
+
+    return res.status(200).json({ msg: "room deleted successfully." });
+  } catch (err) {
+    return res.status(500).json({ msg: "internal server error", error: err.message });
   }
-  return res.status(200).json({
-    msg:"room deleted succssefully.."
-  });
-}catch(err)
-{
-  return res.status(500).json({
-    msg:"internal server error",
-    error:err.message
-  })
-}
-}
+};
 module.exports={createroom , joinRoom, leaveRoom,getRoomById,getRoomStatus , getUsersRooms, deleteroom}
