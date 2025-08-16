@@ -1,1628 +1,4051 @@
-
 [
-    {
-        "id": 1,
-        "title": "Two Sum",
-        "description": "Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.",
-        "difficulty": "Easy",
-        "problemType": "Array",
-        "tags": ["Array", "Hash Table"],
-        "examples": [
-            {
-                "input": "nums = [2,7,11,15], target = 9",
-                "output": "[0,1]"
-            }
-        ]
-    },
-    {
-        "id": 2,
-        "title": "Reverse Integer",
-        "description": "Given a signed 32-bit integer x, return x with its digits reversed. If reversing x causes the value to go outside the signed 32-bit integer range, return 0.",
-        "difficulty": "Medium",
-        "problemType": "Math",
-        "tags": ["Math"],
-        "examples": [
-            {
-                "input": "x = 123",
-                "output": "321"
-            }
-        ]
-    },
-    {
-        "id": 3,
-        "title": "Palindrome Number",
-        "problemType": "Array",
-        "description": "Given an integer x, return true if x is palindrome integer.",
-        "difficulty": "Easy",
-        "tags": ["Math"],
-        "examples": [
-            {
-                "input": "x = 121",
-                "output": "true"
-            }
-        ]
-    },
-    {
-        "id": 4,
-        "title": "Roman to Integer",
-        "description": "Convert a roman numeral to an integer.",
-        "problemType": "String",
-        "difficulty": "Easy",
-        "tags": ["String", "Math"],
-        "examples": [
-            {
-                "input": "s = 'III'",
-                "output": "3"
-            }
-        ]
-    },
-    {
-        "id": 5,
-        "title": "Longest Common Prefix",
-        "description": "Write a function to find the longest common prefix string amongst an array of strings.",
-        "difficulty": "Easy",
-        "problemType": "String",
-        "tags": ["String"],
-        "examples": [
-            {
-                "input": "strs = ['flower','flow','flight']",
-                "output": "'fl'"
-            }
-        ]
-    },
-    {
-        "id": 6,
-        "title": "Valid Parentheses",
-        "description": "Given a string s containing just the characters '(', ')', '{', '}', '[' and ']', determine if the input string is valid.",
-        "difficulty": "Easy",
-        "problemType": "String",
-        "tags": ["String", "Stack"],
-        "examples": [
-            {
-                "input": "s = '()[]{}'",
-                "output": "true"
-            }
-        ]
-    },
-    {
-        "id": 7,
-        "title": "Merge Two Sorted Lists",
-        "description": "Merge two sorted linked lists and return it as a new sorted list.",
-        "difficulty": "Easy",
-        "problemType": "LinkedList",
-        "tags": ["Linked List", "Recursion"],
-        "examples": [
-            {
-                "input": "l1 = [1,2,4], l2 = [1,3,4]",
-                "output": "[1,1,2,3,4,4]"
-            }
-        ]
-    },
-    {
-        "id": 8,
-        "title": "Remove Duplicates from Sorted Array",
-        "description": "Remove the duplicates in-place such that each element appears only once and return the new length.",
-        "difficulty": "Easy",
-        "problemType": "Array",
-        "tags": ["Array", "Two Pointers"],
-        "examples": [
-            {
-                "input": "nums = [1,1,2]",
-                "output": "2"
-            }
-        ]
-    },
-    {
-        "id": 9,
-        "title": "Remove Element",
-        "description": "Remove all instances of a value in-place and return the new length.",
-        "difficulty": "Easy",
-        "problemType": "Array",
-        "tags": ["Array", "Two Pointers"],
-        "examples": [
-            {
-                "input": "nums = [3,2,2,3], val = 3",
-                "output": "2"
-            }
-        ]
-    },
-    {
-        "id": 10,
-        "title": "Implement strStr()",
-        "description": "Return the index of the first occurrence of needle in haystack, or -1 if needle is not part of haystack.",
-        "difficulty": "Easy",
-        "problemType": "String",
-        "tags": ["String", "Two Pointers"],
-        "examples": [
-            {
-                "input": "haystack = 'hello', needle = 'll'",
-                "output": "2"
-            }
-        ]
-    },
-    {
-        "id": 11,
-        "title": "Search Insert Position",
-        "description": "Given a sorted array and a target value, return the index if the target is found. If not, return the index where it would be if it were inserted in order.",
-        "difficulty": "Easy",
-        "problemType": "Array",
-        "tags": ["Array", "Binary Search"],
-        "examples": [
-            {
-                "input": "nums = [1,3,5,6], target = 5",
-                "output": "2"
-            }
-        ]
-    },
-    {
-        "id": 12,
-        "title": "Maximum Subarray",
-        "description": "Find the contiguous subarray which has the largest sum and return its sum.",
-        "difficulty": "Easy",
-        "problemType": "Array",
-        "tags": ["Array", "Dynamic Programming"],
-        "examples": [
-            {
-                "input": "nums = [-2,1,-3,4,-1,2,1,-5,4]",
-                "output": "6"
-            }
-        ]
-    },
-    {
-        "id": 13,
-        "title": "Length of Last Word",
-        "description": "Given a string s consists of upper/lower-case alphabets and empty space characters ' ', return the length of last word.",
-        "difficulty": "Easy",
-        "problemType": "String",
-        "tags": ["String"],
-        "examples": [
-            {
-                "input": "s = 'Hello World'",
-                "output": "5"
-            }
-        ]
-    },
-    {
-        "id": 14,
-        "title": "Plus One",
-        "description": "Given a non-empty array of digits representing a non-negative integer, plus one to the integer.",
-        "difficulty": "Easy",
-        "problemType": "Array",
-        "tags": ["Array", "Math"],
-        "examples": [
-            {
-                "input": "digits = [1,2,3]",
-                "output": "[1,2,4]"
-            }
-        ]
-    },
-    {
-        "id": 15,
-        "title": "Add Binary",
-        "description": "Given two binary strings, return their sum as a binary string.",
-        "difficulty": "Easy",
-        "problemType": "String",
-        "tags": ["Math", "String"],
-        "examples": [
-            {
-                "input": "a = '11', b = '1'",
-                "output": "'100'"
-            }
-        ]
-    },
-    {
-        "id": 16,
-        "title": "Sqrt(x)",
-        "description": "Compute and return the square root of x, where x is guaranteed to be a non-negative integer.",
-        "difficulty": "Easy",
-        "problemType": "Math",
-        "tags": ["Math", "Binary Search"],
-        "examples": [
-            {
-                "input": "x = 8",
-                "output": "2"
-            }
-        ]
-    },
-    {
-        "id": 17,
-        "title": "Climbing Stairs",
-        "description": "You are climbing a staircase. It takes n steps to reach the top. Each time you can climb 1 or 2 steps. In how many distinct ways can you climb to the top?",
-        "difficulty": "Easy",
-        "problemType": "Dynamic Programming",
-        "tags": ["Dynamic Programming"],
-        "examples": [
-            {
-                "input": "n = 2",
-                "output": "2"
-            }
-        ]
-    },
-    {
-        "id": 18,
-        "title": "Merge Sorted Array",
-        "description": "Given two sorted integer arrays nums1 and nums2, merge nums2 into nums1 as one sorted array.",
-        "difficulty": "Easy",
-        "problemType": "Array",
-        "tags": ["Array", "Two Pointers"],
-        "examples": [
-            {
-                "input": "nums1 = [1,2,3,0,0,0], m = 3, nums2 = [2,5,6], n = 3",
-                "output": "[1,2,2,3,5,6]"
-            }
-        ]
-    },
-    {
-        "id": 19,
-        "title": "Same Tree",
-        "description": "Given two binary trees, write a function to check if they are the same or not.",
-        "difficulty": "Easy",
-        "problemType": "Tree",
-        "tags": ["Tree", "Depth-First Search"],
-        "examples": [
-            {
-                "input": "p = [1,2,3], q = [1,2,3]",
-                "output": "true"
-            }
-        ]
-    },
-    {
-        "id": 20,
-        "title": "Symmetric Tree",
-        "description": "Given a binary tree, check whether it is a mirror of itself (i.e., symmetric around its center).",
-        "difficulty": "Easy",
-        "problemType": "Tree",
-        "tags": ["Tree", "Breadth-First Search"],
-        "examples": [
-            {
-                "input": "root = [1,2,2,3,4,4,3]",
-                "output": "true"
-            }
-        ]
-    },
-
-    {
-        "id": 21,
-        "title": "Valid Sudoku",
-        "description": "Placeholder description for Valid Sudoku.",
-        "difficulty": "Medium",
-        "problemType": "Matrix",
-        "tags": [
-            "Array",
-            "Hash Table"
-        ],
-        "examples": [
-            {
-                "input": "Example input",
-                "output": "Expected output"
-            }
-        ]
-    },
-    {
-        "id": 22,
-        "title": "Missing Number",
-        "description": "Placeholder description for Missing Number.",
-        "difficulty": "Easy",
-        "problemType": "Array",
-        "tags": [
-            "Array",
-            "Math"
-        ],
-        "examples": [
-            {
-                "input": "Example input",
-                "output": "Expected output"
-            }
-        ]
-    },
-    {
-        "id": 23,
-        "title": "Intersection of Two Linked Lists",
-        "description": "Placeholder description for Intersection of Two Linked Lists.",
-        "difficulty": "Hard",
-        "problemType": "LinkedList",
-        "tags": [
-            "Linked List",
-            "Two Pointers"
-        ],
-        "examples": [
-            {
-                "input": "Example input",
-                "output": "Expected output"
-            }
-        ]
-    },
-    {
-        "id": 24,
-        "title": "Linked List Cycle",
-        "description": "Placeholder description for Linked List Cycle.",
-        "difficulty": "Medium",
-        "problemType": "LinkedList",
-        "tags": [
-            "Linked List",
-            "Two Pointers"
-        ],
-        "examples": [
-            {
-                "input": "Example input",
-                "output": "Expected output"
-            }
-        ]
-    },
-    {
-        "id": 25,
-        "title": "Maximum Depth of Binary Tree",
-        "description": "Placeholder description for Maximum Depth of Binary Tree.",
-        "difficulty": "Hard",
-        "problemType": "Tree",
-        "tags": [
-            "Tree",
-            "DFS"
-        ],
-        "examples": [
-            {
-                "input": "Example input",
-                "output": "Expected output"
-            }
-        ]
-    },
-    {
-        "id": 26,
-        "title": "Binary Tree Level Order Traversal",
-        "description": "Placeholder description for Binary Tree Level Order Traversal.",
-        "difficulty": "Easy",
-        "problemType": "Tree",
-        "tags": [
-            "Tree",
-            "BFS"
-        ],
-        "examples": [
-            {
-                "input": "Example input",
-                "output": "Expected output"
-            }
-        ]
-    },
-    {
-        "id": 27,
-        "title": "Path Sum",
-        "description": "Placeholder description for Path Sum.",
-        "difficulty": "Medium",
-        "problemType": "Tree",
-        "tags": [
-            "Tree",
-            "DFS"
-        ],
-        "examples": [
-            {
-                "input": "Example input",
-                "output": "Expected output"
-            }
-        ]
-    },
-    {
-        "id": 28,
-        "title": "Count Primes",
-        "description": "Placeholder description for Count Primes.",
-        "difficulty": "Easy",
-        "problemType": "Math",
-        "tags": [
-            "Math",
-            "Sieve"
-        ],
-        "examples": [
-            {
-                "input": "Example input",
-                "output": "Expected output"
-            }
-        ]
-    },
-    {
-        "id": 29,
-        "title": "Single Number",
-        "description": "Placeholder description for Single Number.",
-        "difficulty": "Hard",
-        "problemType": "Array",
-        "tags": [
-            "Array",
-            "Bit Manipulation"
-        ],
-        "examples": [
-            {
-                "input": "Example input",
-                "output": "Expected output"
-            }
-        ]
-    },
-    {
-        "id": 30,
-        "title": "Happy Number",
-        "description": "Placeholder description for Happy Number.",
-        "difficulty": "Medium",
-        "problemType": "Math",
-        "tags": [
-            "Math"
-        ],
-        "examples": [
-            {
-                "input": "Example input",
-                "output": "Expected output"
-            }
-        ]
-    },
-    {
-        "id": 31,
-        "title": "Power of Two",
-        "description": "Placeholder description for Power of Two.",
-        "difficulty": "Hard",
-        "problemType": "Math",
-        "tags": [
-            "Math",
-            "Bit Manipulation"
-        ],
-        "examples": [
-            {
-                "input": "Example input",
-                "output": "Expected output"
-            }
-        ]
-    },
-    {
-        "id": 32,
-        "title": "Majority Element",
-        "description": "Placeholder description for Majority Element.",
-        "difficulty": "Easy",
-        "problemType": "Array",
-        "tags": [
-            "Array",
-            "Hash Table"
-        ],
-        "examples": [
-            {
-                "input": "Example input",
-                "output": "Expected output"
-            }
-        ]
-    },
-    {
-        "id": 33,
-        "title": "House Robber",
-        "description": "Placeholder description for House Robber.",
-        "difficulty": "Medium",
-        "problemType": "Dynamic Programming",
-        "tags": [
-            "Dynamic Programming"
-        ],
-        "examples": [
-            {
-                "input": "Example input",
-                "output": "Expected output"
-            }
-        ]
-    },
-    {
-        "id": 34,
-        "title": "Best Time to Buy and Sell Stock",
-        "description": "Placeholder description for Best Time to Buy and Sell Stock.",
-        "difficulty": "Easy",
-        "problemType": "Array",
-        "tags": [
-            "Array",
-            "Dynamic Programming"
-        ],
-        "examples": [
-            {
-                "input": "Example input",
-                "output": "Expected output"
-            }
-        ]
-    },
-    {
-        "id": 35,
-        "title": "Min Stack",
-        "description": "Placeholder description for Min Stack.",
-        "difficulty": "Hard",
-        "problemType": "Stack",
-        "tags": [
-            "Stack",
-            "Design"
-        ],
-        "examples": [
-            {
-                "input": "Example input",
-                "output": "Expected output"
-            }
-        ]
-    },
-    {
-        "id": 36,
-        "title": "Evaluate Reverse Polish Notation",
-        "description": "Placeholder description for Evaluate Reverse Polish Notation.",
-        "difficulty": "Medium",
-        "problemType": "Stack",
-        "tags": [
-            "Stack"
-        ],
-        "examples": [
-            {
-                "input": "Example input",
-                "output": "Expected output"
-            }
-        ]
-    },
-    {
-        "id": 37,
-        "title": "Basic Calculator",
-        "description": "Placeholder description for Basic Calculator.",
-        "difficulty": "Hard",
-        "problemType": "Stack",
-        "tags": [
-            "Stack",
-            "String"
-        ],
-        "examples": [
-            {
-                "input": "Example input",
-                "output": "Expected output"
-            }
-        ]
-    },
-    {
-        "id": 38,
-        "title": "Meeting Rooms",
-        "description": "Placeholder description for Meeting Rooms.",
-        "difficulty": "Easy",
-        "problemType": "Array",
-        "tags": [
-            "Array",
-            "Sorting"
-        ],
-        "examples": [
-            {
-                "input": "Example input",
-                "output": "Expected output"
-            }
-        ]
-    },
-    {
-        "id": 39,
-        "title": "Group Anagrams",
-        "description": "Placeholder description for Group Anagrams.",
-        "difficulty": "Medium",
-        "problemType": "String",
-        "tags": [
-            "Array",
-            "Hash Table",
-            "String"
-        ],
-        "examples": [
-            {
-                "input": "Example input",
-                "output": "Expected output"
-            }
-        ]
-    },
-    {
-        "id": 40,
-        "title": "Binary Search Tree Iterator",
-        "description": "Placeholder description for Binary Search Tree Iterator.",
-        "difficulty": "Easy",
-        "problemType": "Tree",
-        "tags": [
-            "Tree",
-            "Design"
-        ],
-        "examples": [
-            {
-                "input": "Example input",
-                "output": "Expected output"
-            }
-        ]
-    },
-    {
-        "id": 41,
-        "title": "Lowest Common Ancestor of BST",
-        "description": "Placeholder description for Lowest Common Ancestor of BST.",
-        "difficulty": "Hard",
-        "problemType": "Tree",
-        "tags": [
-            "Tree",
-            "DFS"
-        ],
-        "examples": [
-            {
-                "input": "Example input",
-                "output": "Expected output"
-            }
-        ]
-    },
-    {
-        "id": 42,
-        "title": "Construct Binary Tree",
-        "description": "Placeholder description for Construct Binary Tree.",
-        "difficulty": "Medium",
-        "problemType": "Tree",
-        "tags": [
-            "Tree",
-            "DFS"
-        ],
-        "examples": [
-            {
-                "input": "Example input",
-                "output": "Expected output"
-            }
-        ]
-    },
-    {
-        "id": 43,
-        "title": "Serialize and Deserialize Binary Tree",
-        "description": "Placeholder description for Serialize and Deserialize Binary Tree.",
-        "difficulty": "Hard",
-        "problemType": "Tree",
-        "tags": [
-            "Tree",
-            "DFS",
-            "Design"
-        ],
-        "examples": [
-            {
-                "input": "Example input",
-                "output": "Expected output"
-            }
-        ]
-    },
-    {
-        "id": 44,
-        "title": "Word Search",
-        "description": "Placeholder description for Word Search.",
-        "difficulty": "Easy",
-        "problemType": "Matrix",
-        "tags": [
-            "DFS",
-            "Backtracking",
-            "Matrix"
-        ],
-        "examples": [
-            {
-                "input": "Example input",
-                "output": "Expected output"
-            }
-        ]
-    },
-    {
-        "id": 45,
-        "title": "Course Schedule",
-        "description": "Placeholder description for Course Schedule.",
-        "difficulty": "Medium",
-        "problemType": "Graph",
-        "tags": [
-            "Graph",
-            "DFS",
-            "BFS"
-        ],
-        "examples": [
-            {
-                "input": "Example input",
-                "output": "Expected output"
-            }
-        ]
-    },
-    {
-        "id": 46,
-        "title": "Number of Islands",
-        "description": "Placeholder description for Number of Islands.",
-        "difficulty": "Easy",
-        "problemType": "Matrix",
-        "tags": [
-            "DFS",
-            "Graph",
-            "Matrix"
-        ],
-        "examples": [
-            {
-                "input": "Example input",
-                "output": "Expected output"
-            }
-        ]
-    },
-    {
-        "id": 47,
-        "title": "Clone Graph",
-        "description": "Placeholder description for Clone Graph.",
-        "difficulty": "Hard",
-        "problemType": "Graph",
-        "tags": [
-            "Graph",
-            "BFS"
-        ],
-        "examples": [
-            {
-                "input": "Example input",
-                "output": "Expected output"
-            }
-        ]
-    },
-    {
-        "id": 48,
-        "title": "Topological Sort",
-        "description": "Placeholder description for Topological Sort.",
-        "difficulty": "Medium",
-        "problemType": "Graph",
-        "tags": [
-            "Graph",
-            "BFS"
-        ],
-        "examples": [
-            {
-                "input": "Example input",
-                "output": "Expected output"
-            }
-        ]
-    },
-    {
-        "id": 49,
-        "title": "Pacific Atlantic Water Flow",
-        "description": "Placeholder description for Pacific Atlantic Water Flow.",
-        "difficulty": "Hard",
-        "problemType": "Matrix",
-        "tags": [
-            "DFS",
-            "Matrix"
-        ],
-        "examples": [
-            {
-                "input": "Example input",
-                "output": "Expected output"
-            }
-        ]
-    },
-    {
-        "id": 50,
-        "title": "Unique Paths",
-        "description": "Placeholder description for Unique Paths.",
-        "difficulty": "Easy",
-        "problemType": "Matrix",
-        "tags": [
-            "Dynamic Programming",
-            "Math"
-        ],
-        "examples": [
-            {
-                "input": "Example input",
-                "output": "Expected output"
-            }
-        ]
-    },
-    {
-        "id": 51,
-        "title": "Coin Change",
-        "description": "Placeholder description for Coin Change.",
-        "difficulty": "Medium",
-        "problemType": "Dynamic Programming",
-        "tags": [
-            "Dynamic Programming"
-        ],
-        "examples": [
-            {
-                "input": "Example input",
-                "output": "Expected output"
-            }
-        ]
-    },
-    {
-        "id": 52,
-        "title": "Word Ladder",
-        "description": "Placeholder description for Word Ladder.",
-        "difficulty": "Easy",
-        "problemType": "Graph",
-        "tags": [
-            "BFS",
-            "Graph"
-        ],
-        "examples": [
-            {
-                "input": "Example input",
-                "output": "Expected output"
-            }
-        ]
-    },
-    {
-        "id": 53,
-        "title": "Validate Binary Search Tree",
-        "description": "Placeholder description for Validate Binary Search Tree.",
-        "difficulty": "Hard",
-        "problemType": "Tree",
-        "tags": [
-            "Tree",
-            "DFS"
-        ],
-        "examples": [
-            {
-                "input": "Example input",
-                "output": "Expected output"
-            }
-        ]
-    },
-    {
-        "id": 54,
-        "title": "Balanced Binary Tree",
-        "description": "Placeholder description for Balanced Binary Tree.",
-        "difficulty": "Medium",
-        "problemType": "Tree",
-        "tags": [
-            "Tree",
-            "DFS"
-        ],
-        "examples": [
-            {
-                "input": "Example input",
-                "output": "Expected output"
-            }
-        ]
-    },
-    {
-        "id": 55,
-        "title": "Binary Tree Zigzag Level Order",
-        "description": "Placeholder description for Binary Tree Zigzag Level Order.",
-        "difficulty": "Hard",
-        "problemType": "Tree",
-        "tags": [
-            "Tree",
-            "BFS"
-        ],
-        "examples": [
-            {
-                "input": "Example input",
-                "output": "Expected output"
-            }
-        ]
-    },
-    {
-        "id": 56,
-        "title": "Invert Binary Tree",
-        "description": "Placeholder description for Invert Binary Tree.",
-        "difficulty": "Easy",
-        "problemType": "Tree",
-        "tags": [
-            "Tree",
-            "DFS"
-        ],
-        "examples": [
-            {
-                "input": "Example input",
-                "output": "Expected output"
-            }
-        ]
-    },
-    {
-        "id": 57,
-        "title": "Longest Increasing Subsequence",
-        "description": "Placeholder description for Longest Increasing Subsequence.",
-        "difficulty": "Medium",
-        "problemType": "Array",
-        "tags": [
-            "Dynamic Programming",
-            "Binary Search"
-        ],
-        "examples": [
-            {
-                "input": "Example input",
-                "output": "Expected output"
-            }
-        ]
-    },
-    {
-        "id": 58,
-        "title": "Minimum Path Sum",
-        "description": "Placeholder description for Minimum Path Sum.",
-        "difficulty": "Easy",
-        "problemType": "Matrix",
-        "tags": [
-            "Dynamic Programming",
-            "Matrix"
-        ],
-        "examples": [
-            {
-                "input": "Example input",
-                "output": "Expected output"
-            }
-        ]
-    },
-    {
-        "id": 59,
-        "title": "Rotate Image",
-        "description": "Placeholder description for Rotate Image.",
-        "difficulty": "Hard",
-        "problemType": "Matrix",
-        "tags": [
-            "Matrix"
-        ],
-        "examples": [
-            {
-                "input": "Example input",
-                "output": "Expected output"
-            }
-        ]
-    },
-    {
-        "id": 60,
-        "title": "Spiral Matrix",
-        "description": "Placeholder description for Spiral Matrix.",
-        "difficulty": "Medium",
-        "problemType": "Matrix",
-        "tags": [
-            "Matrix"
-        ],
-        "examples": [
-            {
-                "input": "Example input",
-                "output": "Expected output"
-            }
-        ]
-    },
-    {
-        "id": 61,
-        "title": "Set Matrix Zeroes",
-        "description": "Placeholder description for Set Matrix Zeroes.",
-        "difficulty": "Hard",
-        "problemType": "Matrix",
-        "tags": [
-            "Matrix"
-        ],
-        "examples": [
-            {
-                "input": "Example input",
-                "output": "Expected output"
-            }
-        ]
-    },
-    {
-        "id": 62,
-        "title": "Search a 2D Matrix",
-        "description": "Placeholder description for Search a 2D Matrix.",
-        "difficulty": "Easy",
-        "problemType": "Matrix",
-        "tags": [
-            "Matrix",
-            "Binary Search"
-        ],
-        "examples": [
-            {
-                "input": "Example input",
-                "output": "Expected output"
-            }
-        ]
-    },
-    {
-        "id": 63,
-        "title": "Sudoku Solver",
-        "description": "Placeholder description for Sudoku Solver.",
-        "difficulty": "Medium",
-        "problemType": "Matrix",
-        "tags": [
-            "DFS",
-            "Backtracking",
-            "Matrix"
-        ],
-        "examples": [
-            {
-                "input": "Example input",
-                "output": "Expected output"
-            }
-        ]
-    },
-    {
-        "id": 64,
-        "title": "Number of Connected Components",
-        "description": "Placeholder description for Number of Connected Components.",
-        "difficulty": "Easy",
-        "problemType": "Graph",
-        "tags": [
-            "Graph",
-            "BFS",
-            "DFS"
-        ],
-        "examples": [
-            {
-                "input": "Example input",
-                "output": "Expected output"
-            }
-        ]
-    },
-    {
-        "id": 65,
-        "title": "Longest Consecutive Sequence",
-        "description": "Placeholder description for Longest Consecutive Sequence.",
-        "difficulty": "Hard",
-        "problemType": "Array",
-        "tags": [
-            "Array",
-            "Hash Table"
-        ],
-        "examples": [
-            {
-                "input": "Example input",
-                "output": "Expected output"
-            }
-        ]
-    },
-    {
-        "id": 66,
-        "title": "Merge Intervals",
-        "description": "Placeholder description for Merge Intervals.",
-        "difficulty": "Medium",
-        "problemType": "Array",
-        "tags": [
-            "Array",
-            "Sorting"
-        ],
-        "examples": [
-            {
-                "input": "Example input",
-                "output": "Expected output"
-            }
-        ]
-    },
-    {
-        "id": 67,
-        "title": "Meeting Rooms II",
-        "description": "Placeholder description for Meeting Rooms II.",
-        "difficulty": "Hard",
-        "problemType": "Array",
-        "tags": [
-            "Array",
-            "Heap"
-        ],
-        "examples": [
-            {
-                "input": "Example input",
-                "output": "Expected output"
-            }
-        ]
-    },
-    {
-        "id": 68,
-        "title": "Serialize and Deserialize N-ary Tree",
-        "description": "Placeholder description for Serialize and Deserialize N-ary Tree.",
-        "difficulty": "Easy",
-        "problemType": "Tree",
-        "tags": [
-            "Tree",
-            "DFS"
-        ],
-        "examples": [
-            {
-                "input": "Example input",
-                "output": "Expected output"
-            }
-        ]
-    },
-    {
-        "id": 69,
-        "title": "Longest Palindromic Substring",
-        "description": "Placeholder description for Longest Palindromic Substring.",
-        "difficulty": "Medium",
-        "problemType": "String",
-        "tags": [
-            "String",
-            "DP"
-        ],
-        "examples": [
-            {
-                "input": "Example input",
-                "output": "Expected output"
-            }
-        ]
-    },
-    {
-        "id": 70,
-        "title": "Word Pattern",
-        "description": "Placeholder description for Word Pattern.",
-        "difficulty": "Easy",
-        "problemType": "String",
-        "tags": [
-            "String",
-            "Hash Table"
-        ],
-        "examples": [
-            {
-                "input": "Example input",
-                "output": "Expected output"
-            }
-        ]
-    },
-    {
-        "id": 71,
-        "title": "Palindrome Partitioning",
-        "description": "Placeholder description for Palindrome Partitioning.",
-        "difficulty": "Hard",
-        "problemType": "String",
-        "tags": [
-            "DFS",
-            "DP"
-        ],
-        "examples": [
-            {
-                "input": "Example input",
-                "output": "Expected output"
-            }
-        ]
-    },
-    {
-        "id": 72,
-        "title": "Valid Palindrome",
-        "description": "Placeholder description for Valid Palindrome.",
-        "difficulty": "Medium",
-        "problemType": "String",
-        "tags": [
-            "String",
-            "Two Pointers"
-        ],
-        "examples": [
-            {
-                "input": "Example input",
-                "output": "Expected output"
-            }
-        ]
-    },
-    {
-        "id": 73,
-        "title": "Longest Substring Without Repeating Characters",
-        "description": "Placeholder description for Longest Substring Without Repeating Characters.",
-        "difficulty": "Hard",
-        "problemType": "String",
-        "tags": [
-            "String",
-            "Sliding Window"
-        ],
-        "examples": [
-            {
-                "input": "Example input",
-                "output": "Expected output"
-            }
-        ]
-    },
-    {
-        "id": 74,
-        "title": "Minimum Window Substring",
-        "description": "Placeholder description for Minimum Window Substring.",
-        "difficulty": "Easy",
-        "problemType": "String",
-        "tags": [
-            "String",
-            "Two Pointers"
-        ],
-        "examples": [
-            {
-                "input": "Example input",
-                "output": "Expected output"
-            }
-        ]
-    },
-    {
-        "id": 75,
-        "title": "Maximum Product Subarray",
-        "description": "Placeholder description for Maximum Product Subarray.",
-        "difficulty": "Medium",
-        "problemType": "Array",
-        "tags": [
-            "Array",
-            "DP"
-        ],
-        "examples": [
-            {
-                "input": "Example input",
-                "output": "Expected output"
-            }
-        ]
-    },
-    {
-        "id": 76,
-        "title": "Subsets",
-        "description": "Placeholder description for Subsets.",
-        "difficulty": "Easy",
-        "problemType": "Array",
-        "tags": [
-            "DFS",
-            "Backtracking"
-        ],
-        "examples": [
-            {
-                "input": "Example input",
-                "output": "Expected output"
-            }
-        ]
-    },
-    {
-        "id": 77,
-        "title": "Permutations",
-        "description": "Placeholder description for Permutations.",
-        "difficulty": "Hard",
-        "problemType": "Array",
-        "tags": [
-            "DFS",
-            "Backtracking"
-        ],
-        "examples": [
-            {
-                "input": "Example input",
-                "output": "Expected output"
-            }
-        ]
-    },
-    {
-        "id": 78,
-        "title": "Combination Sum",
-        "description": "Placeholder description for Combination Sum.",
-        "difficulty": "Medium",
-        "problemType": "Array",
-        "tags": [
-            "DFS",
-            "Backtracking"
-        ],
-        "examples": [
-            {
-                "input": "Example input",
-                "output": "Expected output"
-            }
-        ]
-    },
-    {
-        "id": 79,
-        "title": "Letter Combinations of a Phone Number",
-        "description": "Placeholder description for Letter Combinations of a Phone Number.",
-        "difficulty": "Hard",
-        "problemType": "String",
-        "tags": [
-            "DFS",
-            "Backtracking"
-        ],
-        "examples": [
-            {
-                "input": "Example input",
-                "output": "Expected output"
-            }
-        ]
-    },
-    {
-        "id": 80,
-        "title": "Insert Interval",
-        "description": "Placeholder description for Insert Interval.",
-        "difficulty": "Easy",
-        "problemType": "Array",
-        "tags": [
-            "Array",
-            "Sorting"
-        ],
-        "examples": [
-            {
-                "input": "Example input",
-                "output": "Expected output"
-            }
-        ]
-    },
-    {
-        "id": 81,
-        "title": "Find Peak Element",
-        "description": "Placeholder description for Find Peak Element.",
-        "difficulty": "Medium",
-        "problemType": "Array",
-        "tags": [
-            "Array",
-            "Binary Search"
-        ],
-        "examples": [
-            {
-                "input": "Example input",
-                "output": "Expected output"
-            }
-        ]
-    },
-    {
-        "id": 82,
-        "title": "Search in Rotated Sorted Array",
-        "description": "Placeholder description for Search in Rotated Sorted Array.",
-        "difficulty": "Easy",
-        "problemType": "Array",
-        "tags": [
-            "Array",
-            "Binary Search"
-        ],
-        "examples": [
-            {
-                "input": "Example input",
-                "output": "Expected output"
-            }
-        ]
-    },
-    {
-        "id": 83,
-        "title": "H-index",
-        "description": "Placeholder description for H-index.",
-        "difficulty": "Hard",
-        "problemType": "Array",
-        "tags": [
-            "Array",
-            "Sorting"
-        ],
-        "examples": [
-            {
-                "input": "Example input",
-                "output": "Expected output"
-            }
-        ]
-    },
-    {
-        "id": 84,
-        "title": "Evaluate Division",
-        "description": "Placeholder description for Evaluate Division.",
-        "difficulty": "Medium",
-        "problemType": "Graph",
-        "tags": [
-            "Graph",
-            "DFS",
-            "BFS"
-        ],
-        "examples": [
-            {
-                "input": "Example input",
-                "output": "Expected output"
-            }
-        ]
-    },
-    {
-        "id": 85,
-        "title": "N-ary Tree Preorder Traversal",
-        "description": "Placeholder description for N-ary Tree Preorder Traversal.",
-        "difficulty": "Hard",
-        "problemType": "Tree",
-        "tags": [
-            "Tree",
-            "DFS"
-        ],
-        "examples": [
-            {
-                "input": "Example input",
-                "output": "Expected output"
-            }
-        ]
-    },
-    {
-        "id": 86,
-        "title": "N-ary Tree Level Order Traversal",
-        "description": "Placeholder description for N-ary Tree Level Order Traversal.",
-        "difficulty": "Easy",
-        "problemType": "Tree",
-        "tags": [
-            "Tree",
-            "BFS"
-        ],
-        "examples": [
-            {
-                "input": "Example input",
-                "output": "Expected output"
-            }
-        ]
-    },
-    {
-        "id": 87,
-        "title": "Generate Parentheses",
-        "description": "Placeholder description for Generate Parentheses.",
-        "difficulty": "Medium",
-        "problemType": "String",
-        "tags": [
-            "DFS",
-            "Backtracking"
-        ],
-        "examples": [
-            {
-                "input": "Example input",
-                "output": "Expected output"
-            }
-        ]
-    },
-    {
-        "id": 88,
-        "title": "Find Minimum in Rotated Sorted Array",
-        "description": "Placeholder description for Find Minimum in Rotated Sorted Array.",
-        "difficulty": "Easy",
-        "problemType": "Array",
-        "tags": [
-            "Array",
-            "Binary Search"
-        ],
-        "examples": [
-            {
-                "input": "Example input",
-                "output": "Expected output"
-            }
-        ]
-    },
-    {
-        "id": 89,
-        "title": "3Sum",
-        "description": "Placeholder description for 3Sum.",
-        "difficulty": "Hard",
-        "problemType": "Array",
-        "tags": [
-            "Array",
-            "Two Pointers"
-        ],
-        "examples": [
-            {
-                "input": "Example input",
-                "output": "Expected output"
-            }
-        ]
-    },
-    {
-        "id": 90,
-        "title": "Longest Valid Parentheses",
-        "description": "Placeholder description for Longest Valid Parentheses.",
-        "difficulty": "Medium",
-        "problemType": "String",
-        "tags": [
-            "String",
-            "Stack"
-        ],
-        "examples": [
-            {
-                "input": "Example input",
-                "output": "Expected output"
-            }
-        ]
-    },
-    {
-        "id": 91,
-        "title": "Sum Root to Leaf Numbers",
-        "description": "Placeholder description for Sum Root to Leaf Numbers.",
-        "difficulty": "Hard",
-        "problemType": "Tree",
-        "tags": [
-            "Tree",
-            "DFS"
-        ],
-        "examples": [
-            {
-                "input": "Example input",
-                "output": "Expected output"
-            }
-        ]
-    },
-    {
-        "id": 92,
-        "title": "Flatten Binary Tree to Linked List",
-        "description": "Placeholder description for Flatten Binary Tree to Linked List.",
-        "difficulty": "Easy",
-        "problemType": "Tree",
-        "tags": [
-            "Tree",
-            "DFS"
-        ],
-        "examples": [
-            {
-                "input": "Example input",
-                "output": "Expected output"
-            }
-        ]
-    },
-    {
-        "id": 93,
-        "title": "Populating Next Right Pointers",
-        "description": "Placeholder description for Populating Next Right Pointers.",
-        "difficulty": "Medium",
-        "problemType": "Tree",
-        "tags": [
-            "Tree",
-            "BFS"
-        ],
-        "examples": [
-            {
-                "input": "Example input",
-                "output": "Expected output"
-            }
-        ]
-    },
-    {
-        "id": 94,
-        "title": "Largest Rectangle in Histogram",
-        "description": "Placeholder description for Largest Rectangle in Histogram.",
-        "difficulty": "Easy",
-        "problemType": "Stack",
-        "tags": [
-            "Stack",
-            "Array"
-        ],
-        "examples": [
-            {
-                "input": "Example input",
-                "output": "Expected output"
-            }
-        ]
-    },
-    {
-        "id": 95,
-        "title": "Maximal Rectangle",
-        "description": "Placeholder description for Maximal Rectangle.",
-        "difficulty": "Hard",
-        "problemType": "Matrix",
-        "tags": [
-            "Matrix",
-            "Stack"
-        ],
-        "examples": [
-            {
-                "input": "Example input",
-                "output": "Expected output"
-            }
-        ]
-    },
-    {
-        "id": 96,
-        "title": "Sliding Window Maximum",
-        "description": "Placeholder description for Sliding Window Maximum.",
-        "difficulty": "Medium",
-        "problemType": "Array",
-        "tags": [
-            "Array",
-            "Deque"
-        ],
-        "examples": [
-            {
-                "input": "Example input",
-                "output": "Expected output"
-            }
-        ]
-    },
-    {
-        "id": 97,
-        "title": "Design Twitter",
-        "description": "Placeholder description for Design Twitter.",
-        "difficulty": "Hard",
-        "problemType": "Design",
-        "tags": [
-            "Hash Table",
-            "Design"
-        ],
-        "examples": [
-            {
-                "input": "Example input",
-                "output": "Expected output"
-            }
-        ]
-    },
-    {
-        "id": 98,
-        "title": "Design LRU Cache",
-        "description": "Placeholder description for Design LRU Cache.",
-        "difficulty": "Easy",
-        "problemType": "Design",
-        "tags": [
-            "Hash Table",
-            "LinkedList"
-        ],
-        "examples": [
-            {
-                "input": "Example input",
-                "output": "Expected output"
-            }
-        ]
-    },
-    {
-        "id": 99,
-        "title": "Median of Two Sorted Arrays",
-        "description": "Placeholder description for Median of Two Sorted Arrays.",
-        "difficulty": "Medium",
-        "problemType": "Array",
-        "tags": [
-            "Array",
-            "Binary Search"
-        ],
-        "examples": [
-            {
-                "input": "Example input",
-                "output": "Expected output"
-            }
-        ]
-    }
+  {
+    "id": 1,
+    "title": "Two Sum",
+    "description": "Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.",
+    "difficulty": "Easy",
+    "problemType": "Array",
+    "tags": [
+      "Array",
+      "Hash Table"
+    ],
+    "examples": [
+      {
+        "input": [
+          [
+            2,
+            7,
+            11,
+            15
+          ],
+          9
+        ],
+        "output": [
+          0,
+          1
+        ]
+      }
+    ],
+    "functionSignature": {
+      "javascript": "function twosum(...)"
+    },
+    "boilerplateCode": {
+      "javascript": "function twosum(...args) {\n  // your code here\n}"
+    },
+    "wrapperCode": {
+      "javascript": "const input = {input};\nconsole.log(JSON.stringify(twosum(...input)));"
+    },
+    "hiddenTestCases": [
+      {
+        "input": [
+          [
+            3,
+            2,
+            4
+          ],
+          6
+        ],
+        "output": [
+          1,
+          2
+        ]
+      },
+      {
+        "input": [
+          [
+            0,
+            4,
+            3,
+            0
+          ],
+          0
+        ],
+        "output": [
+          0,
+          3
+        ]
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "title": "Reverse Integer",
+    "description": "Given a signed 32-bit integer x, return x with its digits reversed. If reversing x causes the value to go outside the signed 32-bit integer range, return 0.",
+    "difficulty": "Medium",
+    "problemType": "Math",
+    "tags": [
+      "Math"
+    ],
+    "examples": [
+      {
+        "input": [
+          123
+        ],
+        "output": 321
+      }
+    ],
+    "functionSignature": {
+      "javascript": "function reverseinteger(...)"
+    },
+    "boilerplateCode": {
+      "javascript": "function reverseinteger(...args) {\n  // your code here\n}"
+    },
+    "wrapperCode": {
+      "javascript": "const input = JSON.parse('{input}');\nconsole.log(JSON.stringify(reverseinteger(...input)));"
+    },
+    "hiddenTestCases": [
+      {
+        "input": [
+          -123
+        ],
+        "output": -321
+      },
+      {
+        "input": [
+          1534236469
+        ],
+        "output": 0
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "title": "Palindrome Number",
+    "problemType": "Array",
+    "description": "Given an integer x, return true if x is palindrome integer.",
+    "difficulty": "Easy",
+    "tags": [
+      "Math"
+    ],
+    "examples": [
+      {
+        "input": [
+          121
+        ],
+        "output": true
+      }
+    ],
+    "functionSignature": {
+      "javascript": "function palindromenumber(...)"
+    },
+    "boilerplateCode": {
+      "javascript": "function palindromenumber(...args) {\n  // your code here\n}"
+    },
+    "wrapperCode": {
+      "javascript": "const input = JSON.parse('{input}');\nconsole.log(JSON.stringify(palindromenumber(...input)));"
+    },
+    "hiddenTestCases": [
+      {
+        "input": [
+          -121
+        ],
+        "output": false
+      },
+      {
+        "input": [
+          1221
+        ],
+        "output": true
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "title": "Roman to Integer",
+    "description": "Convert a roman numeral to an integer.",
+    "problemType": "String",
+    "difficulty": "Easy",
+    "tags": [
+      "String",
+      "Math"
+    ],
+    "examples": [
+      {
+        "input": [
+          "'III'"
+        ],
+        "output": 3
+      }
+    ],
+    "functionSignature": {
+      "javascript": "function romantointeger(...)"
+    },
+    "boilerplateCode": {
+      "javascript": "function romantointeger(...args) {\n  // your code here\n}"
+    },
+    "wrapperCode": {
+      "javascript": "const input = JSON.parse('{input}');\nconsole.log(JSON.stringify(romantointeger(...input)));"
+    },
+    "hiddenTestCases": [
+      {
+        "input": [
+          "'LVIII'"
+        ],
+        "output": 58
+      },
+      {
+        "input": [
+          "'MCMXCIV'"
+        ],
+        "output": 1994
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "title": "Longest Common Prefix",
+    "description": "Write a function to find the longest common prefix string amongst an array of strings.",
+    "difficulty": "Easy",
+    "problemType": "String",
+    "tags": [
+      "String"
+    ],
+    "examples": [
+      {
+        "input": [
+          "['flower'"
+        ],
+        "output": "'fl'"
+      }
+    ],
+    "functionSignature": {
+      "javascript": "function longestcommonprefix(...)"
+    },
+    "boilerplateCode": {
+      "javascript": "function longestcommonprefix(...args) {\n  // your code here\n}"
+    },
+    "wrapperCode": {
+      "javascript": "const input = JSON.parse('{input}');\nconsole.log(JSON.stringify(longestcommonprefix(...input)));"
+    },
+    "hiddenTestCases": [
+      {
+        "input": [
+          5
+        ],
+        "output": 5
+      },
+      {
+        "input": [
+          6
+        ],
+        "output": 6
+      }
+    ]
+  },
+  {
+    "id": 6,
+    "title": "Valid Parentheses",
+    "description": "Given a string s containing just the characters '(', ')', '{', '}', '[' and ']', determine if the input string is valid.",
+    "difficulty": "Easy",
+    "problemType": "String",
+    "tags": [
+      "String",
+      "Stack"
+    ],
+    "examples": [
+      {
+        "input": [
+          "'()[]{}'"
+        ],
+        "output": true
+      }
+    ],
+    "functionSignature": {
+      "javascript": "function validparentheses(...)"
+    },
+    "boilerplateCode": {
+      "javascript": "function validparentheses(...args) {\n  // your code here\n}"
+    },
+    "wrapperCode": {
+      "javascript": "const input = JSON.parse('{input}');\nconsole.log(JSON.stringify(validparentheses(...input)));"
+    },
+    "hiddenTestCases": [
+      {
+        "input": [
+          6
+        ],
+        "output": 6
+      },
+      {
+        "input": [
+          7
+        ],
+        "output": 7
+      }
+    ]
+  },
+  {
+    "id": 7,
+    "title": "Merge Two Sorted Lists",
+    "description": "Merge two sorted linked lists and return it as a new sorted list.",
+    "difficulty": "Easy",
+    "problemType": "LinkedList",
+    "tags": [
+      "Linked List",
+      "Recursion"
+    ],
+    "examples": [
+      {
+        "input": [
+          "[1",
+          "[1"
+        ],
+        "output": [
+          1,
+          1,
+          2,
+          3,
+          4,
+          4
+        ]
+      }
+    ],
+    "functionSignature": {
+      "javascript": "function mergetwosortedlists(...)"
+    },
+    "boilerplateCode": {
+      "javascript": "function mergetwosortedlists(...args) {\n  // your code here\n}"
+    },
+    "wrapperCode": {
+      "javascript": "const input = JSON.parse('{input}');\nconsole.log(JSON.stringify(mergetwosortedlists(...input)));"
+    },
+    "hiddenTestCases": [
+      {
+        "input": [
+          7
+        ],
+        "output": 7
+      },
+      {
+        "input": [
+          8
+        ],
+        "output": 8
+      }
+    ]
+  },
+  {
+    "id": 8,
+    "title": "Remove Duplicates from Sorted Array",
+    "description": "Remove the duplicates in-place such that each element appears only once and return the new length.",
+    "difficulty": "Easy",
+    "problemType": "Array",
+    "tags": [
+      "Array",
+      "Two Pointers"
+    ],
+    "examples": [
+      {
+        "input": [
+          "[1"
+        ],
+        "output": 2
+      }
+    ],
+    "functionSignature": {
+      "javascript": "function removeduplicatesfromsortedarray(...)"
+    },
+    "boilerplateCode": {
+      "javascript": "function removeduplicatesfromsortedarray(...args) {\n  // your code here\n}"
+    },
+    "wrapperCode": {
+      "javascript": "const input = JSON.parse('{input}');\nconsole.log(JSON.stringify(removeduplicatesfromsortedarray(...input)));"
+    },
+    "hiddenTestCases": [
+      {
+        "input": [
+          8
+        ],
+        "output": 8
+      },
+      {
+        "input": [
+          9
+        ],
+        "output": 9
+      }
+    ]
+  },
+  {
+    "id": 9,
+    "title": "Remove Element",
+    "description": "Remove all instances of a value in-place and return the new length.",
+    "difficulty": "Easy",
+    "problemType": "Array",
+    "tags": [
+      "Array",
+      "Two Pointers"
+    ],
+    "examples": [
+      {
+        "input": [
+          "[3",
+          3
+        ],
+        "output": 2
+      }
+    ],
+    "functionSignature": {
+      "javascript": "function removeelement(...)"
+    },
+    "boilerplateCode": {
+      "javascript": "function removeelement(...args) {\n  // your code here\n}"
+    },
+    "wrapperCode": {
+      "javascript": "const input = JSON.parse('{input}');\nconsole.log(JSON.stringify(removeelement(...input)));"
+    },
+    "hiddenTestCases": [
+      {
+        "input": [
+          9
+        ],
+        "output": 9
+      },
+      {
+        "input": [
+          10
+        ],
+        "output": 10
+      }
+    ]
+  },
+  {
+    "id": 10,
+    "title": "Implement strStr()",
+    "description": "Return the index of the first occurrence of needle in haystack, or -1 if needle is not part of haystack.",
+    "difficulty": "Easy",
+    "problemType": "String",
+    "tags": [
+      "String",
+      "Two Pointers"
+    ],
+    "examples": [
+      {
+        "input": [
+          "'hello'",
+          "'ll'"
+        ],
+        "output": 2
+      }
+    ],
+    "functionSignature": {
+      "javascript": "function implementstrstr()(...)"
+    },
+    "boilerplateCode": {
+      "javascript": "function implementstrstr()(...args) {\n  // your code here\n}"
+    },
+    "wrapperCode": {
+      "javascript": "const input = JSON.parse('{input}');\nconsole.log(JSON.stringify(implementstrstr()(...input)));"
+    },
+    "hiddenTestCases": [
+      {
+        "input": [
+          10
+        ],
+        "output": 10
+      },
+      {
+        "input": [
+          11
+        ],
+        "output": 11
+      }
+    ]
+  },
+  {
+    "id": 11,
+    "title": "Search Insert Position",
+    "description": "Given a sorted array and a target value, return the index if the target is found. If not, return the index where it would be if it were inserted in order.",
+    "difficulty": "Easy",
+    "problemType": "Array",
+    "tags": [
+      "Array",
+      "Binary Search"
+    ],
+    "examples": [
+      {
+        "input": [
+          "[1",
+          5
+        ],
+        "output": 2
+      }
+    ],
+    "functionSignature": {
+      "javascript": "function searchinsertposition(...)"
+    },
+    "boilerplateCode": {
+      "javascript": "function searchinsertposition(...args) {\n  // your code here\n}"
+    },
+    "wrapperCode": {
+      "javascript": "const input = JSON.parse('{input}');\nconsole.log(JSON.stringify(searchinsertposition(...input)));"
+    },
+    "hiddenTestCases": [
+      {
+        "input": [
+          11
+        ],
+        "output": 11
+      },
+      {
+        "input": [
+          12
+        ],
+        "output": 12
+      }
+    ]
+  },
+  {
+    "id": 12,
+    "title": "Maximum Subarray",
+    "description": "Find the contiguous subarray which has the largest sum and return its sum.",
+    "difficulty": "Easy",
+    "problemType": "Array",
+    "tags": [
+      "Array",
+      "Dynamic Programming"
+    ],
+    "examples": [
+      {
+        "input": [
+          "[-2"
+        ],
+        "output": 6
+      }
+    ],
+    "functionSignature": {
+      "javascript": "function maximumsubarray(...)"
+    },
+    "boilerplateCode": {
+      "javascript": "function maximumsubarray(...args) {\n  // your code here\n}"
+    },
+    "wrapperCode": {
+      "javascript": "const input = JSON.parse('{input}');\nconsole.log(JSON.stringify(maximumsubarray(...input)));"
+    },
+    "hiddenTestCases": [
+      {
+        "input": [
+          12
+        ],
+        "output": 12
+      },
+      {
+        "input": [
+          13
+        ],
+        "output": 13
+      }
+    ]
+  },
+  {
+    "id": 13,
+    "title": "Length of Last Word",
+    "description": "Given a string s consists of upper/lower-case alphabets and empty space characters ' ', return the length of last word.",
+    "difficulty": "Easy",
+    "problemType": "String",
+    "tags": [
+      "String"
+    ],
+    "examples": [
+      {
+        "input": [
+          "'Hello World'"
+        ],
+        "output": 5
+      }
+    ],
+    "functionSignature": {
+      "javascript": "function lengthoflastword(...)"
+    },
+    "boilerplateCode": {
+      "javascript": "function lengthoflastword(...args) {\n  // your code here\n}"
+    },
+    "wrapperCode": {
+      "javascript": "const input = JSON.parse('{input}');\nconsole.log(JSON.stringify(lengthoflastword(...input)));"
+    },
+    "hiddenTestCases": [
+      {
+        "input": [
+          13
+        ],
+        "output": 13
+      },
+      {
+        "input": [
+          14
+        ],
+        "output": 14
+      }
+    ]
+  },
+  {
+    "id": 14,
+    "title": "Plus One",
+    "description": "Given a non-empty array of digits representing a non-negative integer, plus one to the integer.",
+    "difficulty": "Easy",
+    "problemType": "Array",
+    "tags": [
+      "Array",
+      "Math"
+    ],
+    "examples": [
+      {
+        "input": [
+          "[1"
+        ],
+        "output": [
+          1,
+          2,
+          4
+        ]
+      }
+    ],
+    "functionSignature": {
+      "javascript": "function plusone(...)"
+    },
+    "boilerplateCode": {
+      "javascript": "function plusone(...args) {\n  // your code here\n}"
+    },
+    "wrapperCode": {
+      "javascript": "const input = JSON.parse('{input}');\nconsole.log(JSON.stringify(plusone(...input)));"
+    },
+    "hiddenTestCases": [
+      {
+        "input": [
+          14
+        ],
+        "output": 14
+      },
+      {
+        "input": [
+          15
+        ],
+        "output": 15
+      }
+    ]
+  },
+  {
+    "id": 15,
+    "title": "Add Binary",
+    "description": "Given two binary strings, return their sum as a binary string.",
+    "difficulty": "Easy",
+    "problemType": "String",
+    "tags": [
+      "Math",
+      "String"
+    ],
+    "examples": [
+      {
+        "input": [
+          "'11'",
+          "'1'"
+        ],
+        "output": "'100'"
+      }
+    ],
+    "functionSignature": {
+      "javascript": "function addbinary(...)"
+    },
+    "boilerplateCode": {
+      "javascript": "function addbinary(...args) {\n  // your code here\n}"
+    },
+    "wrapperCode": {
+      "javascript": "const input = JSON.parse('{input}');\nconsole.log(JSON.stringify(addbinary(...input)));"
+    },
+    "hiddenTestCases": [
+      {
+        "input": [
+          15
+        ],
+        "output": 15
+      },
+      {
+        "input": [
+          16
+        ],
+        "output": 16
+      }
+    ]
+  },
+  {
+    "id": 16,
+    "title": "Sqrt(x)",
+    "description": "Compute and return the square root of x, where x is guaranteed to be a non-negative integer.",
+    "difficulty": "Easy",
+    "problemType": "Math",
+    "tags": [
+      "Math",
+      "Binary Search"
+    ],
+    "examples": [
+      {
+        "input": [
+          8
+        ],
+        "output": 2
+      }
+    ],
+    "functionSignature": {
+      "javascript": "function sqrt(x)(...)"
+    },
+    "boilerplateCode": {
+      "javascript": "function sqrt(x)(...args) {\n  // your code here\n}"
+    },
+    "wrapperCode": {
+      "javascript": "const input = JSON.parse('{input}');\nconsole.log(JSON.stringify(sqrt(x)(...input)));"
+    },
+    "hiddenTestCases": [
+      {
+        "input": [
+          16
+        ],
+        "output": 16
+      },
+      {
+        "input": [
+          17
+        ],
+        "output": 17
+      }
+    ]
+  },
+  {
+    "id": 17,
+    "title": "Climbing Stairs",
+    "description": "You are climbing a staircase. It takes n steps to reach the top. Each time you can climb 1 or 2 steps. In how many distinct ways can you climb to the top?",
+    "difficulty": "Easy",
+    "problemType": "Dynamic Programming",
+    "tags": [
+      "Dynamic Programming"
+    ],
+    "examples": [
+      {
+        "input": [
+          2
+        ],
+        "output": 2
+      }
+    ],
+    "functionSignature": {
+      "javascript": "function climbingstairs(...)"
+    },
+    "boilerplateCode": {
+      "javascript": "function climbingstairs(...args) {\n  // your code here\n}"
+    },
+    "wrapperCode": {
+      "javascript": "const input = JSON.parse('{input}');\nconsole.log(JSON.stringify(climbingstairs(...input)));"
+    },
+    "hiddenTestCases": [
+      {
+        "input": [
+          17
+        ],
+        "output": 17
+      },
+      {
+        "input": [
+          18
+        ],
+        "output": 18
+      }
+    ]
+  },
+  {
+    "id": 18,
+    "title": "Merge Sorted Array",
+    "description": "Given two sorted integer arrays nums1 and nums2, merge nums2 into nums1 as one sorted array.",
+    "difficulty": "Easy",
+    "problemType": "Array",
+    "tags": [
+      "Array",
+      "Two Pointers"
+    ],
+    "examples": [
+      {
+        "input": [
+          "[1",
+          3,
+          "[2",
+          3
+        ],
+        "output": [
+          1,
+          2,
+          2,
+          3,
+          5,
+          6
+        ]
+      }
+    ],
+    "functionSignature": {
+      "javascript": "function mergesortedarray(...)"
+    },
+    "boilerplateCode": {
+      "javascript": "function mergesortedarray(...args) {\n  // your code here\n}"
+    },
+    "wrapperCode": {
+      "javascript": "const input = JSON.parse('{input}');\nconsole.log(JSON.stringify(mergesortedarray(...input)));"
+    },
+    "hiddenTestCases": [
+      {
+        "input": [
+          18
+        ],
+        "output": 18
+      },
+      {
+        "input": [
+          19
+        ],
+        "output": 19
+      }
+    ]
+  },
+  {
+    "id": 19,
+    "title": "Same Tree",
+    "description": "Given two binary trees, write a function to check if they are the same or not.",
+    "difficulty": "Easy",
+    "problemType": "Tree",
+    "tags": [
+      "Tree",
+      "Depth-First Search"
+    ],
+    "examples": [
+      {
+        "input": [
+          "[1",
+          "[1"
+        ],
+        "output": true
+      }
+    ],
+    "functionSignature": {
+      "javascript": "function sametree(...)"
+    },
+    "boilerplateCode": {
+      "javascript": "function sametree(...args) {\n  // your code here\n}"
+    },
+    "wrapperCode": {
+      "javascript": "const input = JSON.parse('{input}');\nconsole.log(JSON.stringify(sametree(...input)));"
+    },
+    "hiddenTestCases": [
+      {
+        "input": [
+          19
+        ],
+        "output": 19
+      },
+      {
+        "input": [
+          20
+        ],
+        "output": 20
+      }
+    ]
+  },
+  {
+    "id": 20,
+    "title": "Symmetric Tree",
+    "description": "Given a binary tree, check whether it is a mirror of itself (i.e., symmetric around its center).",
+    "difficulty": "Easy",
+    "problemType": "Tree",
+    "tags": [
+      "Tree",
+      "Breadth-First Search"
+    ],
+    "examples": [
+      {
+        "input": [
+          "[1"
+        ],
+        "output": true
+      }
+    ],
+    "functionSignature": {
+      "javascript": "function symmetrictree(...)"
+    },
+    "boilerplateCode": {
+      "javascript": "function symmetrictree(...args) {\n  // your code here\n}"
+    },
+    "wrapperCode": {
+      "javascript": "const input = JSON.parse('{input}');\nconsole.log(JSON.stringify(symmetrictree(...input)));"
+    },
+    "hiddenTestCases": [
+      {
+        "input": [
+          20
+        ],
+        "output": 20
+      },
+      {
+        "input": [
+          21
+        ],
+        "output": 21
+      }
+    ]
+  },
+  {
+    "id": 21,
+    "title": "Valid Sudoku",
+    "description": "Placeholder description for Valid Sudoku.",
+    "difficulty": "Medium",
+    "problemType": "Matrix",
+    "tags": [
+      "Array",
+      "Hash Table"
+    ],
+    "examples": [
+      {
+        "input": [],
+        "output": "Expected output"
+      }
+    ],
+    "functionSignature": {
+      "javascript": "function validsudoku(...)"
+    },
+    "boilerplateCode": {
+      "javascript": "function validsudoku(...args) {\n  // your code here\n}"
+    },
+    "wrapperCode": {
+      "javascript": "const input = JSON.parse('{input}');\nconsole.log(JSON.stringify(validsudoku(...input)));"
+    },
+    "hiddenTestCases": [
+      {
+        "input": [
+          21
+        ],
+        "output": 21
+      },
+      {
+        "input": [
+          22
+        ],
+        "output": 22
+      }
+    ]
+  },
+  {
+    "id": 22,
+    "title": "Missing Number",
+    "description": "Placeholder description for Missing Number.",
+    "difficulty": "Easy",
+    "problemType": "Array",
+    "tags": [
+      "Array",
+      "Math"
+    ],
+    "examples": [
+      {
+        "input": [],
+        "output": "Expected output"
+      }
+    ],
+    "functionSignature": {
+      "javascript": "function missingnumber(...)"
+    },
+    "boilerplateCode": {
+      "javascript": "function missingnumber(...args) {\n  // your code here\n}"
+    },
+    "wrapperCode": {
+      "javascript": "const input = JSON.parse('{input}');\nconsole.log(JSON.stringify(missingnumber(...input)));"
+    },
+    "hiddenTestCases": [
+      {
+        "input": [
+          22
+        ],
+        "output": 22
+      },
+      {
+        "input": [
+          23
+        ],
+        "output": 23
+      }
+    ]
+  },
+  {
+    "id": 23,
+    "title": "Intersection of Two Linked Lists",
+    "description": "Placeholder description for Intersection of Two Linked Lists.",
+    "difficulty": "Hard",
+    "problemType": "LinkedList",
+    "tags": [
+      "Linked List",
+      "Two Pointers"
+    ],
+    "examples": [
+      {
+        "input": [],
+        "output": "Expected output"
+      }
+    ],
+    "functionSignature": {
+      "javascript": "function intersectionoftwolinkedlists(...)"
+    },
+    "boilerplateCode": {
+      "javascript": "function intersectionoftwolinkedlists(...args) {\n  // your code here\n}"
+    },
+    "wrapperCode": {
+      "javascript": "const input = JSON.parse('{input}');\nconsole.log(JSON.stringify(intersectionoftwolinkedlists(...input)));"
+    },
+    "hiddenTestCases": [
+      {
+        "input": [
+          23
+        ],
+        "output": 23
+      },
+      {
+        "input": [
+          24
+        ],
+        "output": 24
+      }
+    ]
+  },
+  {
+    "id": 24,
+    "title": "Linked List Cycle",
+    "description": "Placeholder description for Linked List Cycle.",
+    "difficulty": "Medium",
+    "problemType": "LinkedList",
+    "tags": [
+      "Linked List",
+      "Two Pointers"
+    ],
+    "examples": [
+      {
+        "input": [],
+        "output": "Expected output"
+      }
+    ],
+    "functionSignature": {
+      "javascript": "function linkedlistcycle(...)"
+    },
+    "boilerplateCode": {
+      "javascript": "function linkedlistcycle(...args) {\n  // your code here\n}"
+    },
+    "wrapperCode": {
+      "javascript": "const input = JSON.parse('{input}');\nconsole.log(JSON.stringify(linkedlistcycle(...input)));"
+    },
+    "hiddenTestCases": [
+      {
+        "input": [
+          24
+        ],
+        "output": 24
+      },
+      {
+        "input": [
+          25
+        ],
+        "output": 25
+      }
+    ]
+  },
+  {
+    "id": 25,
+    "title": "Maximum Depth of Binary Tree",
+    "description": "Placeholder description for Maximum Depth of Binary Tree.",
+    "difficulty": "Hard",
+    "problemType": "Tree",
+    "tags": [
+      "Tree",
+      "DFS"
+    ],
+    "examples": [
+      {
+        "input": [],
+        "output": "Expected output"
+      }
+    ],
+    "functionSignature": {
+      "javascript": "function maximumdepthofbinarytree(...)"
+    },
+    "boilerplateCode": {
+      "javascript": "function maximumdepthofbinarytree(...args) {\n  // your code here\n}"
+    },
+    "wrapperCode": {
+      "javascript": "const input = JSON.parse('{input}');\nconsole.log(JSON.stringify(maximumdepthofbinarytree(...input)));"
+    },
+    "hiddenTestCases": [
+      {
+        "input": [
+          25
+        ],
+        "output": 25
+      },
+      {
+        "input": [
+          26
+        ],
+        "output": 26
+      }
+    ]
+  },
+  {
+    "id": 26,
+    "title": "Binary Tree Level Order Traversal",
+    "description": "Placeholder description for Binary Tree Level Order Traversal.",
+    "difficulty": "Easy",
+    "problemType": "Tree",
+    "tags": [
+      "Tree",
+      "BFS"
+    ],
+    "examples": [
+      {
+        "input": [],
+        "output": "Expected output"
+      }
+    ],
+    "functionSignature": {
+      "javascript": "function binarytreelevelordertraversal(...)"
+    },
+    "boilerplateCode": {
+      "javascript": "function binarytreelevelordertraversal(...args) {\n  // your code here\n}"
+    },
+    "wrapperCode": {
+      "javascript": "const input = JSON.parse('{input}');\nconsole.log(JSON.stringify(binarytreelevelordertraversal(...input)));"
+    },
+    "hiddenTestCases": [
+      {
+        "input": [
+          26
+        ],
+        "output": 26
+      },
+      {
+        "input": [
+          27
+        ],
+        "output": 27
+      }
+    ]
+  },
+  {
+    "id": 27,
+    "title": "Path Sum",
+    "description": "Placeholder description for Path Sum.",
+    "difficulty": "Medium",
+    "problemType": "Tree",
+    "tags": [
+      "Tree",
+      "DFS"
+    ],
+    "examples": [
+      {
+        "input": [],
+        "output": "Expected output"
+      }
+    ],
+    "functionSignature": {
+      "javascript": "function pathsum(...)"
+    },
+    "boilerplateCode": {
+      "javascript": "function pathsum(...args) {\n  // your code here\n}"
+    },
+    "wrapperCode": {
+      "javascript": "const input = JSON.parse('{input}');\nconsole.log(JSON.stringify(pathsum(...input)));"
+    },
+    "hiddenTestCases": [
+      {
+        "input": [
+          27
+        ],
+        "output": 27
+      },
+      {
+        "input": [
+          28
+        ],
+        "output": 28
+      }
+    ]
+  },
+  {
+    "id": 28,
+    "title": "Count Primes",
+    "description": "Placeholder description for Count Primes.",
+    "difficulty": "Easy",
+    "problemType": "Math",
+    "tags": [
+      "Math",
+      "Sieve"
+    ],
+    "examples": [
+      {
+        "input": [],
+        "output": "Expected output"
+      }
+    ],
+    "functionSignature": {
+      "javascript": "function countprimes(...)"
+    },
+    "boilerplateCode": {
+      "javascript": "function countprimes(...args) {\n  // your code here\n}"
+    },
+    "wrapperCode": {
+      "javascript": "const input = JSON.parse('{input}');\nconsole.log(JSON.stringify(countprimes(...input)));"
+    },
+    "hiddenTestCases": [
+      {
+        "input": [
+          28
+        ],
+        "output": 28
+      },
+      {
+        "input": [
+          29
+        ],
+        "output": 29
+      }
+    ]
+  },
+  {
+    "id": 29,
+    "title": "Single Number",
+    "description": "Placeholder description for Single Number.",
+    "difficulty": "Hard",
+    "problemType": "Array",
+    "tags": [
+      "Array",
+      "Bit Manipulation"
+    ],
+    "examples": [
+      {
+        "input": [],
+        "output": "Expected output"
+      }
+    ],
+    "functionSignature": {
+      "javascript": "function singlenumber(...)"
+    },
+    "boilerplateCode": {
+      "javascript": "function singlenumber(...args) {\n  // your code here\n}"
+    },
+    "wrapperCode": {
+      "javascript": "const input = JSON.parse('{input}');\nconsole.log(JSON.stringify(singlenumber(...input)));"
+    },
+    "hiddenTestCases": [
+      {
+        "input": [
+          29
+        ],
+        "output": 29
+      },
+      {
+        "input": [
+          30
+        ],
+        "output": 30
+      }
+    ]
+  },
+  {
+    "id": 30,
+    "title": "Happy Number",
+    "description": "Placeholder description for Happy Number.",
+    "difficulty": "Medium",
+    "problemType": "Math",
+    "tags": [
+      "Math"
+    ],
+    "examples": [
+      {
+        "input": [],
+        "output": "Expected output"
+      }
+    ],
+    "functionSignature": {
+      "javascript": "function happynumber(...)"
+    },
+    "boilerplateCode": {
+      "javascript": "function happynumber(...args) {\n  // your code here\n}"
+    },
+    "wrapperCode": {
+      "javascript": "const input = JSON.parse('{input}');\nconsole.log(JSON.stringify(happynumber(...input)));"
+    },
+    "hiddenTestCases": [
+      {
+        "input": [
+          30
+        ],
+        "output": 30
+      },
+      {
+        "input": [
+          31
+        ],
+        "output": 31
+      }
+    ]
+  },
+  {
+    "id": 31,
+    "title": "Power of Two",
+    "description": "Placeholder description for Power of Two.",
+    "difficulty": "Hard",
+    "problemType": "Math",
+    "tags": [
+      "Math",
+      "Bit Manipulation"
+    ],
+    "examples": [
+      {
+        "input": [],
+        "output": "Expected output"
+      }
+    ],
+    "functionSignature": {
+      "javascript": "function poweroftwo(...)"
+    },
+    "boilerplateCode": {
+      "javascript": "function poweroftwo(...args) {\n  // your code here\n}"
+    },
+    "wrapperCode": {
+      "javascript": "const input = JSON.parse('{input}');\nconsole.log(JSON.stringify(poweroftwo(...input)));"
+    },
+    "hiddenTestCases": [
+      {
+        "input": [
+          31
+        ],
+        "output": 31
+      },
+      {
+        "input": [
+          32
+        ],
+        "output": 32
+      }
+    ]
+  },
+  {
+    "id": 32,
+    "title": "Majority Element",
+    "description": "Placeholder description for Majority Element.",
+    "difficulty": "Easy",
+    "problemType": "Array",
+    "tags": [
+      "Array",
+      "Hash Table"
+    ],
+    "examples": [
+      {
+        "input": [],
+        "output": "Expected output"
+      }
+    ],
+    "functionSignature": {
+      "javascript": "function majorityelement(...)"
+    },
+    "boilerplateCode": {
+      "javascript": "function majorityelement(...args) {\n  // your code here\n}"
+    },
+    "wrapperCode": {
+      "javascript": "const input = JSON.parse('{input}');\nconsole.log(JSON.stringify(majorityelement(...input)));"
+    },
+    "hiddenTestCases": [
+      {
+        "input": [
+          32
+        ],
+        "output": 32
+      },
+      {
+        "input": [
+          33
+        ],
+        "output": 33
+      }
+    ]
+  },
+  {
+    "id": 33,
+    "title": "House Robber",
+    "description": "Placeholder description for House Robber.",
+    "difficulty": "Medium",
+    "problemType": "Dynamic Programming",
+    "tags": [
+      "Dynamic Programming"
+    ],
+    "examples": [
+      {
+        "input": [],
+        "output": "Expected output"
+      }
+    ],
+    "functionSignature": {
+      "javascript": "function houserobber(...)"
+    },
+    "boilerplateCode": {
+      "javascript": "function houserobber(...args) {\n  // your code here\n}"
+    },
+    "wrapperCode": {
+      "javascript": "const input = JSON.parse('{input}');\nconsole.log(JSON.stringify(houserobber(...input)));"
+    },
+    "hiddenTestCases": [
+      {
+        "input": [
+          33
+        ],
+        "output": 33
+      },
+      {
+        "input": [
+          34
+        ],
+        "output": 34
+      }
+    ]
+  },
+  {
+    "id": 34,
+    "title": "Best Time to Buy and Sell Stock",
+    "description": "Placeholder description for Best Time to Buy and Sell Stock.",
+    "difficulty": "Easy",
+    "problemType": "Array",
+    "tags": [
+      "Array",
+      "Dynamic Programming"
+    ],
+    "examples": [
+      {
+        "input": [],
+        "output": "Expected output"
+      }
+    ],
+    "functionSignature": {
+      "javascript": "function besttimetobuyandsellstock(...)"
+    },
+    "boilerplateCode": {
+      "javascript": "function besttimetobuyandsellstock(...args) {\n  // your code here\n}"
+    },
+    "wrapperCode": {
+      "javascript": "const input = JSON.parse('{input}');\nconsole.log(JSON.stringify(besttimetobuyandsellstock(...input)));"
+    },
+    "hiddenTestCases": [
+      {
+        "input": [
+          34
+        ],
+        "output": 34
+      },
+      {
+        "input": [
+          35
+        ],
+        "output": 35
+      }
+    ]
+  },
+  {
+    "id": 35,
+    "title": "Min Stack",
+    "description": "Placeholder description for Min Stack.",
+    "difficulty": "Hard",
+    "problemType": "Stack",
+    "tags": [
+      "Stack",
+      "Design"
+    ],
+    "examples": [
+      {
+        "input": [],
+        "output": "Expected output"
+      }
+    ],
+    "functionSignature": {
+      "javascript": "function minstack(...)"
+    },
+    "boilerplateCode": {
+      "javascript": "function minstack(...args) {\n  // your code here\n}"
+    },
+    "wrapperCode": {
+      "javascript": "const input = JSON.parse('{input}');\nconsole.log(JSON.stringify(minstack(...input)));"
+    },
+    "hiddenTestCases": [
+      {
+        "input": [
+          35
+        ],
+        "output": 35
+      },
+      {
+        "input": [
+          36
+        ],
+        "output": 36
+      }
+    ]
+  },
+  {
+    "id": 36,
+    "title": "Evaluate Reverse Polish Notation",
+    "description": "Placeholder description for Evaluate Reverse Polish Notation.",
+    "difficulty": "Medium",
+    "problemType": "Stack",
+    "tags": [
+      "Stack"
+    ],
+    "examples": [
+      {
+        "input": [],
+        "output": "Expected output"
+      }
+    ],
+    "functionSignature": {
+      "javascript": "function evaluatereversepolishnotation(...)"
+    },
+    "boilerplateCode": {
+      "javascript": "function evaluatereversepolishnotation(...args) {\n  // your code here\n}"
+    },
+    "wrapperCode": {
+      "javascript": "const input = JSON.parse('{input}');\nconsole.log(JSON.stringify(evaluatereversepolishnotation(...input)));"
+    },
+    "hiddenTestCases": [
+      {
+        "input": [
+          36
+        ],
+        "output": 36
+      },
+      {
+        "input": [
+          37
+        ],
+        "output": 37
+      }
+    ]
+  },
+  {
+    "id": 37,
+    "title": "Basic Calculator",
+    "description": "Placeholder description for Basic Calculator.",
+    "difficulty": "Hard",
+    "problemType": "Stack",
+    "tags": [
+      "Stack",
+      "String"
+    ],
+    "examples": [
+      {
+        "input": [],
+        "output": "Expected output"
+      }
+    ],
+    "functionSignature": {
+      "javascript": "function basiccalculator(...)"
+    },
+    "boilerplateCode": {
+      "javascript": "function basiccalculator(...args) {\n  // your code here\n}"
+    },
+    "wrapperCode": {
+      "javascript": "const input = JSON.parse('{input}');\nconsole.log(JSON.stringify(basiccalculator(...input)));"
+    },
+    "hiddenTestCases": [
+      {
+        "input": [
+          37
+        ],
+        "output": 37
+      },
+      {
+        "input": [
+          38
+        ],
+        "output": 38
+      }
+    ]
+  },
+  {
+    "id": 38,
+    "title": "Meeting Rooms",
+    "description": "Placeholder description for Meeting Rooms.",
+    "difficulty": "Easy",
+    "problemType": "Array",
+    "tags": [
+      "Array",
+      "Sorting"
+    ],
+    "examples": [
+      {
+        "input": [],
+        "output": "Expected output"
+      }
+    ],
+    "functionSignature": {
+      "javascript": "function meetingrooms(...)"
+    },
+    "boilerplateCode": {
+      "javascript": "function meetingrooms(...args) {\n  // your code here\n}"
+    },
+    "wrapperCode": {
+      "javascript": "const input = JSON.parse('{input}');\nconsole.log(JSON.stringify(meetingrooms(...input)));"
+    },
+    "hiddenTestCases": [
+      {
+        "input": [
+          38
+        ],
+        "output": 38
+      },
+      {
+        "input": [
+          39
+        ],
+        "output": 39
+      }
+    ]
+  },
+  {
+    "id": 39,
+    "title": "Group Anagrams",
+    "description": "Placeholder description for Group Anagrams.",
+    "difficulty": "Medium",
+    "problemType": "String",
+    "tags": [
+      "Array",
+      "Hash Table",
+      "String"
+    ],
+    "examples": [
+      {
+        "input": [],
+        "output": "Expected output"
+      }
+    ],
+    "functionSignature": {
+      "javascript": "function groupanagrams(...)"
+    },
+    "boilerplateCode": {
+      "javascript": "function groupanagrams(...args) {\n  // your code here\n}"
+    },
+    "wrapperCode": {
+      "javascript": "const input = JSON.parse('{input}');\nconsole.log(JSON.stringify(groupanagrams(...input)));"
+    },
+    "hiddenTestCases": [
+      {
+        "input": [
+          39
+        ],
+        "output": 39
+      },
+      {
+        "input": [
+          40
+        ],
+        "output": 40
+      }
+    ]
+  },
+  {
+    "id": 40,
+    "title": "Binary Search Tree Iterator",
+    "description": "Placeholder description for Binary Search Tree Iterator.",
+    "difficulty": "Easy",
+    "problemType": "Tree",
+    "tags": [
+      "Tree",
+      "Design"
+    ],
+    "examples": [
+      {
+        "input": [],
+        "output": "Expected output"
+      }
+    ],
+    "functionSignature": {
+      "javascript": "function binarysearchtreeiterator(...)"
+    },
+    "boilerplateCode": {
+      "javascript": "function binarysearchtreeiterator(...args) {\n  // your code here\n}"
+    },
+    "wrapperCode": {
+      "javascript": "const input = JSON.parse('{input}');\nconsole.log(JSON.stringify(binarysearchtreeiterator(...input)));"
+    },
+    "hiddenTestCases": [
+      {
+        "input": [
+          40
+        ],
+        "output": 40
+      },
+      {
+        "input": [
+          41
+        ],
+        "output": 41
+      }
+    ]
+  },
+  {
+    "id": 41,
+    "title": "Lowest Common Ancestor of BST",
+    "description": "Placeholder description for Lowest Common Ancestor of BST.",
+    "difficulty": "Hard",
+    "problemType": "Tree",
+    "tags": [
+      "Tree",
+      "DFS"
+    ],
+    "examples": [
+      {
+        "input": [],
+        "output": "Expected output"
+      }
+    ],
+    "functionSignature": {
+      "javascript": "function lowestcommonancestorofbst(...)"
+    },
+    "boilerplateCode": {
+      "javascript": "function lowestcommonancestorofbst(...args) {\n  // your code here\n}"
+    },
+    "wrapperCode": {
+      "javascript": "const input = JSON.parse('{input}');\nconsole.log(JSON.stringify(lowestcommonancestorofbst(...input)));"
+    },
+    "hiddenTestCases": [
+      {
+        "input": [
+          41
+        ],
+        "output": 41
+      },
+      {
+        "input": [
+          42
+        ],
+        "output": 42
+      }
+    ]
+  },
+  {
+    "id": 42,
+    "title": "Construct Binary Tree",
+    "description": "Placeholder description for Construct Binary Tree.",
+    "difficulty": "Medium",
+    "problemType": "Tree",
+    "tags": [
+      "Tree",
+      "DFS"
+    ],
+    "examples": [
+      {
+        "input": [],
+        "output": "Expected output"
+      }
+    ],
+    "functionSignature": {
+      "javascript": "function constructbinarytree(...)"
+    },
+    "boilerplateCode": {
+      "javascript": "function constructbinarytree(...args) {\n  // your code here\n}"
+    },
+    "wrapperCode": {
+      "javascript": "const input = JSON.parse('{input}');\nconsole.log(JSON.stringify(constructbinarytree(...input)));"
+    },
+    "hiddenTestCases": [
+      {
+        "input": [
+          42
+        ],
+        "output": 42
+      },
+      {
+        "input": [
+          43
+        ],
+        "output": 43
+      }
+    ]
+  },
+  {
+    "id": 43,
+    "title": "Serialize and Deserialize Binary Tree",
+    "description": "Placeholder description for Serialize and Deserialize Binary Tree.",
+    "difficulty": "Hard",
+    "problemType": "Tree",
+    "tags": [
+      "Tree",
+      "DFS",
+      "Design"
+    ],
+    "examples": [
+      {
+        "input": [],
+        "output": "Expected output"
+      }
+    ],
+    "functionSignature": {
+      "javascript": "function serializeanddeserializebinarytree(...)"
+    },
+    "boilerplateCode": {
+      "javascript": "function serializeanddeserializebinarytree(...args) {\n  // your code here\n}"
+    },
+    "wrapperCode": {
+      "javascript": "const input = JSON.parse('{input}');\nconsole.log(JSON.stringify(serializeanddeserializebinarytree(...input)));"
+    },
+    "hiddenTestCases": [
+      {
+        "input": [
+          43
+        ],
+        "output": 43
+      },
+      {
+        "input": [
+          44
+        ],
+        "output": 44
+      }
+    ]
+  },
+  {
+    "id": 44,
+    "title": "Word Search",
+    "description": "Placeholder description for Word Search.",
+    "difficulty": "Easy",
+    "problemType": "Matrix",
+    "tags": [
+      "DFS",
+      "Backtracking",
+      "Matrix"
+    ],
+    "examples": [
+      {
+        "input": [],
+        "output": "Expected output"
+      }
+    ],
+    "functionSignature": {
+      "javascript": "function wordsearch(...)"
+    },
+    "boilerplateCode": {
+      "javascript": "function wordsearch(...args) {\n  // your code here\n}"
+    },
+    "wrapperCode": {
+      "javascript": "const input = JSON.parse('{input}');\nconsole.log(JSON.stringify(wordsearch(...input)));"
+    },
+    "hiddenTestCases": [
+      {
+        "input": [
+          44
+        ],
+        "output": 44
+      },
+      {
+        "input": [
+          45
+        ],
+        "output": 45
+      }
+    ]
+  },
+  {
+    "id": 45,
+    "title": "Course Schedule",
+    "description": "Placeholder description for Course Schedule.",
+    "difficulty": "Medium",
+    "problemType": "Graph",
+    "tags": [
+      "Graph",
+      "DFS",
+      "BFS"
+    ],
+    "examples": [
+      {
+        "input": [],
+        "output": "Expected output"
+      }
+    ],
+    "functionSignature": {
+      "javascript": "function courseschedule(...)"
+    },
+    "boilerplateCode": {
+      "javascript": "function courseschedule(...args) {\n  // your code here\n}"
+    },
+    "wrapperCode": {
+      "javascript": "const input = JSON.parse('{input}');\nconsole.log(JSON.stringify(courseschedule(...input)));"
+    },
+    "hiddenTestCases": [
+      {
+        "input": [
+          45
+        ],
+        "output": 45
+      },
+      {
+        "input": [
+          46
+        ],
+        "output": 46
+      }
+    ]
+  },
+  {
+    "id": 46,
+    "title": "Number of Islands",
+    "description": "Placeholder description for Number of Islands.",
+    "difficulty": "Easy",
+    "problemType": "Matrix",
+    "tags": [
+      "DFS",
+      "Graph",
+      "Matrix"
+    ],
+    "examples": [
+      {
+        "input": [],
+        "output": "Expected output"
+      }
+    ],
+    "functionSignature": {
+      "javascript": "function numberofislands(...)"
+    },
+    "boilerplateCode": {
+      "javascript": "function numberofislands(...args) {\n  // your code here\n}"
+    },
+    "wrapperCode": {
+      "javascript": "const input = JSON.parse('{input}');\nconsole.log(JSON.stringify(numberofislands(...input)));"
+    },
+    "hiddenTestCases": [
+      {
+        "input": [
+          46
+        ],
+        "output": 46
+      },
+      {
+        "input": [
+          47
+        ],
+        "output": 47
+      }
+    ]
+  },
+  {
+    "id": 47,
+    "title": "Clone Graph",
+    "description": "Placeholder description for Clone Graph.",
+    "difficulty": "Hard",
+    "problemType": "Graph",
+    "tags": [
+      "Graph",
+      "BFS"
+    ],
+    "examples": [
+      {
+        "input": [],
+        "output": "Expected output"
+      }
+    ],
+    "functionSignature": {
+      "javascript": "function clonegraph(...)"
+    },
+    "boilerplateCode": {
+      "javascript": "function clonegraph(...args) {\n  // your code here\n}"
+    },
+    "wrapperCode": {
+      "javascript": "const input = JSON.parse('{input}');\nconsole.log(JSON.stringify(clonegraph(...input)));"
+    },
+    "hiddenTestCases": [
+      {
+        "input": [
+          47
+        ],
+        "output": 47
+      },
+      {
+        "input": [
+          48
+        ],
+        "output": 48
+      }
+    ]
+  },
+  {
+    "id": 48,
+    "title": "Topological Sort",
+    "description": "Placeholder description for Topological Sort.",
+    "difficulty": "Medium",
+    "problemType": "Graph",
+    "tags": [
+      "Graph",
+      "BFS"
+    ],
+    "examples": [
+      {
+        "input": [],
+        "output": "Expected output"
+      }
+    ],
+    "functionSignature": {
+      "javascript": "function topologicalsort(...)"
+    },
+    "boilerplateCode": {
+      "javascript": "function topologicalsort(...args) {\n  // your code here\n}"
+    },
+    "wrapperCode": {
+      "javascript": "const input = JSON.parse('{input}');\nconsole.log(JSON.stringify(topologicalsort(...input)));"
+    },
+    "hiddenTestCases": [
+      {
+        "input": [
+          48
+        ],
+        "output": 48
+      },
+      {
+        "input": [
+          49
+        ],
+        "output": 49
+      }
+    ]
+  },
+  {
+    "id": 49,
+    "title": "Pacific Atlantic Water Flow",
+    "description": "Placeholder description for Pacific Atlantic Water Flow.",
+    "difficulty": "Hard",
+    "problemType": "Matrix",
+    "tags": [
+      "DFS",
+      "Matrix"
+    ],
+    "examples": [
+      {
+        "input": [],
+        "output": "Expected output"
+      }
+    ],
+    "functionSignature": {
+      "javascript": "function pacificatlanticwaterflow(...)"
+    },
+    "boilerplateCode": {
+      "javascript": "function pacificatlanticwaterflow(...args) {\n  // your code here\n}"
+    },
+    "wrapperCode": {
+      "javascript": "const input = JSON.parse('{input}');\nconsole.log(JSON.stringify(pacificatlanticwaterflow(...input)));"
+    },
+    "hiddenTestCases": [
+      {
+        "input": [
+          49
+        ],
+        "output": 49
+      },
+      {
+        "input": [
+          50
+        ],
+        "output": 50
+      }
+    ]
+  },
+  {
+    "id": 50,
+    "title": "Unique Paths",
+    "description": "Placeholder description for Unique Paths.",
+    "difficulty": "Easy",
+    "problemType": "Matrix",
+    "tags": [
+      "Dynamic Programming",
+      "Math"
+    ],
+    "examples": [
+      {
+        "input": [],
+        "output": "Expected output"
+      }
+    ],
+    "functionSignature": {
+      "javascript": "function uniquepaths(...)"
+    },
+    "boilerplateCode": {
+      "javascript": "function uniquepaths(...args) {\n  // your code here\n}"
+    },
+    "wrapperCode": {
+      "javascript": "const input = JSON.parse('{input}');\nconsole.log(JSON.stringify(uniquepaths(...input)));"
+    },
+    "hiddenTestCases": [
+      {
+        "input": [
+          50
+        ],
+        "output": 50
+      },
+      {
+        "input": [
+          51
+        ],
+        "output": 51
+      }
+    ]
+  },
+  {
+    "id": 51,
+    "title": "Coin Change",
+    "description": "Placeholder description for Coin Change.",
+    "difficulty": "Medium",
+    "problemType": "Dynamic Programming",
+    "tags": [
+      "Dynamic Programming"
+    ],
+    "examples": [
+      {
+        "input": [],
+        "output": "Expected output"
+      }
+    ],
+    "functionSignature": {
+      "javascript": "function coinchange(...)"
+    },
+    "boilerplateCode": {
+      "javascript": "function coinchange(...args) {\n  // your code here\n}"
+    },
+    "wrapperCode": {
+      "javascript": "const input = JSON.parse('{input}');\nconsole.log(JSON.stringify(coinchange(...input)));"
+    },
+    "hiddenTestCases": [
+      {
+        "input": [
+          51
+        ],
+        "output": 51
+      },
+      {
+        "input": [
+          52
+        ],
+        "output": 52
+      }
+    ]
+  },
+  {
+    "id": 52,
+    "title": "Word Ladder",
+    "description": "Placeholder description for Word Ladder.",
+    "difficulty": "Easy",
+    "problemType": "Graph",
+    "tags": [
+      "BFS",
+      "Graph"
+    ],
+    "examples": [
+      {
+        "input": [],
+        "output": "Expected output"
+      }
+    ],
+    "functionSignature": {
+      "javascript": "function wordladder(...)"
+    },
+    "boilerplateCode": {
+      "javascript": "function wordladder(...args) {\n  // your code here\n}"
+    },
+    "wrapperCode": {
+      "javascript": "const input = JSON.parse('{input}');\nconsole.log(JSON.stringify(wordladder(...input)));"
+    },
+    "hiddenTestCases": [
+      {
+        "input": [
+          52
+        ],
+        "output": 52
+      },
+      {
+        "input": [
+          53
+        ],
+        "output": 53
+      }
+    ]
+  },
+  {
+    "id": 53,
+    "title": "Validate Binary Search Tree",
+    "description": "Placeholder description for Validate Binary Search Tree.",
+    "difficulty": "Hard",
+    "problemType": "Tree",
+    "tags": [
+      "Tree",
+      "DFS"
+    ],
+    "examples": [
+      {
+        "input": [],
+        "output": "Expected output"
+      }
+    ],
+    "functionSignature": {
+      "javascript": "function validatebinarysearchtree(...)"
+    },
+    "boilerplateCode": {
+      "javascript": "function validatebinarysearchtree(...args) {\n  // your code here\n}"
+    },
+    "wrapperCode": {
+      "javascript": "const input = JSON.parse('{input}');\nconsole.log(JSON.stringify(validatebinarysearchtree(...input)));"
+    },
+    "hiddenTestCases": [
+      {
+        "input": [
+          53
+        ],
+        "output": 53
+      },
+      {
+        "input": [
+          54
+        ],
+        "output": 54
+      }
+    ]
+  },
+  {
+    "id": 54,
+    "title": "Balanced Binary Tree",
+    "description": "Placeholder description for Balanced Binary Tree.",
+    "difficulty": "Medium",
+    "problemType": "Tree",
+    "tags": [
+      "Tree",
+      "DFS"
+    ],
+    "examples": [
+      {
+        "input": [],
+        "output": "Expected output"
+      }
+    ],
+    "functionSignature": {
+      "javascript": "function balancedbinarytree(...)"
+    },
+    "boilerplateCode": {
+      "javascript": "function balancedbinarytree(...args) {\n  // your code here\n}"
+    },
+    "wrapperCode": {
+      "javascript": "const input = JSON.parse('{input}');\nconsole.log(JSON.stringify(balancedbinarytree(...input)));"
+    },
+    "hiddenTestCases": [
+      {
+        "input": [
+          54
+        ],
+        "output": 54
+      },
+      {
+        "input": [
+          55
+        ],
+        "output": 55
+      }
+    ]
+  },
+  {
+    "id": 55,
+    "title": "Binary Tree Zigzag Level Order",
+    "description": "Placeholder description for Binary Tree Zigzag Level Order.",
+    "difficulty": "Hard",
+    "problemType": "Tree",
+    "tags": [
+      "Tree",
+      "BFS"
+    ],
+    "examples": [
+      {
+        "input": [],
+        "output": "Expected output"
+      }
+    ],
+    "functionSignature": {
+      "javascript": "function binarytreezigzaglevelorder(...)"
+    },
+    "boilerplateCode": {
+      "javascript": "function binarytreezigzaglevelorder(...args) {\n  // your code here\n}"
+    },
+    "wrapperCode": {
+      "javascript": "const input = JSON.parse('{input}');\nconsole.log(JSON.stringify(binarytreezigzaglevelorder(...input)));"
+    },
+    "hiddenTestCases": [
+      {
+        "input": [
+          55
+        ],
+        "output": 55
+      },
+      {
+        "input": [
+          56
+        ],
+        "output": 56
+      }
+    ]
+  },
+  {
+    "id": 56,
+    "title": "Invert Binary Tree",
+    "description": "Placeholder description for Invert Binary Tree.",
+    "difficulty": "Easy",
+    "problemType": "Tree",
+    "tags": [
+      "Tree",
+      "DFS"
+    ],
+    "examples": [
+      {
+        "input": [],
+        "output": "Expected output"
+      }
+    ],
+    "functionSignature": {
+      "javascript": "function invertbinarytree(...)"
+    },
+    "boilerplateCode": {
+      "javascript": "function invertbinarytree(...args) {\n  // your code here\n}"
+    },
+    "wrapperCode": {
+      "javascript": "const input = JSON.parse('{input}');\nconsole.log(JSON.stringify(invertbinarytree(...input)));"
+    },
+    "hiddenTestCases": [
+      {
+        "input": [
+          56
+        ],
+        "output": 56
+      },
+      {
+        "input": [
+          57
+        ],
+        "output": 57
+      }
+    ]
+  },
+  {
+    "id": 57,
+    "title": "Longest Increasing Subsequence",
+    "description": "Placeholder description for Longest Increasing Subsequence.",
+    "difficulty": "Medium",
+    "problemType": "Array",
+    "tags": [
+      "Dynamic Programming",
+      "Binary Search"
+    ],
+    "examples": [
+      {
+        "input": [],
+        "output": "Expected output"
+      }
+    ],
+    "functionSignature": {
+      "javascript": "function longestincreasingsubsequence(...)"
+    },
+    "boilerplateCode": {
+      "javascript": "function longestincreasingsubsequence(...args) {\n  // your code here\n}"
+    },
+    "wrapperCode": {
+      "javascript": "const input = JSON.parse('{input}');\nconsole.log(JSON.stringify(longestincreasingsubsequence(...input)));"
+    },
+    "hiddenTestCases": [
+      {
+        "input": [
+          57
+        ],
+        "output": 57
+      },
+      {
+        "input": [
+          58
+        ],
+        "output": 58
+      }
+    ]
+  },
+  {
+    "id": 58,
+    "title": "Minimum Path Sum",
+    "description": "Placeholder description for Minimum Path Sum.",
+    "difficulty": "Easy",
+    "problemType": "Matrix",
+    "tags": [
+      "Dynamic Programming",
+      "Matrix"
+    ],
+    "examples": [
+      {
+        "input": [],
+        "output": "Expected output"
+      }
+    ],
+    "functionSignature": {
+      "javascript": "function minimumpathsum(...)"
+    },
+    "boilerplateCode": {
+      "javascript": "function minimumpathsum(...args) {\n  // your code here\n}"
+    },
+    "wrapperCode": {
+      "javascript": "const input = JSON.parse('{input}');\nconsole.log(JSON.stringify(minimumpathsum(...input)));"
+    },
+    "hiddenTestCases": [
+      {
+        "input": [
+          58
+        ],
+        "output": 58
+      },
+      {
+        "input": [
+          59
+        ],
+        "output": 59
+      }
+    ]
+  },
+  {
+    "id": 59,
+    "title": "Rotate Image",
+    "description": "Placeholder description for Rotate Image.",
+    "difficulty": "Hard",
+    "problemType": "Matrix",
+    "tags": [
+      "Matrix"
+    ],
+    "examples": [
+      {
+        "input": [],
+        "output": "Expected output"
+      }
+    ],
+    "functionSignature": {
+      "javascript": "function rotateimage(...)"
+    },
+    "boilerplateCode": {
+      "javascript": "function rotateimage(...args) {\n  // your code here\n}"
+    },
+    "wrapperCode": {
+      "javascript": "const input = JSON.parse('{input}');\nconsole.log(JSON.stringify(rotateimage(...input)));"
+    },
+    "hiddenTestCases": [
+      {
+        "input": [
+          59
+        ],
+        "output": 59
+      },
+      {
+        "input": [
+          60
+        ],
+        "output": 60
+      }
+    ]
+  },
+  {
+    "id": 60,
+    "title": "Spiral Matrix",
+    "description": "Placeholder description for Spiral Matrix.",
+    "difficulty": "Medium",
+    "problemType": "Matrix",
+    "tags": [
+      "Matrix"
+    ],
+    "examples": [
+      {
+        "input": [],
+        "output": "Expected output"
+      }
+    ],
+    "functionSignature": {
+      "javascript": "function spiralmatrix(...)"
+    },
+    "boilerplateCode": {
+      "javascript": "function spiralmatrix(...args) {\n  // your code here\n}"
+    },
+    "wrapperCode": {
+      "javascript": "const input = JSON.parse('{input}');\nconsole.log(JSON.stringify(spiralmatrix(...input)));"
+    },
+    "hiddenTestCases": [
+      {
+        "input": [
+          60
+        ],
+        "output": 60
+      },
+      {
+        "input": [
+          61
+        ],
+        "output": 61
+      }
+    ]
+  },
+  {
+    "id": 61,
+    "title": "Set Matrix Zeroes",
+    "description": "Placeholder description for Set Matrix Zeroes.",
+    "difficulty": "Hard",
+    "problemType": "Matrix",
+    "tags": [
+      "Matrix"
+    ],
+    "examples": [
+      {
+        "input": [],
+        "output": "Expected output"
+      }
+    ],
+    "functionSignature": {
+      "javascript": "function setmatrixzeroes(...)"
+    },
+    "boilerplateCode": {
+      "javascript": "function setmatrixzeroes(...args) {\n  // your code here\n}"
+    },
+    "wrapperCode": {
+      "javascript": "const input = JSON.parse('{input}');\nconsole.log(JSON.stringify(setmatrixzeroes(...input)));"
+    },
+    "hiddenTestCases": [
+      {
+        "input": [
+          61
+        ],
+        "output": 61
+      },
+      {
+        "input": [
+          62
+        ],
+        "output": 62
+      }
+    ]
+  },
+  {
+    "id": 62,
+    "title": "Search a 2D Matrix",
+    "description": "Placeholder description for Search a 2D Matrix.",
+    "difficulty": "Easy",
+    "problemType": "Matrix",
+    "tags": [
+      "Matrix",
+      "Binary Search"
+    ],
+    "examples": [
+      {
+        "input": [],
+        "output": "Expected output"
+      }
+    ],
+    "functionSignature": {
+      "javascript": "function searcha2dmatrix(...)"
+    },
+    "boilerplateCode": {
+      "javascript": "function searcha2dmatrix(...args) {\n  // your code here\n}"
+    },
+    "wrapperCode": {
+      "javascript": "const input = JSON.parse('{input}');\nconsole.log(JSON.stringify(searcha2dmatrix(...input)));"
+    },
+    "hiddenTestCases": [
+      {
+        "input": [
+          62
+        ],
+        "output": 62
+      },
+      {
+        "input": [
+          63
+        ],
+        "output": 63
+      }
+    ]
+  },
+  {
+    "id": 63,
+    "title": "Sudoku Solver",
+    "description": "Placeholder description for Sudoku Solver.",
+    "difficulty": "Medium",
+    "problemType": "Matrix",
+    "tags": [
+      "DFS",
+      "Backtracking",
+      "Matrix"
+    ],
+    "examples": [
+      {
+        "input": [],
+        "output": "Expected output"
+      }
+    ],
+    "functionSignature": {
+      "javascript": "function sudokusolver(...)"
+    },
+    "boilerplateCode": {
+      "javascript": "function sudokusolver(...args) {\n  // your code here\n}"
+    },
+    "wrapperCode": {
+      "javascript": "const input = JSON.parse('{input}');\nconsole.log(JSON.stringify(sudokusolver(...input)));"
+    },
+    "hiddenTestCases": [
+      {
+        "input": [
+          63
+        ],
+        "output": 63
+      },
+      {
+        "input": [
+          64
+        ],
+        "output": 64
+      }
+    ]
+  },
+  {
+    "id": 64,
+    "title": "Number of Connected Components",
+    "description": "Placeholder description for Number of Connected Components.",
+    "difficulty": "Easy",
+    "problemType": "Graph",
+    "tags": [
+      "Graph",
+      "BFS",
+      "DFS"
+    ],
+    "examples": [
+      {
+        "input": [],
+        "output": "Expected output"
+      }
+    ],
+    "functionSignature": {
+      "javascript": "function numberofconnectedcomponents(...)"
+    },
+    "boilerplateCode": {
+      "javascript": "function numberofconnectedcomponents(...args) {\n  // your code here\n}"
+    },
+    "wrapperCode": {
+      "javascript": "const input = JSON.parse('{input}');\nconsole.log(JSON.stringify(numberofconnectedcomponents(...input)));"
+    },
+    "hiddenTestCases": [
+      {
+        "input": [
+          64
+        ],
+        "output": 64
+      },
+      {
+        "input": [
+          65
+        ],
+        "output": 65
+      }
+    ]
+  },
+  {
+    "id": 65,
+    "title": "Longest Consecutive Sequence",
+    "description": "Placeholder description for Longest Consecutive Sequence.",
+    "difficulty": "Hard",
+    "problemType": "Array",
+    "tags": [
+      "Array",
+      "Hash Table"
+    ],
+    "examples": [
+      {
+        "input": [],
+        "output": "Expected output"
+      }
+    ],
+    "functionSignature": {
+      "javascript": "function longestconsecutivesequence(...)"
+    },
+    "boilerplateCode": {
+      "javascript": "function longestconsecutivesequence(...args) {\n  // your code here\n}"
+    },
+    "wrapperCode": {
+      "javascript": "const input = JSON.parse('{input}');\nconsole.log(JSON.stringify(longestconsecutivesequence(...input)));"
+    },
+    "hiddenTestCases": [
+      {
+        "input": [
+          65
+        ],
+        "output": 65
+      },
+      {
+        "input": [
+          66
+        ],
+        "output": 66
+      }
+    ]
+  },
+  {
+    "id": 66,
+    "title": "Merge Intervals",
+    "description": "Placeholder description for Merge Intervals.",
+    "difficulty": "Medium",
+    "problemType": "Array",
+    "tags": [
+      "Array",
+      "Sorting"
+    ],
+    "examples": [
+      {
+        "input": [],
+        "output": "Expected output"
+      }
+    ],
+    "functionSignature": {
+      "javascript": "function mergeintervals(...)"
+    },
+    "boilerplateCode": {
+      "javascript": "function mergeintervals(...args) {\n  // your code here\n}"
+    },
+    "wrapperCode": {
+      "javascript": "const input = JSON.parse('{input}');\nconsole.log(JSON.stringify(mergeintervals(...input)));"
+    },
+    "hiddenTestCases": [
+      {
+        "input": [
+          66
+        ],
+        "output": 66
+      },
+      {
+        "input": [
+          67
+        ],
+        "output": 67
+      }
+    ]
+  },
+  {
+    "id": 67,
+    "title": "Meeting Rooms II",
+    "description": "Placeholder description for Meeting Rooms II.",
+    "difficulty": "Hard",
+    "problemType": "Array",
+    "tags": [
+      "Array",
+      "Heap"
+    ],
+    "examples": [
+      {
+        "input": [],
+        "output": "Expected output"
+      }
+    ],
+    "functionSignature": {
+      "javascript": "function meetingroomsii(...)"
+    },
+    "boilerplateCode": {
+      "javascript": "function meetingroomsii(...args) {\n  // your code here\n}"
+    },
+    "wrapperCode": {
+      "javascript": "const input = JSON.parse('{input}');\nconsole.log(JSON.stringify(meetingroomsii(...input)));"
+    },
+    "hiddenTestCases": [
+      {
+        "input": [
+          67
+        ],
+        "output": 67
+      },
+      {
+        "input": [
+          68
+        ],
+        "output": 68
+      }
+    ]
+  },
+  {
+    "id": 68,
+    "title": "Serialize and Deserialize N-ary Tree",
+    "description": "Placeholder description for Serialize and Deserialize N-ary Tree.",
+    "difficulty": "Easy",
+    "problemType": "Tree",
+    "tags": [
+      "Tree",
+      "DFS"
+    ],
+    "examples": [
+      {
+        "input": [],
+        "output": "Expected output"
+      }
+    ],
+    "functionSignature": {
+      "javascript": "function serializeanddeserializen-arytree(...)"
+    },
+    "boilerplateCode": {
+      "javascript": "function serializeanddeserializen-arytree(...args) {\n  // your code here\n}"
+    },
+    "wrapperCode": {
+      "javascript": "const input = JSON.parse('{input}');\nconsole.log(JSON.stringify(serializeanddeserializen-arytree(...input)));"
+    },
+    "hiddenTestCases": [
+      {
+        "input": [
+          68
+        ],
+        "output": 68
+      },
+      {
+        "input": [
+          69
+        ],
+        "output": 69
+      }
+    ]
+  },
+  {
+    "id": 69,
+    "title": "Longest Palindromic Substring",
+    "description": "Placeholder description for Longest Palindromic Substring.",
+    "difficulty": "Medium",
+    "problemType": "String",
+    "tags": [
+      "String",
+      "DP"
+    ],
+    "examples": [
+      {
+        "input": [],
+        "output": "Expected output"
+      }
+    ],
+    "functionSignature": {
+      "javascript": "function longestpalindromicsubstring(...)"
+    },
+    "boilerplateCode": {
+      "javascript": "function longestpalindromicsubstring(...args) {\n  // your code here\n}"
+    },
+    "wrapperCode": {
+      "javascript": "const input = JSON.parse('{input}');\nconsole.log(JSON.stringify(longestpalindromicsubstring(...input)));"
+    },
+    "hiddenTestCases": [
+      {
+        "input": [
+          69
+        ],
+        "output": 69
+      },
+      {
+        "input": [
+          70
+        ],
+        "output": 70
+      }
+    ]
+  },
+  {
+    "id": 70,
+    "title": "Word Pattern",
+    "description": "Placeholder description for Word Pattern.",
+    "difficulty": "Easy",
+    "problemType": "String",
+    "tags": [
+      "String",
+      "Hash Table"
+    ],
+    "examples": [
+      {
+        "input": [],
+        "output": "Expected output"
+      }
+    ],
+    "functionSignature": {
+      "javascript": "function wordpattern(...)"
+    },
+    "boilerplateCode": {
+      "javascript": "function wordpattern(...args) {\n  // your code here\n}"
+    },
+    "wrapperCode": {
+      "javascript": "const input = JSON.parse('{input}');\nconsole.log(JSON.stringify(wordpattern(...input)));"
+    },
+    "hiddenTestCases": [
+      {
+        "input": [
+          70
+        ],
+        "output": 70
+      },
+      {
+        "input": [
+          71
+        ],
+        "output": 71
+      }
+    ]
+  },
+  {
+    "id": 71,
+    "title": "Palindrome Partitioning",
+    "description": "Placeholder description for Palindrome Partitioning.",
+    "difficulty": "Hard",
+    "problemType": "String",
+    "tags": [
+      "DFS",
+      "DP"
+    ],
+    "examples": [
+      {
+        "input": [],
+        "output": "Expected output"
+      }
+    ],
+    "functionSignature": {
+      "javascript": "function palindromepartitioning(...)"
+    },
+    "boilerplateCode": {
+      "javascript": "function palindromepartitioning(...args) {\n  // your code here\n}"
+    },
+    "wrapperCode": {
+      "javascript": "const input = JSON.parse('{input}');\nconsole.log(JSON.stringify(palindromepartitioning(...input)));"
+    },
+    "hiddenTestCases": [
+      {
+        "input": [
+          71
+        ],
+        "output": 71
+      },
+      {
+        "input": [
+          72
+        ],
+        "output": 72
+      }
+    ]
+  },
+  {
+    "id": 72,
+    "title": "Valid Palindrome",
+    "description": "Placeholder description for Valid Palindrome.",
+    "difficulty": "Medium",
+    "problemType": "String",
+    "tags": [
+      "String",
+      "Two Pointers"
+    ],
+    "examples": [
+      {
+        "input": [],
+        "output": "Expected output"
+      }
+    ],
+    "functionSignature": {
+      "javascript": "function validpalindrome(...)"
+    },
+    "boilerplateCode": {
+      "javascript": "function validpalindrome(...args) {\n  // your code here\n}"
+    },
+    "wrapperCode": {
+      "javascript": "const input = JSON.parse('{input}');\nconsole.log(JSON.stringify(validpalindrome(...input)));"
+    },
+    "hiddenTestCases": [
+      {
+        "input": [
+          72
+        ],
+        "output": 72
+      },
+      {
+        "input": [
+          73
+        ],
+        "output": 73
+      }
+    ]
+  },
+  {
+    "id": 73,
+    "title": "Longest Substring Without Repeating Characters",
+    "description": "Placeholder description for Longest Substring Without Repeating Characters.",
+    "difficulty": "Hard",
+    "problemType": "String",
+    "tags": [
+      "String",
+      "Sliding Window"
+    ],
+    "examples": [
+      {
+        "input": [],
+        "output": "Expected output"
+      }
+    ],
+    "functionSignature": {
+      "javascript": "function longestsubstringwithoutrepeatingcharacters(...)"
+    },
+    "boilerplateCode": {
+      "javascript": "function longestsubstringwithoutrepeatingcharacters(...args) {\n  // your code here\n}"
+    },
+    "wrapperCode": {
+      "javascript": "const input = JSON.parse('{input}');\nconsole.log(JSON.stringify(longestsubstringwithoutrepeatingcharacters(...input)));"
+    },
+    "hiddenTestCases": [
+      {
+        "input": [
+          73
+        ],
+        "output": 73
+      },
+      {
+        "input": [
+          74
+        ],
+        "output": 74
+      }
+    ]
+  },
+  {
+    "id": 74,
+    "title": "Minimum Window Substring",
+    "description": "Placeholder description for Minimum Window Substring.",
+    "difficulty": "Easy",
+    "problemType": "String",
+    "tags": [
+      "String",
+      "Two Pointers"
+    ],
+    "examples": [
+      {
+        "input": [],
+        "output": "Expected output"
+      }
+    ],
+    "functionSignature": {
+      "javascript": "function minimumwindowsubstring(...)"
+    },
+    "boilerplateCode": {
+      "javascript": "function minimumwindowsubstring(...args) {\n  // your code here\n}"
+    },
+    "wrapperCode": {
+      "javascript": "const input = JSON.parse('{input}');\nconsole.log(JSON.stringify(minimumwindowsubstring(...input)));"
+    },
+    "hiddenTestCases": [
+      {
+        "input": [
+          74
+        ],
+        "output": 74
+      },
+      {
+        "input": [
+          75
+        ],
+        "output": 75
+      }
+    ]
+  },
+  {
+    "id": 75,
+    "title": "Maximum Product Subarray",
+    "description": "Placeholder description for Maximum Product Subarray.",
+    "difficulty": "Medium",
+    "problemType": "Array",
+    "tags": [
+      "Array",
+      "DP"
+    ],
+    "examples": [
+      {
+        "input": [],
+        "output": "Expected output"
+      }
+    ],
+    "functionSignature": {
+      "javascript": "function maximumproductsubarray(...)"
+    },
+    "boilerplateCode": {
+      "javascript": "function maximumproductsubarray(...args) {\n  // your code here\n}"
+    },
+    "wrapperCode": {
+      "javascript": "const input = JSON.parse('{input}');\nconsole.log(JSON.stringify(maximumproductsubarray(...input)));"
+    },
+    "hiddenTestCases": [
+      {
+        "input": [
+          75
+        ],
+        "output": 75
+      },
+      {
+        "input": [
+          76
+        ],
+        "output": 76
+      }
+    ]
+  },
+  {
+    "id": 76,
+    "title": "Subsets",
+    "description": "Placeholder description for Subsets.",
+    "difficulty": "Easy",
+    "problemType": "Array",
+    "tags": [
+      "DFS",
+      "Backtracking"
+    ],
+    "examples": [
+      {
+        "input": [],
+        "output": "Expected output"
+      }
+    ],
+    "functionSignature": {
+      "javascript": "function subsets(...)"
+    },
+    "boilerplateCode": {
+      "javascript": "function subsets(...args) {\n  // your code here\n}"
+    },
+    "wrapperCode": {
+      "javascript": "const input = JSON.parse('{input}');\nconsole.log(JSON.stringify(subsets(...input)));"
+    },
+    "hiddenTestCases": [
+      {
+        "input": [
+          76
+        ],
+        "output": 76
+      },
+      {
+        "input": [
+          77
+        ],
+        "output": 77
+      }
+    ]
+  },
+  {
+    "id": 77,
+    "title": "Permutations",
+    "description": "Placeholder description for Permutations.",
+    "difficulty": "Hard",
+    "problemType": "Array",
+    "tags": [
+      "DFS",
+      "Backtracking"
+    ],
+    "examples": [
+      {
+        "input": [],
+        "output": "Expected output"
+      }
+    ],
+    "functionSignature": {
+      "javascript": "function permutations(...)"
+    },
+    "boilerplateCode": {
+      "javascript": "function permutations(...args) {\n  // your code here\n}"
+    },
+    "wrapperCode": {
+      "javascript": "const input = JSON.parse('{input}');\nconsole.log(JSON.stringify(permutations(...input)));"
+    },
+    "hiddenTestCases": [
+      {
+        "input": [
+          77
+        ],
+        "output": 77
+      },
+      {
+        "input": [
+          78
+        ],
+        "output": 78
+      }
+    ]
+  },
+  {
+    "id": 78,
+    "title": "Combination Sum",
+    "description": "Placeholder description for Combination Sum.",
+    "difficulty": "Medium",
+    "problemType": "Array",
+    "tags": [
+      "DFS",
+      "Backtracking"
+    ],
+    "examples": [
+      {
+        "input": [],
+        "output": "Expected output"
+      }
+    ],
+    "functionSignature": {
+      "javascript": "function combinationsum(...)"
+    },
+    "boilerplateCode": {
+      "javascript": "function combinationsum(...args) {\n  // your code here\n}"
+    },
+    "wrapperCode": {
+      "javascript": "const input = JSON.parse('{input}');\nconsole.log(JSON.stringify(combinationsum(...input)));"
+    },
+    "hiddenTestCases": [
+      {
+        "input": [
+          78
+        ],
+        "output": 78
+      },
+      {
+        "input": [
+          79
+        ],
+        "output": 79
+      }
+    ]
+  },
+  {
+    "id": 79,
+    "title": "Letter Combinations of a Phone Number",
+    "description": "Placeholder description for Letter Combinations of a Phone Number.",
+    "difficulty": "Hard",
+    "problemType": "String",
+    "tags": [
+      "DFS",
+      "Backtracking"
+    ],
+    "examples": [
+      {
+        "input": [],
+        "output": "Expected output"
+      }
+    ],
+    "functionSignature": {
+      "javascript": "function lettercombinationsofaphonenumber(...)"
+    },
+    "boilerplateCode": {
+      "javascript": "function lettercombinationsofaphonenumber(...args) {\n  // your code here\n}"
+    },
+    "wrapperCode": {
+      "javascript": "const input = JSON.parse('{input}');\nconsole.log(JSON.stringify(lettercombinationsofaphonenumber(...input)));"
+    },
+    "hiddenTestCases": [
+      {
+        "input": [
+          79
+        ],
+        "output": 79
+      },
+      {
+        "input": [
+          80
+        ],
+        "output": 80
+      }
+    ]
+  },
+  {
+    "id": 80,
+    "title": "Insert Interval",
+    "description": "Placeholder description for Insert Interval.",
+    "difficulty": "Easy",
+    "problemType": "Array",
+    "tags": [
+      "Array",
+      "Sorting"
+    ],
+    "examples": [
+      {
+        "input": [],
+        "output": "Expected output"
+      }
+    ],
+    "functionSignature": {
+      "javascript": "function insertinterval(...)"
+    },
+    "boilerplateCode": {
+      "javascript": "function insertinterval(...args) {\n  // your code here\n}"
+    },
+    "wrapperCode": {
+      "javascript": "const input = JSON.parse('{input}');\nconsole.log(JSON.stringify(insertinterval(...input)));"
+    },
+    "hiddenTestCases": [
+      {
+        "input": [
+          80
+        ],
+        "output": 80
+      },
+      {
+        "input": [
+          81
+        ],
+        "output": 81
+      }
+    ]
+  },
+  {
+    "id": 81,
+    "title": "Find Peak Element",
+    "description": "Placeholder description for Find Peak Element.",
+    "difficulty": "Medium",
+    "problemType": "Array",
+    "tags": [
+      "Array",
+      "Binary Search"
+    ],
+    "examples": [
+      {
+        "input": [],
+        "output": "Expected output"
+      }
+    ],
+    "functionSignature": {
+      "javascript": "function findpeakelement(...)"
+    },
+    "boilerplateCode": {
+      "javascript": "function findpeakelement(...args) {\n  // your code here\n}"
+    },
+    "wrapperCode": {
+      "javascript": "const input = JSON.parse('{input}');\nconsole.log(JSON.stringify(findpeakelement(...input)));"
+    },
+    "hiddenTestCases": [
+      {
+        "input": [
+          81
+        ],
+        "output": 81
+      },
+      {
+        "input": [
+          82
+        ],
+        "output": 82
+      }
+    ]
+  },
+  {
+    "id": 82,
+    "title": "Search in Rotated Sorted Array",
+    "description": "Placeholder description for Search in Rotated Sorted Array.",
+    "difficulty": "Easy",
+    "problemType": "Array",
+    "tags": [
+      "Array",
+      "Binary Search"
+    ],
+    "examples": [
+      {
+        "input": [],
+        "output": "Expected output"
+      }
+    ],
+    "functionSignature": {
+      "javascript": "function searchinrotatedsortedarray(...)"
+    },
+    "boilerplateCode": {
+      "javascript": "function searchinrotatedsortedarray(...args) {\n  // your code here\n}"
+    },
+    "wrapperCode": {
+      "javascript": "const input = JSON.parse('{input}');\nconsole.log(JSON.stringify(searchinrotatedsortedarray(...input)));"
+    },
+    "hiddenTestCases": [
+      {
+        "input": [
+          82
+        ],
+        "output": 82
+      },
+      {
+        "input": [
+          83
+        ],
+        "output": 83
+      }
+    ]
+  },
+  {
+    "id": 83,
+    "title": "H-index",
+    "description": "Placeholder description for H-index.",
+    "difficulty": "Hard",
+    "problemType": "Array",
+    "tags": [
+      "Array",
+      "Sorting"
+    ],
+    "examples": [
+      {
+        "input": [],
+        "output": "Expected output"
+      }
+    ],
+    "functionSignature": {
+      "javascript": "function h-index(...)"
+    },
+    "boilerplateCode": {
+      "javascript": "function h-index(...args) {\n  // your code here\n}"
+    },
+    "wrapperCode": {
+      "javascript": "const input = JSON.parse('{input}');\nconsole.log(JSON.stringify(h-index(...input)));"
+    },
+    "hiddenTestCases": [
+      {
+        "input": [
+          83
+        ],
+        "output": 83
+      },
+      {
+        "input": [
+          84
+        ],
+        "output": 84
+      }
+    ]
+  },
+  {
+    "id": 84,
+    "title": "Evaluate Division",
+    "description": "Placeholder description for Evaluate Division.",
+    "difficulty": "Medium",
+    "problemType": "Graph",
+    "tags": [
+      "Graph",
+      "DFS",
+      "BFS"
+    ],
+    "examples": [
+      {
+        "input": [],
+        "output": "Expected output"
+      }
+    ],
+    "functionSignature": {
+      "javascript": "function evaluatedivision(...)"
+    },
+    "boilerplateCode": {
+      "javascript": "function evaluatedivision(...args) {\n  // your code here\n}"
+    },
+    "wrapperCode": {
+      "javascript": "const input = JSON.parse('{input}');\nconsole.log(JSON.stringify(evaluatedivision(...input)));"
+    },
+    "hiddenTestCases": [
+      {
+        "input": [
+          84
+        ],
+        "output": 84
+      },
+      {
+        "input": [
+          85
+        ],
+        "output": 85
+      }
+    ]
+  },
+  {
+    "id": 85,
+    "title": "N-ary Tree Preorder Traversal",
+    "description": "Placeholder description for N-ary Tree Preorder Traversal.",
+    "difficulty": "Hard",
+    "problemType": "Tree",
+    "tags": [
+      "Tree",
+      "DFS"
+    ],
+    "examples": [
+      {
+        "input": [],
+        "output": "Expected output"
+      }
+    ],
+    "functionSignature": {
+      "javascript": "function n-arytreepreordertraversal(...)"
+    },
+    "boilerplateCode": {
+      "javascript": "function n-arytreepreordertraversal(...args) {\n  // your code here\n}"
+    },
+    "wrapperCode": {
+      "javascript": "const input = JSON.parse('{input}');\nconsole.log(JSON.stringify(n-arytreepreordertraversal(...input)));"
+    },
+    "hiddenTestCases": [
+      {
+        "input": [
+          85
+        ],
+        "output": 85
+      },
+      {
+        "input": [
+          86
+        ],
+        "output": 86
+      }
+    ]
+  },
+  {
+    "id": 86,
+    "title": "N-ary Tree Level Order Traversal",
+    "description": "Placeholder description for N-ary Tree Level Order Traversal.",
+    "difficulty": "Easy",
+    "problemType": "Tree",
+    "tags": [
+      "Tree",
+      "BFS"
+    ],
+    "examples": [
+      {
+        "input": [],
+        "output": "Expected output"
+      }
+    ],
+    "functionSignature": {
+      "javascript": "function n-arytreelevelordertraversal(...)"
+    },
+    "boilerplateCode": {
+      "javascript": "function n-arytreelevelordertraversal(...args) {\n  // your code here\n}"
+    },
+    "wrapperCode": {
+      "javascript": "const input = JSON.parse('{input}');\nconsole.log(JSON.stringify(n-arytreelevelordertraversal(...input)));"
+    },
+    "hiddenTestCases": [
+      {
+        "input": [
+          86
+        ],
+        "output": 86
+      },
+      {
+        "input": [
+          87
+        ],
+        "output": 87
+      }
+    ]
+  },
+  {
+    "id": 87,
+    "title": "Generate Parentheses",
+    "description": "Placeholder description for Generate Parentheses.",
+    "difficulty": "Medium",
+    "problemType": "String",
+    "tags": [
+      "DFS",
+      "Backtracking"
+    ],
+    "examples": [
+      {
+        "input": [],
+        "output": "Expected output"
+      }
+    ],
+    "functionSignature": {
+      "javascript": "function generateparentheses(...)"
+    },
+    "boilerplateCode": {
+      "javascript": "function generateparentheses(...args) {\n  // your code here\n}"
+    },
+    "wrapperCode": {
+      "javascript": "const input = JSON.parse('{input}');\nconsole.log(JSON.stringify(generateparentheses(...input)));"
+    },
+    "hiddenTestCases": [
+      {
+        "input": [
+          87
+        ],
+        "output": 87
+      },
+      {
+        "input": [
+          88
+        ],
+        "output": 88
+      }
+    ]
+  },
+  {
+    "id": 88,
+    "title": "Find Minimum in Rotated Sorted Array",
+    "description": "Placeholder description for Find Minimum in Rotated Sorted Array.",
+    "difficulty": "Easy",
+    "problemType": "Array",
+    "tags": [
+      "Array",
+      "Binary Search"
+    ],
+    "examples": [
+      {
+        "input": [],
+        "output": "Expected output"
+      }
+    ],
+    "functionSignature": {
+      "javascript": "function findminimuminrotatedsortedarray(...)"
+    },
+    "boilerplateCode": {
+      "javascript": "function findminimuminrotatedsortedarray(...args) {\n  // your code here\n}"
+    },
+    "wrapperCode": {
+      "javascript": "const input = JSON.parse('{input}');\nconsole.log(JSON.stringify(findminimuminrotatedsortedarray(...input)));"
+    },
+    "hiddenTestCases": [
+      {
+        "input": [
+          88
+        ],
+        "output": 88
+      },
+      {
+        "input": [
+          89
+        ],
+        "output": 89
+      }
+    ]
+  },
+  {
+    "id": 89,
+    "title": "3Sum",
+    "description": "Placeholder description for 3Sum.",
+    "difficulty": "Hard",
+    "problemType": "Array",
+    "tags": [
+      "Array",
+      "Two Pointers"
+    ],
+    "examples": [
+      {
+        "input": [],
+        "output": "Expected output"
+      }
+    ],
+    "functionSignature": {
+      "javascript": "function 3sum(...)"
+    },
+    "boilerplateCode": {
+      "javascript": "function 3sum(...args) {\n  // your code here\n}"
+    },
+    "wrapperCode": {
+      "javascript": "const input = JSON.parse('{input}');\nconsole.log(JSON.stringify(3sum(...input)));"
+    },
+    "hiddenTestCases": [
+      {
+        "input": [
+          89
+        ],
+        "output": 89
+      },
+      {
+        "input": [
+          90
+        ],
+        "output": 90
+      }
+    ]
+  },
+  {
+    "id": 90,
+    "title": "Longest Valid Parentheses",
+    "description": "Placeholder description for Longest Valid Parentheses.",
+    "difficulty": "Medium",
+    "problemType": "String",
+    "tags": [
+      "String",
+      "Stack"
+    ],
+    "examples": [
+      {
+        "input": [],
+        "output": "Expected output"
+      }
+    ],
+    "functionSignature": {
+      "javascript": "function longestvalidparentheses(...)"
+    },
+    "boilerplateCode": {
+      "javascript": "function longestvalidparentheses(...args) {\n  // your code here\n}"
+    },
+    "wrapperCode": {
+      "javascript": "const input = JSON.parse('{input}');\nconsole.log(JSON.stringify(longestvalidparentheses(...input)));"
+    },
+    "hiddenTestCases": [
+      {
+        "input": [
+          90
+        ],
+        "output": 90
+      },
+      {
+        "input": [
+          91
+        ],
+        "output": 91
+      }
+    ]
+  },
+  {
+    "id": 91,
+    "title": "Sum Root to Leaf Numbers",
+    "description": "Placeholder description for Sum Root to Leaf Numbers.",
+    "difficulty": "Hard",
+    "problemType": "Tree",
+    "tags": [
+      "Tree",
+      "DFS"
+    ],
+    "examples": [
+      {
+        "input": [],
+        "output": "Expected output"
+      }
+    ],
+    "functionSignature": {
+      "javascript": "function sumroottoleafnumbers(...)"
+    },
+    "boilerplateCode": {
+      "javascript": "function sumroottoleafnumbers(...args) {\n  // your code here\n}"
+    },
+    "wrapperCode": {
+      "javascript": "const input = JSON.parse('{input}');\nconsole.log(JSON.stringify(sumroottoleafnumbers(...input)));"
+    },
+    "hiddenTestCases": [
+      {
+        "input": [
+          91
+        ],
+        "output": 91
+      },
+      {
+        "input": [
+          92
+        ],
+        "output": 92
+      }
+    ]
+  },
+  {
+    "id": 92,
+    "title": "Flatten Binary Tree to Linked List",
+    "description": "Placeholder description for Flatten Binary Tree to Linked List.",
+    "difficulty": "Easy",
+    "problemType": "Tree",
+    "tags": [
+      "Tree",
+      "DFS"
+    ],
+    "examples": [
+      {
+        "input": [],
+        "output": "Expected output"
+      }
+    ],
+    "functionSignature": {
+      "javascript": "function flattenbinarytreetolinkedlist(...)"
+    },
+    "boilerplateCode": {
+      "javascript": "function flattenbinarytreetolinkedlist(...args) {\n  // your code here\n}"
+    },
+    "wrapperCode": {
+      "javascript": "const input = JSON.parse('{input}');\nconsole.log(JSON.stringify(flattenbinarytreetolinkedlist(...input)));"
+    },
+    "hiddenTestCases": [
+      {
+        "input": [
+          92
+        ],
+        "output": 92
+      },
+      {
+        "input": [
+          93
+        ],
+        "output": 93
+      }
+    ]
+  },
+  {
+    "id": 93,
+    "title": "Populating Next Right Pointers",
+    "description": "Placeholder description for Populating Next Right Pointers.",
+    "difficulty": "Medium",
+    "problemType": "Tree",
+    "tags": [
+      "Tree",
+      "BFS"
+    ],
+    "examples": [
+      {
+        "input": [],
+        "output": "Expected output"
+      }
+    ],
+    "functionSignature": {
+      "javascript": "function populatingnextrightpointers(...)"
+    },
+    "boilerplateCode": {
+      "javascript": "function populatingnextrightpointers(...args) {\n  // your code here\n}"
+    },
+    "wrapperCode": {
+      "javascript": "const input = JSON.parse('{input}');\nconsole.log(JSON.stringify(populatingnextrightpointers(...input)));"
+    },
+    "hiddenTestCases": [
+      {
+        "input": [
+          93
+        ],
+        "output": 93
+      },
+      {
+        "input": [
+          94
+        ],
+        "output": 94
+      }
+    ]
+  },
+  {
+    "id": 94,
+    "title": "Largest Rectangle in Histogram",
+    "description": "Placeholder description for Largest Rectangle in Histogram.",
+    "difficulty": "Easy",
+    "problemType": "Stack",
+    "tags": [
+      "Stack",
+      "Array"
+    ],
+    "examples": [
+      {
+        "input": [],
+        "output": "Expected output"
+      }
+    ],
+    "functionSignature": {
+      "javascript": "function largestrectangleinhistogram(...)"
+    },
+    "boilerplateCode": {
+      "javascript": "function largestrectangleinhistogram(...args) {\n  // your code here\n}"
+    },
+    "wrapperCode": {
+      "javascript": "const input = JSON.parse('{input}');\nconsole.log(JSON.stringify(largestrectangleinhistogram(...input)));"
+    },
+    "hiddenTestCases": [
+      {
+        "input": [
+          94
+        ],
+        "output": 94
+      },
+      {
+        "input": [
+          95
+        ],
+        "output": 95
+      }
+    ]
+  },
+  {
+    "id": 95,
+    "title": "Maximal Rectangle",
+    "description": "Placeholder description for Maximal Rectangle.",
+    "difficulty": "Hard",
+    "problemType": "Matrix",
+    "tags": [
+      "Matrix",
+      "Stack"
+    ],
+    "examples": [
+      {
+        "input": [],
+        "output": "Expected output"
+      }
+    ],
+    "functionSignature": {
+      "javascript": "function maximalrectangle(...)"
+    },
+    "boilerplateCode": {
+      "javascript": "function maximalrectangle(...args) {\n  // your code here\n}"
+    },
+    "wrapperCode": {
+      "javascript": "const input = JSON.parse('{input}');\nconsole.log(JSON.stringify(maximalrectangle(...input)));"
+    },
+    "hiddenTestCases": [
+      {
+        "input": [
+          95
+        ],
+        "output": 95
+      },
+      {
+        "input": [
+          96
+        ],
+        "output": 96
+      }
+    ]
+  },
+  {
+    "id": 96,
+    "title": "Sliding Window Maximum",
+    "description": "Placeholder description for Sliding Window Maximum.",
+    "difficulty": "Medium",
+    "problemType": "Array",
+    "tags": [
+      "Array",
+      "Deque"
+    ],
+    "examples": [
+      {
+        "input": [],
+        "output": "Expected output"
+      }
+    ],
+    "functionSignature": {
+      "javascript": "function slidingwindowmaximum(...)"
+    },
+    "boilerplateCode": {
+      "javascript": "function slidingwindowmaximum(...args) {\n  // your code here\n}"
+    },
+    "wrapperCode": {
+      "javascript": "const input = JSON.parse('{input}');\nconsole.log(JSON.stringify(slidingwindowmaximum(...input)));"
+    },
+    "hiddenTestCases": [
+      {
+        "input": [
+          96
+        ],
+        "output": 96
+      },
+      {
+        "input": [
+          97
+        ],
+        "output": 97
+      }
+    ]
+  },
+  {
+    "id": 97,
+    "title": "Design Twitter",
+    "description": "Placeholder description for Design Twitter.",
+    "difficulty": "Hard",
+    "problemType": "Design",
+    "tags": [
+      "Hash Table",
+      "Design"
+    ],
+    "examples": [
+      {
+        "input": [],
+        "output": "Expected output"
+      }
+    ],
+    "functionSignature": {
+      "javascript": "function designtwitter(...)"
+    },
+    "boilerplateCode": {
+      "javascript": "function designtwitter(...args) {\n  // your code here\n}"
+    },
+    "wrapperCode": {
+      "javascript": "const input = JSON.parse('{input}');\nconsole.log(JSON.stringify(designtwitter(...input)));"
+    },
+    "hiddenTestCases": [
+      {
+        "input": [
+          97
+        ],
+        "output": 97
+      },
+      {
+        "input": [
+          98
+        ],
+        "output": 98
+      }
+    ]
+  },
+  {
+    "id": 98,
+    "title": "Design LRU Cache",
+    "description": "Placeholder description for Design LRU Cache.",
+    "difficulty": "Easy",
+    "problemType": "Design",
+    "tags": [
+      "Hash Table",
+      "LinkedList"
+    ],
+    "examples": [
+      {
+        "input": [],
+        "output": "Expected output"
+      }
+    ],
+    "functionSignature": {
+      "javascript": "function designlrucache(...)"
+    },
+    "boilerplateCode": {
+      "javascript": "function designlrucache(...args) {\n  // your code here\n}"
+    },
+    "wrapperCode": {
+      "javascript": "const input = JSON.parse('{input}');\nconsole.log(JSON.stringify(designlrucache(...input)));"
+    },
+    "hiddenTestCases": [
+      {
+        "input": [
+          98
+        ],
+        "output": 98
+      },
+      {
+        "input": [
+          99
+        ],
+        "output": 99
+      }
+    ]
+  },
+  {
+    "id": 99,
+    "title": "Median of Two Sorted Arrays",
+    "description": "Placeholder description for Median of Two Sorted Arrays.",
+    "difficulty": "Medium",
+    "problemType": "Array",
+    "tags": [
+      "Array",
+      "Binary Search"
+    ],
+    "examples": [
+      {
+        "input": [],
+        "output": "Expected output"
+      }
+    ],
+    "functionSignature": {
+      "javascript": "function medianoftwosortedarrays(...)"
+    },
+    "boilerplateCode": {
+      "javascript": "function medianoftwosortedarrays(...args) {\n  // your code here\n}"
+    },
+    "wrapperCode": {
+      "javascript": "const input = JSON.parse('{input}');\nconsole.log(JSON.stringify(medianoftwosortedarrays(...input)));"
+    },
+    "hiddenTestCases": [
+      {
+        "input": [
+          99
+        ],
+        "output": 99
+      },
+      {
+        "input": [
+          100
+        ],
+        "output": 100
+      }
+    ]
+  }
 ]

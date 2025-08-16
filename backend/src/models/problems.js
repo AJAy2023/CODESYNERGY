@@ -19,16 +19,37 @@ const problemSchema = new mongoose.Schema({
     enum: ["Array", "String", "Math", "Tree", "Stack", "Queue", "Graph", "Matrix", "Dynamic Programming", "DFS", "LinkedList","Design" ],
     required: false,
   },
-  examples: [
-    {
-      input: { type: String, required: true },
-      output: { type: String, required: true }
-    }
-  ],
+ examples: [
+  {
+    input: { type: mongoose.Schema.Types.Mixed, required: true },
+    output: { type: mongoose.Schema.Types.Mixed, required: true }
+  }
+],
   expectedOutput: {
   type: String,
   // required: true,
 },
+hiddenTestCases: [
+  {
+    input: { type: mongoose.Schema.Types.Mixed, required: true },
+    output: { type: mongoose.Schema.Types.Mixed, required: true }
+  }
+],
+boilerplateCode: {
+    type: Map, // key = language name
+    of: String,
+    default: {}
+  },
+  functionSignature: {
+    type: Map,
+    of: String,
+    default: {}
+  },
+  wrapperCode: {
+    type: Map,
+    of: String,
+    default: {}
+  },
 isFree: {
   type: Boolean,
   default: false 

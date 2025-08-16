@@ -71,11 +71,17 @@ const RoomPage = () => {
       }
     });
 
-   socket.on("room-started", ({ starterId }) => {
-  if (starterId === userId) {
-    startCall(userId);
-  }
-});
+      socket.on("battle-started", ({ starterId }) => {
+      const myUserId = localStorage.getItem("userId");
+      console.log("battle-started received:", starterId, "me:", myUserId);
+
+      if (String(starterId) === String(myUserId)) {
+        console.log("I am the starter → creating offer");
+        startCall(myUserId);
+      } else {
+        console.log("I am participant → waiting for offer");
+      }
+    });
 
     socket.on("webrtc-offer", async ({ sdp, from }) => {
       peerConnectionRef.current = new RTCPeerConnection(config);

@@ -3,7 +3,9 @@ import { io } from "socket.io-client";
 import { BASE_URL } from "../api/config";
 
 //  Backend Socket Server
-const socket = io( BASE_URL, {
+
+const socket = io("http://localhost:8000",
+   {
   transports: ["websocket"],
   withCredentials: true,
 });
