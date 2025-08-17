@@ -103,6 +103,41 @@ const RoomWaitingLobby = () => {
       socket.off("battle-started", onBattleStarted);
     };
   }, [userId, routeParam, navigate, canonicalRoomId]);
+    if (!roomId || !userId) {
+      console.warn("Missing roomId or userId");
+      return;
+    }
+
+    // ✅ Correct format: Send object to socket
+    socket.emit("join-room", { roomId, userId });
+
+    const fetchRoomInfo = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const res = await axios.get(`${BASE_URL}/rooms/${roomId}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const data = res.data.room;
+        setCreator(data.creator);
+        setCreatorId(data.creator._id);
+        setParticipant(data.participant || null);
+        setProblem(data.problem);
+      } catch (err) {
+        console.error("Error fetching room:", err.message);
+      }
+    };
+
+    fetchRoomInfo();
+
+    socket.on("room-updated", ({ creator, participant }) => {
+      setCreator(creator);
+      setParticipant(participant);
+    });
+
+    return () => {
+      socket.off("room-updated");
+    };
+  }, [roomId, userId];
 
   const handleToggleMic = (type) => {
     setMicStatus((prev) => ({ ...prev, [type]: !prev[type] }));
@@ -169,7 +204,9 @@ const RoomWaitingLobby = () => {
             <p className="text-sm text-zinc-300">
               Quick Battle — Get matched instantly with an opponent of similar skill level.
             </p>
+
             {creator && participant && String(userId) === String(creatorId) && (
+
               <button
                 onClick={handleStartBattle}
                 className="mt-4 bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-md shadow"

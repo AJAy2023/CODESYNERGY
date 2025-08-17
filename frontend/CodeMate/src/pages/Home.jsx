@@ -14,6 +14,10 @@ const Home = () => {
       {/* Navbar */}
       <Navbar />
       {/* Animated background */}
+    <div className="relative min-h-screen bg-gray-950 text-white overflow-x-hidden">
+      {/* Navbar */}
+      <Navbar />
+      {/* Animated background */}
       <AnimatedBackground />
 
       {/* Main content */}
@@ -46,3 +50,5 @@ const Home = () => {
 };
 
 export default Home;
+
+
