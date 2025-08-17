@@ -147,6 +147,7 @@ const getRoomById = async (req, res) => {
       : { roomId: param };
 
     const room = await Room.findOne(query)
+    .populate("problem")
       .populate("participants.userId", "username email")
       .populate("createdBy", "username email");
 

@@ -158,16 +158,31 @@ const socketConnection = (io) => {
       socket.to(roomId).emit("webrtc-ice", { candidate });
     });
 
-    // START BATTLE: include starter id
-    socket.on("start-battle", ({ roomId }) => {
+      // START BATTLE: now includes problem
+    socket.on("start-battle", async ({ roomId }) => {
       const starterId = socket.data?.userId;
       console.log("start-battle requested by:", starterId, "for room:", roomId);
-      // broadcast to canonical room
-      io.to(roomId).emit("battle-started", {
-        msg: "Battle started!",
-        startedAt: Date.now(),
-        starterId,
-      });
+
+      try {
+        const populatedRoom = await Room.findOne({ roomId })
+          .populate("problem")
+          .populate("participants.userId", "username email")
+          .populate("createdBy", "username email");
+
+        if (!populatedRoom) {
+          return socket.emit("room-error", { msg: "Room not found" });
+        }
+
+        io.to(roomId).emit("battle-started", {
+          msg: "Battle started!",
+          startedAt: Date.now(),
+          starterId,
+          problem: populatedRoom.problem, 
+        });
+      } catch (err) {
+        console.error("Start battle error:", err);
+        socket.emit("room-error", { msg: "Could not start battle" });
+      }
     });
 
     // DISCONNECT
