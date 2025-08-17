@@ -1,108 +1,65 @@
-// src/components/homepage/AnimatedBackground.jsx
+// src/components/Homepage/AnimatedBackground.jsx
 import React, { useCallback } from "react";
 import Particles from "react-tsparticles";
-import { loadFull } from "tsparticles";
+import { loadSlim } from "tsparticles-slim";
 
-  
 const AnimatedBackground = () => {
+  // init function for particles
   const particlesInit = useCallback(async (engine) => {
-    await loadFull(engine);
+    await loadSlim(engine); // load slim version
   }, []);
 
-  // single unified page gradient is handled via wrapper CSS in Home.jsx, this draws subtle particles on top
+  // loaded function (optional)
+  const particlesLoaded = useCallback(async (container) => {
+    console.log("Particles loaded:", container);
+  }, []);
+
   return (
-    <>
-      {/* page-level gradient overlay (kept subtle so text readable) */}
-      <div
-        aria-hidden
-        className="fixed inset-0 -z-20"
-        style={{
-          background:
-            "linear-gradient(180deg, #0b1220 0%, #14213d 45%, #1f2a44 100%)",
-        }}
-      />
-
-      {/* particles */}
-      <div className="fixed inset-0 -z-10 opacity-30">
-        <Particles
-          id="homepage-particles"
-          init={particlesInit}
-          options={{
-            fullScreen: { enable: false },
-            particles: {
-              number: { value: 45, density: { enable: true, area: 900 } },
-              color: { value: ["#06b6d4", "#7c3aed", "#60a5fa"] },
-              shape: { type: "circle" },
-              opacity: { value: 0.18 },
-              size: { value: { min: 1, max: 4 } },
-              move: { enable: true, speed: 0.6, outModes: "out" },
-              links: {
-                enable: true,
-                distance: 120,
-                color: "#0ea5a1",
-                opacity: 0.06,
-                width: 1,
-              },
-            },
-            interactivity: {
-              events: { onHover: { enable: true, mode: "repulse" } },
-              modes: { repulse: { distance: 80, duration: 0.4 } },
-            },
-            detectRetina: true,
-          }}
-        />
-      </div>
-    </>
+    <Particles
+      id="tsparticles"
+      init={particlesInit}
+      loaded={particlesLoaded}
+      options={{
+        background: {
+          color: { value: "#0d0d0d" },
+        },
+        fpsLimit: 120,
+        interactivity: {
+          events: {
+            onHover: { enable: true, mode: "repulse" },
+            resize: true,
+          },
+          modes: {
+            repulse: { distance: 100, duration: 0.4 },
+          },
+        },
+        particles: {
+          color: { value: "#ff7f50" }, // orange particles
+          links: {
+            color: "#ff7f50",
+            distance: 150,
+            enable: true,
+            opacity: 0.5,
+            width: 1,
+          },
+          move: {
+            direction: "none",
+            enable: true,
+            outModes: { default: "bounce" },
+            random: false,
+            speed: 2,
+            straight: false,
+          },
+          number: { density: { enable: true, area: 800 }, value: 50 },
+          opacity: { value: 0.5 },
+          shape: { type: "circle" },
+          size: { value: { min: 1, max: 5 } },
+        },
+        detectRetina: true,
+      }}
+      className="absolute inset-0 -z-10"
+    />
   );
-}
-    <div className="absolute inset-0 -z-10">
-      <Particles
-        id="tsparticles"
-        init={particlesInit}
-        options={{
-          fullScreen: { enable: false },
-          background: { color: { value: "#0f172a" } },
-          fpsLimit: 60,
-          interactivity: {
-            events: {
-              onHover: { enable: true, mode: "repulse" },
-              resize: true,
-            },
-            modes: {
-              repulse: { distance: 80, duration: 0.4 },
-            },
-          },
-          particles: {
-            color: { value: "#38bdf8" },
-            links: {
-              color: "#38bdf8",
-              distance: 120,
-              enable: true,
-              opacity: 0.4,
-              width: 1,
-            },
-            collisions: { enable: false },
-            move: {
-              direction: "none",
-              enable: true,
-              outModes: { default: "bounce" },
-              random: false,
-              speed: 1.2,
-              straight: false,
-            },
-            number: {
-              density: { enable: true, area: 800 },
-              value: 50,
-            },
-            opacity: { value: 0.3 },
-            shape: { type: "circle" },
-            size: { value: { min: 1, max: 4 } },
-          },
-          detectRetina: true,
-        }}
-      />
-    </div>
+};
+
 export default AnimatedBackground;
-
-
-

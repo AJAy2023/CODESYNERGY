@@ -32,7 +32,6 @@ export default function AIChatAssistant() {
   // Simulate assistant reply (replace with API call later)
   const simulateAssistantReply = (userText) => {
     setTyping(true);
-    // small "thinking" delay
     setTimeout(() => {
       const reply = generateReply(userText);
       setMessages((m) => [
@@ -43,7 +42,6 @@ export default function AIChatAssistant() {
     }, 900 + Math.min(1200, userText.length * 20));
   };
 
-  // Very small reply generator placeholder (swap out with actual AI later)
   const generateReply = (userText) => {
     if (!userText.trim()) return "Could you share more details?";
     if (userText.toLowerCase().includes("optimize")) {
@@ -72,7 +70,33 @@ export default function AIChatAssistant() {
   };
 
   return (
-    <section aria-labelledby="ai-assistant-heading" className="py-16 px-4">
+    <section aria-labelledby="ai-assistant-heading" className="py-16 px-4 relative overflow-hidden bg-gradient-to-br from-[#1A1A2E] via-[#0F3460] to-[#16213E] text-white">
+      {/* Animated glowing background */}
+      <div className="absolute inset-0 -z-10">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.7 }}
+          animate={{ opacity: 0.4, scale: 1 }}
+          transition={{
+            duration: 8,
+            repeat: Infinity,
+            repeatType: "mirror",
+            ease: "easeInOut",
+          }}
+          className="absolute top-0 left-0 w-96 h-96 bg-purple-500 rounded-full blur-3xl opacity-20"
+        />
+        <motion.div
+          initial={{ opacity: 0, scale: 0.5 }}
+          animate={{ opacity: 0.3, scale: 1.2 }}
+          transition={{
+            duration: 10,
+            repeat: Infinity,
+            repeatType: "mirror",
+            ease: "easeInOut",
+          }}
+          className="absolute bottom-0 right-0 w-96 h-96 bg-pink-500 rounded-full blur-3xl opacity-20"
+        />
+      </div>
+
       <div className="max-w-4xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 10 }}
@@ -208,102 +232,11 @@ export default function AIChatAssistant() {
       </div>
     </section>
   );
-};
-
-import React from "react";
-import { motion } from "framer-motion";
-
-const AIChatAssistant = () => {
-  return (
-    <section className="relative overflow-hidden py-24 md:py-32 bg-gradient-to-br from-[#1A1A2E] via-[#0F3460] to-[#16213E] text-white">
-      {/* Animated glowing background */}
-      <div className="absolute inset-0 -z-10">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.7 }}
-          animate={{ opacity: 0.4, scale: 1 }}
-          transition={{
-            duration: 8,
-            repeat: Infinity,
-            repeatType: "mirror",
-            ease: "easeInOut",
-          }}
-          className="absolute top-0 left-0 w-96 h-96 bg-purple-500 rounded-full blur-3xl opacity-20"
-        />
-        <motion.div
-          initial={{ opacity: 0, scale: 0.5 }}
-          animate={{ opacity: 0.3, scale: 1.2 }}
-          transition={{
-            duration: 10,
-            repeat: Infinity,
-            repeatType: "mirror",
-            ease: "easeInOut",
-          }}
-          className="absolute bottom-0 right-0 w-96 h-96 bg-pink-500 rounded-full blur-3xl opacity-20"
-        />
-      </div>
-
-      <div className="relative max-w-5xl mx-auto text-center flex flex-col items-center justify-center space-y-10 px-4">
-        <motion.h2
-          initial={{ opacity: 0, y: -30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-          viewport={{ once: true }}
-          className="text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-[#00C9FF] to-[#92FE9D] bg-clip-text text-transparent"
-        >
-          Meet Your AI Coding Assistant
-        </motion.h2>
-
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2, duration: 0.8, ease: "easeOut" }}
-          viewport={{ once: true }}
-          className="max-w-2xl text-lg md:text-xl text-gray-200"
-        >
-          Get instant help from our intelligent assistant trained on thousands of problems. From hints to detailed explanations, your AI mentor has your back — always.
-        </motion.p>
-
-        {/* AI Assistant Card */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8, rotate: -5 }}
-          whileInView={{ opacity: 1, scale: 1, rotate: 0 }}
-          transition={{ delay: 0.4, duration: 0.8, ease: "easeOut" }}
-          viewport={{ once: true }}
-          className="relative bg-gradient-to-br from-[#1E3C72] to-[#2A5298] border border-white/20 rounded-3xl shadow-2xl w-full max-w-md p-8 md:p-12 flex flex-col items-center space-y-6 transform hover:scale-105 transition-transform duration-500"
-        >
-          <motion.img
-            src="https://cdn-icons-png.flaticon.com/512/4712/4712106.png"
-            alt="AI Assistant"
-            className="w-24 md:w-32 rounded-full border-4 border-white/30 shadow-xl"
-            initial={{ y: -10 }}
-            animate={{ y: [ -10, 10, -10 ] }}
-            transition={{
-              duration: 4,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-          />
-          <h3 className="text-2xl font-bold">CodeMate AI</h3>
-          <p className="text-gray-200 text-center">
-            Type your question, get help instantly — it’s like having a mentor 24/7. Experience frictionless, AI-powered problem-solving.
-          </p>
-          <button className="bg-gradient-to-r from-[#00C9FF] to-[#92FE9D] text-black px-6 py-3 rounded-full font-semibold hover:scale-105 transition-transform duration-300">
-            Try AI Assistant Now
-          </button>
-        </motion.div>
-      </div>
-    </section>
-  );
 }
 
 /* --------------------------
-  Small helper functions below
-  (No external packages needed)
-   - hexToRgba(hex, alpha)
-   - shadeHex(hex, percent)
-   These keep inline styles readable & consistent.
+  Small helper functions
    -------------------------- */
-
 function hexToRgba(hex, alpha = 1) {
   const h = hex.replace("#", "");
   const bigint = parseInt(h, 16);
@@ -313,7 +246,6 @@ function hexToRgba(hex, alpha = 1) {
   return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 }
 
-// simple shade helper (lighten/darken by percent -100..100)
 function shadeHex(hex, percent) {
   const h = hex.replace("#", "");
   const num = parseInt(h, 16);
@@ -324,5 +256,4 @@ function shadeHex(hex, percent) {
   g = Math.max(Math.min(255, g), 0);
   b = Math.max(Math.min(255, b), 0);
   return `#${(r << 16 | g << 8 | b).toString(16).padStart(6, "0")}`;
-};
-
+}
