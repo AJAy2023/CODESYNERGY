@@ -1,8 +1,10 @@
 // src/Collab/socket.js
 import { io } from "socket.io-client";
+import { BASE_URL } from "../api/config";
 
 //  Backend Socket Server
-const socket = io("http://localhost:8000",
+
+const socket = io("https://codemate-1-nuih.onrender.com",
    {
   transports: ["websocket"],
   withCredentials: true,

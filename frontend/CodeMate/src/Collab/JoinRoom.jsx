@@ -22,17 +22,30 @@ const JoinRoom = () => {
       // 🔐 Backend join room request
       const res = await axios.post(
         `${BASE_URL}/rooms/joinroom`,
+        `${BASE_URL}/rooms/joinroom`,  // ✅ fixed string interpolation
         { roomId, userId },
-        { headers: { Authorization: `Bearer ${token}` } }
+        { headers: { Authorization: `Bearer ${token}` } }  // ✅ fixed string interpolation
       );
 
       if (res.status === 200) {
         const { room } = res.data;
 
         //  Emit correct socket event
-        socket.emit("join-room", { roomId: room.roomId, userId });
+        // Emit after socket is connected
+if (socket.connected) {
+  socket.emit("join-room", { roomId: room.roomId, userId });
+} else {
+  socket.on("connect", () => {
+    socket.emit("join-room", { roomId: room.roomId, userId });
+  });
+}
+
 
         // Navigate to waiting room using roomId
+        // ✅ Emit correct socket event (ensure backend listens for "join-room")
+        socket.emit("join-room", { roomId: room.roomId, userId });
+
+        // ✅ Navigate using correct roomId (custom user-friendly ID)
         navigate(`/waitingroom/${room.roomId}`);
       }
     } catch (err) {

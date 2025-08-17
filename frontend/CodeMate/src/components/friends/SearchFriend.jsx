@@ -1,137 +1,125 @@
+// src/components/friends/SearchFriend.jsx
 import { useEffect, useState } from "react";
-import axios from "axios";
-import { BASE_URL } from "../../api/config";
-import { useNavigate } from "react-router-dom";
-import { Search, Bell, Coins, User, ArrowLeft } from "lucide-react";
-import { motion } from "framer-motion";
+import { searchUsers, sendFriendRequest } from "../../api/friends";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
-const SearchFriend = () => {
-  const [searchText, setSearchText] = useState("");
-  const [suggestions, setSuggestions] = useState([]);
-  const [debounceTimer, setDebounceTimer] = useState(null);
-  const [user, setUser] = useState(null);
+export default function SearchFriend() {
+  const [query, setQuery] = useState("");
+  const [results, setResults] = useState([]);
+  const [sendingId, setSendingId] = useState(null);
+  const [searching, setSearching] = useState(false);
+  const [params] = useSearchParams();
   const navigate = useNavigate();
-  const token = localStorage.getItem("token");
+  const me = localStorage.getItem("userId");
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const res = await axios.get(`${BASE_URL}/user-profile`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setUser(res.data);
-      } catch (err) {
-        console.error("Error fetching user:", err);
-      }
-    };
-    fetchUser();
-  }, []);
-
-  const handleSearch = (text) => {
-    setSearchText(text);
-
-    if (debounceTimer) clearTimeout(debounceTimer);
-
-    const timer = setTimeout(async () => {
-      if (!text.trim()) {
-        setSuggestions([]);
-        return;
-      }
-
-      try {
-        const res = await axios.get(`${BASE_URL}/friends/search?query=${text}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setSuggestions(res.data.users || []);
-      } catch (err) {
-        console.error("Search failed:", err);
-        setSuggestions([]);
-      }
-    }, 400);
-
-    setDebounceTimer(timer);
+  const doSearch = async (q) => {
+    if (!q?.trim()) {
+      setResults([]);
+      return;
+    }
+    try {
+      setSearching(true);
+      const res = await searchUsers(q.trim());
+      setResults(res?.data?.users || []);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setSearching(false);
+    }
   };
 
-  const handleUserClick = (username) => {
-    navigate(`/profile/${username}`);
+  useEffect(() => {
+    const q = params.get("query");
+    if (q) {
+      setQuery(q);
+      doSearch(q);
+    }
+  }, [params]);
+
+  const handleSend = async (receiverId) => {
+    if (!me) {
+      alert("Please login first");
+      return;
+    }
+    if (me === receiverId) return;
+
+    try {
+      setSendingId(receiverId);
+      await sendFriendRequest(me, receiverId);
+      alert("Friend request sent!");
+    } catch (err) {
+      alert(err?.response?.data?.msg || "Failed to send request");
+    } finally {
+      setSendingId(null);
+    }
   };
 
   return (
-    <div className="bg-gradient-to-b from-black via-gray-900 to-zinc-900 min-h-screen p-6 text-white">
-      {/* Top Navigation */}
-      <div className="flex justify-between items-center mb-6">
-        <div className="flex items-center gap-6">
-          <h1
-            onClick={() => navigate("/dashboard")}
-            className="text-3xl font-extrabold text-cyan-400 tracking-wide cursor-pointer"
-          >
-            CodeMate
-          </h1>
-
-          {user && (
-            <div className="flex items-center gap-1 bg-zinc-800 px-2 py-1 rounded text-green-400">
-              <Coins size={16} />
-              <span className="text-sm font-bold">{user.coins ?? 0} Coins</span>
-            </div>
-          )}
-        </div>
-
-        <div className="flex items-center gap-4">
-          <Bell className="cursor-pointer hover:text-yellow-300" />
-          <User
-            className="cursor-pointer hover:text-blue-400"
-            onClick={() => navigate("/profile")}
-          />
-        </div>
-      </div>
-
-      {/* Title and Back */}
-      <div className="flex items-center gap-2 mb-6">
-        <ArrowLeft
-          onClick={() => navigate("/dashboard")}
-          className="cursor-pointer hover:text-cyan-400"
+    <div className="rounded-xl border border-white/10 bg-gradient-to-br from-zinc-900/90 to-zinc-950/90 p-4">
+      {/* Search bar */}
+      <div className="flex gap-2">
+        <input
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && doSearch(query)}
+          placeholder="Search by username…"
+          className="flex-1 px-3 py-2 rounded-md bg-zinc-900 border border-white/10 text-slate-100 outline-none"
         />
-        <h2 className="text-2xl font-bold">Search Friends</h2>
+        <button
+          onClick={() => doSearch(query)}
+          className="px-4 py-2 rounded-md font-semibold bg-gradient-to-r from-sky-500 to-cyan-400 text-[#04121a]"
+        >
+          {searching ? "Searching…" : "Search"}
+        </button>
       </div>
 
-      {/* Search Input */}
-      <div className="relative w-full max-w-md mx-auto mb-8">
-        <div className="flex items-center bg-zinc-800 px-4 py-2 rounded-lg border border-zinc-700 shadow">
-          <Search className="text-gray-400" size={18} />
-          <input
-            type="text"
-            value={searchText}
-            onChange={(e) => handleSearch(e.target.value)}
-            placeholder="Search for friends..."
-            className="ml-2 bg-transparent outline-none w-full text-white text-sm"
-          />
-        </div>
-
-        {suggestions.length > 0 && (
-          <motion.ul
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="absolute z-10 mt-2 w-full bg-zinc-800 border border-zinc-700 rounded-md max-h-64 overflow-y-auto shadow-md"
-          >
-            {suggestions.map((user) => (
-              <li
-                key={user._id}
-                onClick={() => handleUserClick(user.username)}
-                className="px-4 py-2 hover:bg-zinc-700 cursor-pointer flex items-center gap-3"
+      {/* Results */}
+      <div className="mt-4 space-y-2">
+        {results.map((u) => {
+          const isMe = me === u._id;
+          return (
+            <div
+              key={u._id}
+              className="flex items-center justify-between rounded-lg border border-white/10 bg-zinc-900/80 p-3"
+            >
+              <div
+                className="flex items-center gap-3 cursor-pointer"
+                onClick={() => navigate(`/view-profile/${u._id}`)}
               >
                 <img
-                  src={user.profilePic || "/default-profile.png"}
-                  alt="pfp"
-                  className="w-7 h-7 rounded-full object-cover"
+                  src={u.profilePic || "https://i.pravatar.cc/100?img=5"}
+                  alt={u.username}
+                  className="h-10 w-10 rounded-full ring-1 ring-white/10 object-cover"
                 />
-                <span className="text-sm">{user.username}</span>
-              </li>
-            ))}
-          </motion.ul>
+                <div className="text-slate-100 font-medium">
+                  {u.username}
+                  {isMe && (
+                    <span className="ml-2 text-xs text-slate-400">(you)</span>
+                  )}
+                </div>
+              </div>
+
+              {!isMe && (
+                <button
+                  onClick={() => handleSend(u._id)}
+                  disabled={sendingId === u._id}
+                  className={`px-3 py-1 rounded-md text-sm font-semibold bg-gradient-to-r from-emerald-500 to-emerald-400 text-[#04121a] ${
+                    sendingId === u._id ? "opacity-70 cursor-not-allowed" : ""
+                  }`}
+                >
+                  {sendingId === u._id ? "Sending…" : "Add"}
+                </button>
+              )}
+            </div>
+          );
+        })}
+
+        {!results.length && !searching && (
+          <div className="text-sm text-slate-400">
+            No results yet — try searching a username.
+          </div>
         )}
       </div>
     </div>
   );
-};
-
-export default SearchFriend;
+}

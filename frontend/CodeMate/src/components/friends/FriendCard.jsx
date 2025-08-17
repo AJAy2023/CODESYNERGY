@@ -1,52 +1,54 @@
-// components/friends/FriendCard.jsx
-import React from "react";
-import { motion } from "framer-motion";
-import { UserX, UserCheck, UserMinus } from "lucide-react";
+// src/components/friends/FriendCard.jsx
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+// import { deleteFriend } from "../../api/friends";
 
-const FriendCard = ({ user, type, onAccept, onReject, onUnfriend }) => {
+
+export default function FriendCard({ friend }) {
+  const navigate = useNavigate();
+  const [removing, setRemoving] = useState(false);
+
+  if (!friend) return null;
+
+  const handleUnfriend = async (e) => {
+    e.stopPropagation();
+    if (removing) return;
+    try {
+      setRemoving(true);
+      const me = localStorage.getItem("userId");
+      await deleteFriend(me, friend._id);
+      window.dispatchEvent(new CustomEvent("friends:refresh")); 
+    } catch (err) {
+      alert(err?.response?.data?.msg || "Failed to remove friend");
+    } finally {
+      setRemoving(false);
+    }
+  };
+
   return (
-    <motion.div
-      whileHover={{ scale: 1.02 }}
-      className="flex items-center justify-between bg-zinc-800 border border-zinc-700 hover:border-cyan-500 p-4 rounded-lg shadow-md mb-3"
+    <div
+      onClick={() => navigate(`/profile/${friend._id}`)}
+      className="group cursor-pointer rounded-xl border border-white/10 bg-gradient-to-br from-zinc-900 to-zinc-950 hover:from-zinc-800/70 hover:to-zinc-900/70 transition p-4 flex items-center gap-4"
     >
-      <div className="flex items-center gap-4">
-        <img
-          src={user.profilePic || "/default-avatar.png"}
-          alt={user.username}
-          className="w-12 h-12 rounded-full object-cover"
-        />
-        <span className="text-white font-medium">{user.username}</span>
+      <img
+        src={friend.profilePic || "https://i.pravatar.cc/100?img=12"}
+        alt={friend.username}
+        className="h-12 w-12 rounded-full ring-2 ring-white/10 object-cover"
+      />
+      <div className="flex-1">
+        <div className="font-semibold text-slate-100">{friend.username}</div>
+        <div className="text-xs text-slate-400">Tap to view profile</div>
       </div>
 
-      <div className="flex gap-2">
-        {type === "request" && (
-          <>
-            <button
-              onClick={() => onAccept(user._id)}
-              className="px-3 py-1 text-green-400 border border-green-500 rounded hover:bg-green-600 hover:text-white"
-            >
-              <UserCheck size={16} />
-            </button>
-            <button
-              onClick={() => onReject(user._id)}
-              className="px-3 py-1 text-red-400 border border-red-500 rounded hover:bg-red-600 hover:text-white"
-            >
-              <UserX size={16} />
-            </button>
-          </>
-        )}
-
-        {type === "friend" && (
-          <button
-            onClick={() => onUnfriend(user._id)}
-            className="px-3 py-1 text-yellow-400 border border-yellow-500 rounded hover:bg-yellow-600 hover:text-black"
-          >
-            <UserMinus size={16} />
-          </button>
-        )}
-      </div>
-    </motion.div>
+      <button
+        onClick={handleUnfriend}
+        disabled={removing}
+        className={`px-3 py-1 rounded-md text-sm border border-white/10 hover:border-red-400/40 hover:text-red-300 transition ${
+          removing ? "opacity-60 cursor-not-allowed" : ""
+        }`}
+      >
+        {removing ? "Removing..." : "Unfriend"}
+      </button>
+    </div>
   );
-};
-
-export default FriendCard;
+}

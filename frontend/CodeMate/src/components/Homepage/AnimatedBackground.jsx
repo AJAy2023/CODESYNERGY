@@ -1,24 +1,108 @@
 // src/components/homepage/AnimatedBackground.jsx
-import { useEffect } from "react";
+import React, { useCallback } from "react";
+import Particles from "react-tsparticles";
+import { loadFull } from "tsparticles";
 
-export default function AnimatedBackground() {
-  useEffect(() => {
-    const script = document.createElement("script");
-    script.src = "https://cdn.jsdelivr.net/npm/@dotlottie/player-component@latest/dist/dotlottie-player.js";
-    script.async = true;
-    document.body.appendChild(script);
+  
+const AnimatedBackground = () => {
+  const particlesInit = useCallback(async (engine) => {
+    await loadFull(engine);
   }, []);
 
+  // single unified page gradient is handled via wrapper CSS in Home.jsx, this draws subtle particles on top
   return (
-    <div className="fixed top-0 left-0 w-full h-full -z-10">
-      <dotlottie-player
-        src="https://lottie.host/f3f2ce9d-ecc3-4d12-a3e7-7d1ad8e2de8b/2AnuRZwe1M.json"
-        background="transparent"
-        speed="1"
-        loop
-        autoplay
-        style={{ width: "100%", height: "100%" }}
-      ></dotlottie-player>
-    </div>
+    <>
+      {/* page-level gradient overlay (kept subtle so text readable) */}
+      <div
+        aria-hidden
+        className="fixed inset-0 -z-20"
+        style={{
+          background:
+            "linear-gradient(180deg, #0b1220 0%, #14213d 45%, #1f2a44 100%)",
+        }}
+      />
+
+      {/* particles */}
+      <div className="fixed inset-0 -z-10 opacity-30">
+        <Particles
+          id="homepage-particles"
+          init={particlesInit}
+          options={{
+            fullScreen: { enable: false },
+            particles: {
+              number: { value: 45, density: { enable: true, area: 900 } },
+              color: { value: ["#06b6d4", "#7c3aed", "#60a5fa"] },
+              shape: { type: "circle" },
+              opacity: { value: 0.18 },
+              size: { value: { min: 1, max: 4 } },
+              move: { enable: true, speed: 0.6, outModes: "out" },
+              links: {
+                enable: true,
+                distance: 120,
+                color: "#0ea5a1",
+                opacity: 0.06,
+                width: 1,
+              },
+            },
+            interactivity: {
+              events: { onHover: { enable: true, mode: "repulse" } },
+              modes: { repulse: { distance: 80, duration: 0.4 } },
+            },
+            detectRetina: true,
+          }}
+        />
+      </div>
+    </>
   );
 }
+    <div className="absolute inset-0 -z-10">
+      <Particles
+        id="tsparticles"
+        init={particlesInit}
+        options={{
+          fullScreen: { enable: false },
+          background: { color: { value: "#0f172a" } },
+          fpsLimit: 60,
+          interactivity: {
+            events: {
+              onHover: { enable: true, mode: "repulse" },
+              resize: true,
+            },
+            modes: {
+              repulse: { distance: 80, duration: 0.4 },
+            },
+          },
+          particles: {
+            color: { value: "#38bdf8" },
+            links: {
+              color: "#38bdf8",
+              distance: 120,
+              enable: true,
+              opacity: 0.4,
+              width: 1,
+            },
+            collisions: { enable: false },
+            move: {
+              direction: "none",
+              enable: true,
+              outModes: { default: "bounce" },
+              random: false,
+              speed: 1.2,
+              straight: false,
+            },
+            number: {
+              density: { enable: true, area: 800 },
+              value: 50,
+            },
+            opacity: { value: 0.3 },
+            shape: { type: "circle" },
+            size: { value: { min: 1, max: 4 } },
+          },
+          detectRetina: true,
+        }}
+      />
+    </div>
+export default AnimatedBackground;
+
+
+
