@@ -1,9 +1,5 @@
-<<<<<<< Updated upstream
 // src/Components/HomePage/HeroSection.jsx
 import React, { useEffect, useRef, useState } from "react";
-=======
-import React from "react";
->>>>>>> Stashed changes
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 
@@ -94,7 +90,6 @@ export default function HeroSection() {
     { id: "mk", label: "Maya", src: null },
   ];
 
-<<<<<<< Updated upstream
   return (
     <section
       aria-label="Hero"
@@ -358,46 +353,6 @@ export default function HeroSection() {
               </div>
             </div>
           </div>
-=======
-export default function HeroSection() {
-  return (
-    <section className="relative flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-[#0f0c29] via-[#302b63] to-[#24243e] overflow-hidden">
-      {/* Subtle stars or particles background */}
-      <div className="absolute inset-0 bg-[url('/stars.svg')] bg-cover opacity-20 z-0" />
-
-      <div className="relative z-10 text-center p-6 max-w-3xl">
-        <motion.h1
-          initial={{ opacity: 0, y: -30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1 }}
-          className="text-5xl md:text-6xl font-extrabold text-white drop-shadow-md mb-6"
-        >
-          Code Together,
-          <br /> Learn Forever
-        </motion.h1>
-
-        <motion.p
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.3 }}
-          className="text-lg md:text-xl text-gray-300 mb-8"
-        >
-          Collaborative coding made easy. Real-time, AI-powered, and designed for growth.
-        </motion.p>
-
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5, delay: 0.6 }}
-          className="flex flex-col sm:flex-row items-center gap-4 justify-center"
-        >
-          <button className="bg-gradient-to-r from-purple-500 to-indigo-500 text-white font-semibold py-3 px-6 rounded-full shadow-lg hover:scale-105 hover:shadow-xl transition">
-            Join Now
-          </button>
-          <button className="bg-white/20 backdrop-blur-md border border-white/30 text-white font-semibold py-3 px-6 rounded-full hover:bg-white/30 transition">
-            Learn More
-          </button>
->>>>>>> Stashed changes
         </motion.div>
       </div>
 
@@ -432,7 +387,6 @@ export default function HeroSection() {
     </section>
   );
 }
-<<<<<<< Updated upstream
 
 /* --------------------------
   Small helpers used above
@@ -458,5 +412,3 @@ function shadeHex(hex, percent) {
   b = Math.max(Math.min(255, b), 0);
   return `#${((r << 16) | (g << 8) | b).toString(16).padStart(6, "0")}`;
 }
-=======
->>>>>>> Stashed changes
