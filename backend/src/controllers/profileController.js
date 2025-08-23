@@ -14,17 +14,24 @@ const viewprofileData = async (req, res) => {
     }
 
     const targetUser = await User.findById(id)
-      .select("username bio profilePic badges coins score friends")
+      .select("username bio profilePic badges coins score friends unlockedProblems solvedProblems")
       .populate("badges", "name icon")
       .populate("friends", "username profilePic");
 
     if (!targetUser) {
       return res.status(404).json({ msg: "User profile not found." });
     }
+    // stats 
+    const stats = {
+      coins: targetUser.coins ?? 0,
+      friendsCount: Array.isArray(targetUser.friends) ? targetUser.friends.length : 0,
+      solvedCount: Array.isArray(targetUser.solvedProblems) ? targetUser.solvedProblems.length : 0,
+    };
 
     return res.status(200).json({
       msg: "User profile fetched successfully.",
       profile: targetUser,
+      stats
     });
   } catch (error) {
     console.error("Error in viewprofileData:", error.message);
