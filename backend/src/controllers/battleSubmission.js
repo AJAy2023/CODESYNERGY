@@ -1,7 +1,7 @@
 const Room = require("../models/room");
 const Problem = require("../models/problems");
 const exicutecode = require("../utils/judge0");
-
+ require("dotenv").config({path:(__dirname,  "../../.env")});
 const languageMap = {
   javascript: 63, 
 };
@@ -68,16 +68,30 @@ const submitBattleCode = async (req, res) => {
     if (!wrapper) return res.status(400).json({ msg: "No wrapper for this language" });
 
     let allPassed = true;
+    let failedCase = null;
 
     // check all hidden test cases
     for (let testCase of problem.hiddenTestCases) {
       const finalCode = code + "\n" + wrapper.replace("{input}", JSON.stringify(testCase.input));
-      const result = await exicutecode(finalCode, langId);
+let result;
+try {
+  result = await exicutecode(finalCode, langId);
+} catch (execErr) {
+  console.error("Judge0 execution error:", execErr);
+  return res.status(500).json({ msg: "Judge0 execution error", error: execErr.message });
+}
 
-      if (result.status.description !== "Accepted") {
-        allPassed = false;
-        break;
-      }
+// Add this guard:
+if (!result || !result.status) {
+  console.error("Invalid Judge0 result:", result);
+  return res.status(500).json({ msg: "Judge0 did not return a valid result", raw: result });
+}
+
+if (result.status.description !== "Accepted") {
+  allPassed = false;
+  failedCase = { input: testCase.input, error: result.stderr || result.compile_output };
+  break;
+}
 
       const expected = typeof testCase.output === "string"
         ? testCase.output
@@ -87,6 +101,7 @@ const submitBattleCode = async (req, res) => {
 
       if (actual !== expected.trim()) {
         allPassed = false;
+        failedCase = { input: testCase.input, expected, actual };
         break;
       }
     }
@@ -109,13 +124,12 @@ const submitBattleCode = async (req, res) => {
       if (r1.status === "Accepted" && r2.status !== "Accepted") winner = p1;
       else if (r2.status === "Accepted" && r1.status !== "Accepted") winner = p2;
       else if (r1.status === "Accepted" && r2.status === "Accepted") {
-        winner = r1.submittedAt < r2.submittedAt ? p1 : p2; // faster one wins
+        winner = r1.submittedAt < r2.submittedAt ? p1 : p2; 
       }
 
       room.winner = winner;
       await room.save();
 
-      //   emit real-time result
       req.io.to(room.roomId).emit("battle-result", {
         winner,
         submissions: room.submissions,
@@ -125,11 +139,13 @@ const submitBattleCode = async (req, res) => {
     return res.json({
       msg: "Submission recorded",
       status: allPassed ? "Accepted" : "Wrong Answer",
+      failedCase, 
     });
   } catch (err) {
     console.error("submitBattleCode error:", err);
     return res.status(500).json({ msg: "Server error", error: err.message });
   }
 };
+
 
 module.exports = { runBattleCode, submitBattleCode };
