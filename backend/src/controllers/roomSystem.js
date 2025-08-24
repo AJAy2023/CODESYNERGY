@@ -6,7 +6,7 @@ const Problem = require("../models/problems");
 
 const createroom = async (req, res) => {  
   try {
-    const { userId, roomname, roomId, problem, roomType, peoplecount,videoEnabled, audioEnabled } = req.body;
+    const { userId, roomname, roomId, problem, roomType, peoplecount, videoEnabled, audioEnabled } = req.body;
 
     const user = await User.findById(userId);
     if (!user) return res.status(404).json({ msg: "User not found" });
@@ -14,37 +14,47 @@ const createroom = async (req, res) => {
     const roomActive = await Room.findOne({ isActive: true, createdBy: userId });
     if (roomActive) return res.status(400).json({ msg: "You can't create multiple rooms" });
 
-    // Room validation
+    // Validate room type
     if (roomType === 'battle' && peoplecount !== 2) {
       return res.status(400).json({ msg: "Battle room must have exactly 2 people" });
     }
-
     if (roomType === 'discussion' && peoplecount < 2) {
       return res.status(400).json({ msg: "Discussion room must have at least 2 people" });
     }
 
-    // here  i need to select the  problems from the db  
+    // Determine problem: either user-provided or random
+    let chosenProblemId = problem;
+    if (!chosenProblemId) {
+      const count = await Problem.countDocuments();
+      if (count === 0) return res.status(404).json({ msg: "No problems available" });
+      const rand = Math.floor(Math.random() * count);
+      const randomProblem = await Problem.findOne().skip(rand);
+      chosenProblemId = randomProblem._id;
+    } else {
+      if (!mongoose.Types.ObjectId.isValid(chosenProblemId)) {
+        return res.status(400).json({ msg: "Invalid problem ID" });
+      }
+      const prob = await Problem.findById(chosenProblemId);
+      if (!prob) return res.status(404).json({ msg: "Problem not found" });
+    }
 
-    const selectproblems  = await  Problem.find({
-      
-    })
     const newroom = await Room.create({
       roomName: roomname,
-      roomId: roomId,
-      roomType: roomType,
-      problem: problem,
+      roomId,
+      roomType,
+      problem: chosenProblemId,
       peopleCount: peoplecount,
       createdBy: userId,
       roomStatus: 'waiting',
       isActive: true,
       videoEnabled: videoEnabled ?? true,
-     audioEnabled: audioEnabled ?? true,
-     participants: [
-    {
-      userId: userId,
-      joinedAt: new Date(),
-    },
-  ],
+      audioEnabled: audioEnabled ?? true,
+      participants: [
+        {
+          userId: userId,
+          joinedAt: new Date(),
+        },
+      ],
     });
 
     return res.status(201).json({ msg: "Room created successfully", room: newroom });
@@ -54,6 +64,7 @@ const createroom = async (req, res) => {
     return res.status(500).json({ msg: "server error", error: err.message });
   }
 };
+
 
 
 

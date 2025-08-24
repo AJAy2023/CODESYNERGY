@@ -16,7 +16,7 @@ const friendRequests = require("./routes/friendRequests");
 const roomsystem = require("./routes/roomsystem");
 const hints = require("./routes/aihints");
 const profileSystem =  require("./routes/profilesystem");
-
+const Battle = require("./routes/battleRoutes");
 require('dotenv').config({path:path.join(__dirname , '../.env')});
 const PORT = process.env.PORT||8000;
 
@@ -30,12 +30,18 @@ const  io = new Server(server , {
   }
 })
 
+
 //cors setup
 
 app.use(cors({
   origin: "http://localhost:5173",  
   credentials: true                 
 }));
+
+app.use((req, res, next) => {
+  req.io = io; 
+  next();
+})
 
 // conect db 
 connectDB();
@@ -57,6 +63,7 @@ app.use('/', friendRequests);
 app.use('/', roomsystem);
 app.use('/', hints);
 app.use('/', profileSystem);
+app.use('/', Battle);
 // home route
 app.get('/', (req, res)=>{
     res.send("welcome to home page...!!");
