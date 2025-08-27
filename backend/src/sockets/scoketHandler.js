@@ -246,11 +246,11 @@
       // ---------- Code sync helpers ----------
       socket.on("code-init", ({ roomId, code }) => {
         console.log("code-init received for room:", roomId);
-        socket.to(roomId).emit("code-init", { code });
+        io.to(roomId).emit("code-init", { code });
       });
 
       socket.on("code-edit", ({ roomId, from, code }) => {
-        socket.to(roomId).emit("code-edit", { from, code });
+        io.to(roomId).emit("code-edit", { from, code });
       });
 
       // ---------- JOIN ROOM ----------
@@ -359,20 +359,17 @@
 
           // Handle room activation semantics (battle vs discussion)
           if (updatedRoom.roomType === "battle") {
-            // if room is full, mark active
-            if ((updatedRoom.participants?.length || 0) >= (updatedRoom.peopleCount || 2)) {
-              await Room.updateOne({ roomId: canonicalRoomId }, { $set: { roomStatus: "active" } });
-              io.to(canonicalRoomId).emit("room-started", { msg: "Battle is now active" });
-            }
-          } else if (updatedRoom.roomType === "discussion") {
-            // Make discussion active immediately and notify clients
+          if ((updatedRoom.participants?.length || 0) === (updatedRoom.peopleCount || 2) 
+              && updatedRoom.roomStatus !== "active") {
             await Room.updateOne({ roomId: canonicalRoomId }, { $set: { roomStatus: "active" } });
-            io.to(canonicalRoomId).emit("discussion-started", {
-              msg: "Discussion is now active",
+
+            io.to(canonicalRoomId).emit("battle-started", {
+              msg: "Battle is now active",
               participants: updatedRoom.participants,
               startedAt: Date.now()
             });
           }
+        }
         } catch (err) {
           console.error("Join room error:", err);
           socket.emit("room-error", { msg: "Internal server error" });
