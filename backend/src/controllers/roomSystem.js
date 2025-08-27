@@ -21,6 +21,10 @@ const createroom = async (req, res) => {
     if (roomType === 'discussion' && peoplecount < 2) {
       return res.status(400).json({ msg: "Discussion room must have at least 2 people" });
     }
+    if (roomType === 'discussion') {
+        peoplecount = 4;
+    }
+
 
     // Determine problem: either user-provided or random
     let chosenProblemId = problem;
@@ -107,7 +111,7 @@ const joinRoom = async (req, res) => {
 
     if (!alreadyJoined) {
       room.participants.push({
-        userId,  // error 
+        userId,   
          joinedAt: new Date(),
         videoEnabled,
         audioEnabled
