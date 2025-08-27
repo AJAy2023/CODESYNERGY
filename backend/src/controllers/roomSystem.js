@@ -49,7 +49,7 @@ const createroom = async (req, res) => {
       problem: chosenProblemId,
       peopleCount: peoplecount,
       createdBy: userId,
-      roomStatus: 'waiting',
+      roomStatus: roomType === "battle" ? "waiting" : "active", 
       isActive: true,
       videoEnabled: videoEnabled ?? true,
       audioEnabled: audioEnabled ?? true,
