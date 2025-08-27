@@ -53,6 +53,10 @@ const roomSchema = new mongoose.Schema(
         }
       }
     ],
+    submissions: {
+  type: Object,
+  default: {},
+},
     winnerId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",

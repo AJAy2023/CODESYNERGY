@@ -70,28 +70,26 @@ const submitBattleCode = async (req, res) => {
     let allPassed = true;
     let failedCase = null;
 
-    // check all hidden test cases
+    //  Run all hidden test cases
     for (let testCase of problem.hiddenTestCases) {
       const finalCode = code + "\n" + wrapper.replace("{input}", JSON.stringify(testCase.input));
-let result;
-try {
-  result = await exicutecode(finalCode, langId);
-} catch (execErr) {
-  console.error("Judge0 execution error:", execErr);
-  return res.status(500).json({ msg: "Judge0 execution error", error: execErr.message });
-}
+      let result;
+      try {
+        result = await exicutecode(finalCode, langId);
+      } catch (execErr) {
+        console.error("Judge0 execution error:", execErr);
+        return res.status(500).json({ msg: "Judge0 execution error", error: execErr.message });
+      }
 
-// Add this guard:
-if (!result || !result.status) {
-  console.error("Invalid Judge0 result:", result);
-  return res.status(500).json({ msg: "Judge0 did not return a valid result", raw: result });
-}
+      if (!result || !result.status) {
+        return res.status(500).json({ msg: "Judge0 returned invalid result", raw: result });
+      }
 
-if (result.status.description !== "Accepted") {
-  allPassed = false;
-  failedCase = { input: testCase.input, error: result.stderr || result.compile_output };
-  break;
-}
+      if (result.status.description !== "Accepted") {
+        allPassed = false;
+        failedCase = { input: testCase.input, error: result.stderr || result.compile_output };
+        break;
+      }
 
       const expected = typeof testCase.output === "string"
         ? testCase.output
@@ -106,7 +104,7 @@ if (result.status.description !== "Accepted") {
       }
     }
 
-    // Save submission result
+    //  Save submission
     room.submissions = room.submissions || {};
     room.submissions[user_id] = {
       status: allPassed ? "Accepted" : "Wrong Answer",
@@ -114,20 +112,17 @@ if (result.status.description !== "Accepted") {
     };
     await room.save();
 
-    // If both players submitted → decide winner
-    if (room.participants.every(p => room.submissions[p.userId])) {
-      const [p1, p2] = room.participants.map(p => String(p.userId));
-      const r1 = room.submissions[p1];
-      const r2 = room.submissions[p2];
+    //  Ensure participants array is not empty
+    const participants = room.participants.map(p => String(p.userId));
+    console.log("Participants in room:", participants);
 
-      let winner = null;
-      if (r1.status === "Accepted" && r2.status !== "Accepted") winner = p1;
-      else if (r2.status === "Accepted" && r1.status !== "Accepted") winner = p2;
-      else if (r1.status === "Accepted" && r2.status === "Accepted") {
-        winner = r1.submittedAt < r2.submittedAt ? p1 : p2; 
-      }
+    let winner = null;
 
-      room.winner = winner;
+    // Case 1: First Accepted → immediate winner
+    if (allPassed && !room.winnerId) {
+      winner = user_id;
+      room.winnerId = winner;
+      room.roomStatus = "completed";
       await room.save();
 
       req.io.to(room.roomId).emit("battle-result", {
@@ -135,12 +130,39 @@ if (result.status.description !== "Accepted") {
         submissions: room.submissions,
       });
     }
+    // Case 2: Both submitted → decide by correctness/time
+    else if (participants.length === 2 && participants.every(p => room.submissions[p])) {
+      const [p1, p2] = participants;
+      const r1 = room.submissions[p1];
+      const r2 = room.submissions[p2];
+
+      if (r1.status === "Accepted" && r2.status !== "Accepted") winner = p1;
+      else if (r2.status === "Accepted" && r1.status !== "Accepted") winner = p2;
+      else if (r1.status === "Accepted" && r2.status === "Accepted") {
+        winner = r1.submittedAt < r2.submittedAt ? p1 : p2;
+      }
+
+      if (winner) {
+        room.winnerId = winner;
+        room.roomStatus = "completed";
+        await room.save();
+
+        req.io.to(room.roomId).emit("battle-result", {
+          winner,
+          submissions: room.submissions,
+        });
+      }
+    }
+
+    console.log("Final Winner decided:", room.winnerId);
 
     return res.json({
       msg: "Submission recorded",
       status: allPassed ? "Accepted" : "Wrong Answer",
-      failedCase, 
+      failedCase,
+      winner: room.winnerId || null,
     });
+
   } catch (err) {
     console.error("submitBattleCode error:", err);
     return res.status(500).json({ msg: "Server error", error: err.message });
