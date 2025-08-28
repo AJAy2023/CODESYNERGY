@@ -242,302 +242,160 @@
   const socketConnection = (io) => {
     io.on("connection", (socket) => {
       console.log(`User connected: ${socket.id}`);
+// ---------- Code sync helpers (whiteboard / editor) ----------
+socket.on("code-init", ({ roomId, code }) => {
+  console.log("code-init received for room:", roomId);
+  // send to everyone including sender
+  io.to(roomId).emit("code-init", { code });
+});
 
-      // ---------- Code sync helpers ----------
-      socket.on("code-init", ({ roomId, code }) => {
-        console.log("code-init received for room:", roomId);
-        io.to(roomId).emit("code-init", { code });
-      });
+socket.on("code-edit", ({ roomId, from, code }) => {
+  // broadcast to everyone including sender
+  io.to(roomId).emit("code-edit", { from, code });
+});
 
-      socket.on("code-edit", ({ roomId, from, code }) => {
-        io.to(roomId).emit("code-edit", { from, code });
-      });
 
-      // ---------- JOIN ROOM ----------
-      socket.on("join-room", async ({ roomId, userId }) => {
-        try {
-          console.log("Join request:", roomId, userId);
+// ---------- JOIN ROOM ----------
+socket.on("join-room", async ({ roomId, userId }) => {
+  try {
+    console.log("Join request:", roomId, userId);
 
-          
-          const query = mongoose.isValidObjectId(roomId)
-            ? { $or: [{ roomId }, { _id: roomId }] }
-            : { roomId };
+    const query = mongoose.isValidObjectId(roomId)
+      ? { $or: [{ roomId }, { _id: roomId }] }
+      : { roomId };
 
-          const room = await Room.findOne(query).populate("problem");
-          if (!room) {
-            return socket.emit("room-error", { msg: "Room not found" });
-          }
+    const room = await Room.findOne(query).populate("problem");
+    if (!room) return socket.emit("room-error", { msg: "Room not found" });
 
-          if (!mongoose.Types.ObjectId.isValid(userId)) {
-            return socket.emit("room-error", { msg: "Invalid user ID" });
-          }
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return socket.emit("room-error", { msg: "Invalid user ID" });
+    }
 
-          const objectUserId = new mongoose.Types.ObjectId(userId);
-          const canonicalRoomId = room.roomId; 
+    const objectUserId = new mongoose.Types.ObjectId(userId);
+    const canonicalRoomId = room.roomId;
 
-       
+    // Enforce active flag
+    if (!room.isActive) {
+      return socket.emit("room-error", { msg: "Room is inactive" });
+    }
 
-          if (!room.isActive && String(room.createdBy) === String(objectUserId)) {
-            const newStatus = room.roomType === "battle" ? "waiting" : "active";
-            await Room.updateOne({ roomId: canonicalRoomId }, { $set: { isActive: true, roomStatus: newStatus } });
-            // update local copy so subsequent checks are correct
-            room.isActive = true;
-            room.roomStatus = newStatus;
-          }
+    // Capacity check
+    const currentCount = Array.isArray(room.participants) ? room.participants.length : 0;
+    if (currentCount >= room.peopleCount) {
+      return socket.emit("room-error", { msg: "Room is full" });
+    }
 
-          // Enforce active flag after possible revive
-          if (!room.isActive) {
-            return socket.emit("room-error", { msg: "Room is inactive" });
-          }
+    // Join socket.io room
+    socket.join(canonicalRoomId);
+    socket.data.userId = userId;
+    socket.data.roomId = canonicalRoomId;
+    socket.data.clientId = socket.id;
 
-          // Capacity check (in case someone skipped REST join)
-          const currentCount = Array.isArray(room.participants) ? room.participants.length : 0;
-          if (currentCount >= room.peopleCount) {
-            return socket.emit("room-error", { msg: "Room is full" });
-          }
+    // Update participants (remove old, add new)
+    await Room.updateOne(
+      { roomId: canonicalRoomId },
+      { $pull: { participants: { userId: objectUserId } } }
+    );
 
-          // Join socket.io room
-          socket.join(canonicalRoomId);
-
-          // store some useful data on the socket
-          socket.data.userId = userId;
-          socket.data.roomId = canonicalRoomId;
-          socket.data.clientId = socket.id;
-
-          // Atomically remove stale participant entries for this user and add new one with clientId
-          await Room.updateOne(
-            { roomId: canonicalRoomId },
-            { $pull: { participants: { userId: objectUserId } } }
-          );
-
-          await Room.updateOne(
-            { roomId: canonicalRoomId },
-            {
-              $push: {
-                participants: {
-                  userId: objectUserId,
-                  clientId: socket.id,
-                  joinedAt: new Date()
-                }
-              }
-            }
-          );
-
-          // Fetch fresh populated room for broadcasting
-          const updatedRoom = await Room.findOne({ roomId: canonicalRoomId })
-            .populate("problem")
-            .populate("participants.userId", "username email")
-            .populate("createdBy", "username email");
-
-          // Broadcast room update to everyone in the socket room
-          io.to(canonicalRoomId).emit("room-updated", {
-            creator: updatedRoom.createdBy,
-            participants: updatedRoom.participants,
-            problem: updatedRoom.problem,
-            roomStatus: updatedRoom.roomStatus,
-            roomType: updatedRoom.roomType
-          });
-
-          // notify joining client
-          socket.emit("room-joined", {
-            msg: "Successfully joined",
-            roomId: canonicalRoomId,
-            userId,
-            videoEnabled: room.videoEnabled ?? true,
-            audioEnabled: room.audioEnabled ?? true,
-            problem: updatedRoom.problem,
-            roomType: updatedRoom.roomType
-          });
-
-          // Notify host (and interested clients) that a new participant arrived - server emits new-participant
-          // The host can use this to create a targeted offer to the new participant.
-          io.to(canonicalRoomId).emit("new-participant", {
-            userId,
+    await Room.updateOne(
+      { roomId: canonicalRoomId },
+      {
+        $push: {
+          participants: {
+            userId: objectUserId,
             clientId: socket.id,
-            participants: updatedRoom.participants
-          });
-
-          // Handle room activation semantics (battle vs discussion)
-          if (updatedRoom.roomType === "battle") {
-          if ((updatedRoom.participants?.length || 0) === (updatedRoom.peopleCount || 2) 
-              && updatedRoom.roomStatus !== "active") {
-            await Room.updateOne({ roomId: canonicalRoomId }, { $set: { roomStatus: "active" } });
-
-            io.to(canonicalRoomId).emit("battle-started", {
-              msg: "Battle is now active",
-              participants: updatedRoom.participants,
-              startedAt: Date.now()
-            });
+            joinedAt: new Date()
           }
         }
-        } catch (err) {
-          console.error("Join room error:", err);
-          socket.emit("room-error", { msg: "Internal server error" });
-        }
+      }
+    );
+
+    // Fetch fresh populated room for broadcasting
+    const updatedRoom = await Room.findOne({ roomId: canonicalRoomId })
+      .populate("problem")
+      .populate("participants.userId", "username email")
+      .populate("createdBy", "username email");
+
+    // Broadcast updated info
+    io.to(canonicalRoomId).emit("room-updated", {
+      creator: updatedRoom.createdBy,
+      participants: updatedRoom.participants,
+      problem: updatedRoom.problem,
+      roomStatus: updatedRoom.roomStatus,
+      roomType: updatedRoom.roomType
+    });
+
+    // Notify this client
+    socket.emit("room-joined", {
+      msg: "Successfully joined",
+      roomId: canonicalRoomId,
+      userId,
+      videoEnabled: room.videoEnabled ?? true,
+      audioEnabled: room.audioEnabled ?? true,
+      problem: updatedRoom.problem,
+      roomType: updatedRoom.roomType
+    });
+
+    // Let others know new participant arrived
+    io.to(canonicalRoomId).emit("new-participant", {
+      userId,
+      clientId: socket.id,
+      participants: updatedRoom.participants
+    });
+
+    // --- Activation rules ---
+    if (updatedRoom.roomType === "discussion") {
+      // Discussion = auto active
+      await Room.updateOne(
+        { roomId: canonicalRoomId },
+        { $set: { roomStatus: "active" } }
+      );
+      io.to(canonicalRoomId).emit("discussion-started", {
+        msg: "Discussion is now active",
+        participants: updatedRoom.participants,
+        startedAt: Date.now()
       });
+    }
+    // ⚠️ Battle: do nothing here, wait for "start-battle"
+  } catch (err) {
+    console.error("Join room error:", err);
+    socket.emit("room-error", { msg: "Internal server error" });
+  }
+});
 
-     
 
-      // ---------- ROOM FINISHED ----------
-      socket.on("room-finished", async ({ roomId }) => {
-        try {
-          // find canonical
-          const query = mongoose.isValidObjectId(roomId) ? { $or: [{ roomId }, { _id: roomId }] } : { roomId };
-          const room = await Room.findOne(query);
-          if (!room) return;
-          await Room.updateOne({ roomId: room.roomId }, { $set: { roomStatus: "completed", isActive: false } });
-          io.to(room.roomId).emit("room-ended");
-        } catch (err) {
-          console.error("room-finished error:", err);
-        }
-      });
+// ---------- START BATTLE ----------
+socket.on("start-battle", async ({ roomId }) => {
+  const starterId = socket.data?.userId;
+  console.log("start-battle requested by:", starterId, "for room:", roomId);
 
-      // ---------- LEAVE ROOM ----------
-      socket.on("leave-room", async ({ userId, roomId }) => {
-        try {
-          const query = mongoose.isValidObjectId(roomId) ? { $or: [{ roomId }, { _id: roomId }] } : { roomId };
-          const room = await Room.findOne(query).populate("problem");
-          if (!room) return socket.emit("room-error", { msg: "Room not found" });
+  try {
+    const populatedRoom = await Room.findOne({ roomId })
+      .populate("problem")
+      .populate("participants.userId", "username email")
+      .populate("createdBy", "username email");
 
-          const canonicalRoomId = room.roomId;
-          socket.leave(canonicalRoomId);
-          console.log(`User ${userId} left room ${canonicalRoomId}`);
-          socket.to(canonicalRoomId).emit("user-left", { userId });
+    if (!populatedRoom) return socket.emit("room-error", { msg: "Room not found" });
 
-          const objectUserId = new mongoose.Types.ObjectId(userId);
-          await Room.updateOne({ roomId: canonicalRoomId }, { $pull: { participants: { userId: objectUserId } } });
+    // Mark active only now
+    await Room.updateOne(
+      { roomId: populatedRoom.roomId },
+      { $set: { roomStatus: "active" } }
+    );
 
-          // If creator left and no participants remain -> cancel room (unless already finished)
-          const updatedRoom = await Room.findOne({ roomId: canonicalRoomId });
-          const isCreatorLeft = String(updatedRoom.createdBy) === String(userId);
-          if (isCreatorLeft && (updatedRoom.participants?.length || 0) === 0 && updatedRoom.roomStatus !== "completed") {
-            await Room.updateOne({ roomId: canonicalRoomId }, { $set: { isActive: false, roomStatus: "cancelled" } });
-          }
+    io.to(populatedRoom.roomId).emit("battle-started", {
+      msg: "Battle started!",
+      startedAt: Date.now(),
+      starterId,
+      participants: populatedRoom.participants,
+      problem: populatedRoom.problem
+    });
+  } catch (err) {
+    console.error("Start battle error:", err);
+    socket.emit("room-error", { msg: "Could not start battle" });
+  }
+});
 
-          const finalRoom = await Room.findOne({ roomId: canonicalRoomId })
-            .populate("problem")
-            .populate("participants.userId", "username email")
-            .populate("createdBy", "username email");
-
-          io.to(canonicalRoomId).emit("room-updated", {
-            creator: finalRoom.createdBy,
-            participants: finalRoom.participants,
-            problem: finalRoom.problem
-          });
-        } catch (err) {
-          console.error("Leave room error:", err);
-        }
-      });
-
-      // ---------- ROOM STATUS ----------
-      socket.on("room-status", async ({ roomId }) => {
-        try {
-          const query = mongoose.isValidObjectId(roomId) ? { $or: [{ roomId }, { _id: roomId }] } : { roomId };
-          const room = await Room.findOne(query).populate("problem").populate("participants.userId");
-          socket.emit("room-status-response", room);
-        } catch (err) {
-          console.error("Room status error:", err);
-        }
-      });
-
-      // ---------- WebRTC signaling (targeted) ----------
-      // Preferred: targeted messages using socket ids (toClientId/fromClientId).
-      // We'll support both targeted and room-broadcast for backward compatibility.
-
-      socket.on("webrtc-offer", ({ sdp, toClientId, fromClientId, roomId }) => {
-        // If toClientId supplied -> send directly
-        if (toClientId) {
-          io.to(toClientId).emit("webrtc-offer", { sdp, fromClientId, fromUserId: socket.data?.userId });
-          return;
-        }
-        // fallback: broadcast to room
-        if (roomId) socket.to(roomId).emit("webrtc-offer", { sdp, from: fromClientId ?? socket.id });
-      });
-
-      socket.on("webrtc-answer", ({ sdp, toClientId, fromClientId, roomId }) => {
-        if (toClientId) {
-          io.to(toClientId).emit("webrtc-answer", { sdp, fromClientId, fromUserId: socket.data?.userId });
-          return;
-        }
-        if (roomId) socket.to(roomId).emit("webrtc-answer", { sdp });
-      });
-
-      socket.on("webrtc-ice", ({ candidate, toClientId, fromClientId, roomId }) => {
-        if (toClientId) {
-          io.to(toClientId).emit("webrtc-ice", { candidate, fromClientId, fromUserId: socket.data?.userId });
-          return;
-        }
-        if (roomId) socket.to(roomId).emit("webrtc-ice", { candidate });
-      });
-
-      // ---------- START BATTLE (legacy) ----------
-      socket.on("start-battle", async ({ roomId }) => {
-        const starterId = socket.data?.userId;
-        console.log("start-battle requested by:", starterId, "for room:", roomId);
-        try {
-          const populatedRoom = await Room.findOne({ roomId })
-            .populate("problem")
-            .populate("participants.userId", "username email")
-            .populate("createdBy", "username email");
-
-          if (!populatedRoom) return socket.emit("room-error", { msg: "Room not found" });
-
-          // Mark active
-          await Room.updateOne({ roomId: populatedRoom.roomId }, { $set: { roomStatus: "active" } });
-
-          io.to(populatedRoom.roomId).emit("battle-started", {
-            msg: "Battle started!",
-            startedAt: Date.now(),
-            starterId,
-            problem: populatedRoom.problem
-          });
-        } catch (err) {
-          console.error("Start battle error:", err);
-          socket.emit("room-error", { msg: "Could not start battle" });
-        }
-      });
-
-      // ---------- DISCONNECT ----------
-      socket.on("disconnect", async () => {
-        const userId = socket.data?.userId;
-        const roomId = socket.data?.roomId;
-        if (!userId || !roomId) {
-          console.log(`User ${socket.id} disconnected (no room info)`);
-          return;
-        }
-        console.log(`User ${userId} disconnected from room ${roomId}`);
-
-        try {
-          const objectUserId = new mongoose.Types.ObjectId(userId);
-
-          await Room.updateOne({ roomId }, { $pull: { participants: { userId: objectUserId } } });
-
-          const updatedRoom = await Room.findOne({ roomId })
-            .populate("problem")
-            .populate("participants.userId", "username email")
-            .populate("createdBy", "username email");
-
-          const isCreator = String(updatedRoom.createdBy) === String(userId);
-          if (isCreator && (updatedRoom.participants?.length || 0) === 0 && updatedRoom.roomStatus !== "completed") {
-            await Room.updateOne({ roomId }, { $set: { isActive: false, roomStatus: "cancelled" } });
-          }
-
-          const finalRoom = await Room.findOne({ roomId })
-            .populate("problem")
-            .populate("participants.userId", "username email")
-            .populate("createdBy", "username email");
-
-          io.to(roomId).emit("room-updated", {
-            creator: finalRoom.createdBy,
-            participants: finalRoom.participants,
-            problem: finalRoom.problem
-          });
-
-          socket.to(roomId).emit("user-left", { userId });
-        } catch (err) {
-          console.error("Disconnect cleanup error:", err);
-        }
-      });
     });
   };
 
