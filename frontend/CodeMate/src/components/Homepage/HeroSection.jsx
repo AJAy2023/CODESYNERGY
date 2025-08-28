@@ -9,7 +9,7 @@ const GUARDIAN = "#0AA1C0";
 const CODE_LINES = [
   "// Live collaborative session",
   "function startBattle(roomId) {",
-  "  console.log('🔥 Coding battle started in', roomId);",
+  "  console.log(' Coding battle started in', roomId);",
   "  syncWithTeam();",
   "  // broadcast result to room",
   "}",
@@ -85,9 +85,9 @@ export default function HeroSection() {
   // avatars data (you can replace with real images later)
   const avatars = [
     { id: "rv", label: "Ravi", src: null },
-    { id: "sn", label: "Sana", src: null },
-    { id: "ak", label: "Akash", src: null },
-    { id: "mk", label: "Maya", src: null },
+    { id: "aj", label: "Ajay", src: null },
+    { id: "dh", label: "Dhruv", src: null },
+    { id: "th", label: "Thushar", src: null },
   ];
 
   return (
@@ -96,7 +96,7 @@ export default function HeroSection() {
       className="relative overflow-hidden"
       style={{
         minHeight: "75vh",
-        // animated gradient background (slow shift) — Cluely-like feel
+        
         background:
           "linear-gradient(135deg, #0B1120 0%, #0A0F1F 40%, #0D1724 100%)",
       }}
@@ -135,7 +135,7 @@ export default function HeroSection() {
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold leading-tight text-white">
             <span>Battle </span>
 
-            {/* moving blue gradient text — subtle animated gradient (not flat) */}
+          
             <motion.span
               className="bg-clip-text text-transparent"
               style={{

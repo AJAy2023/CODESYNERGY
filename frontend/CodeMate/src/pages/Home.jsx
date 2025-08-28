@@ -1,12 +1,12 @@
 import React from "react";
 import HeroSection from "../components/Homepage/HeroSection";
 import FeaturesSection from "../components/Homepage/FeaturesSection";
-import { motion } from "framer-motion";
 import LiveCodingShowcase from "../components/Homepage/LiveCodingShowcase";
 import AIChatAssistant from "../components/Homepage/AIChatAssistant";
 import AnimatedBackground from "../components/Homepage/AnimatedBackground";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import UpcomingFeatures from "@/components/Homepage/UpcomingFeatures";
 
 const Home = () => {
   return (
@@ -37,9 +37,14 @@ const Home = () => {
           <LiveCodingShowcase />
         </section>
 
+        {/* Upcoming Features */}
+        <section className="w-full">
+          <UpcomingFeatures />
+        </section>
+
         {/* AI Chat Assistant */}
         <section className="w-full">
-          <AIChatAssistant />
+          {/* <AIChatAssistant /> */}
 
           {/* Footer */}
           <Footer />
