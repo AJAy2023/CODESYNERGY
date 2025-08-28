@@ -1,177 +1,147 @@
-// src/components/Homepage/FeaturesSection.jsx
-import React, { Suspense, lazy, useState, useEffect } from "react";
+import { useEffect } from "react";
 import { motion } from "framer-motion";
-import { useInView } from "react-intersection-observer";
-import { Button } from "../ui/button";
-import { Play } from "lucide-react";  
-import { Card, CardContent } from "../ui/card";
-
-// Lazy-load Lottie library (bundle split)
-const Lottie = lazy(() => import("lottie-react"));
-
-/**
- * LottieWrapper:
- * - Fetches the JSON animation from the public folder (e.g. "/media/live-discussion.json")
- * - Shows a small loading placeholder until JSON is fetched
- * - Renders the lazy-loaded <Lottie /> when both code and data are ready
- */
-function LottieWrapper({ src, className, loop = true, autoplay = true, ariaLabel }) {
-  const [data, setData] = useState(null);
-
-  useEffect(() => {
-    let mounted = true;
-    (async () => {
-      try {
-        const res = await fetch(src);
-        if (!res.ok) {
-          console.error("Lottie JSON not found:", src);
-          return;
-        }
-        const json = await res.json();
-        if (mounted) setData(json);
-      } catch (err) {
-        console.error("Failed to load Lottie JSON:", err);
-      }
-    })();
-    return () => {
-      mounted = false;
-    };
-  }, [src]);
-
-  if (!data) {
-    return (
-      <div className="w-full h-full flex items-center justify-center text-gray-400">
-        Loading animation...
-      </div>
-    );
-  }
-
-  return (
-    <Lottie
-      animationData={data}
-      loop={loop}
-      autoplay={autoplay}
-      className={className}
-      aria-label={ariaLabel}
-    />
-  );
-}
+import { Card, CardContent } from "@/components/ui/card";
+import VanillaTilt from "vanilla-tilt";
+import { Sparkles } from "lucide-react";
 
 const features = [
   {
     title: "Real-Time Coding Battles",
-    description:
-      "Challenge friends or random opponents in live, time-bound coding battles. Compete, learn, and grow your skills in an interactive environment.",
+    description: "Challenge your friends in live coding duels with instant feedback.",
     mediaType: "video",
-    src: "/media/coding-battle.mp4",
+    src: "/media/Real_Time_Coding.mp4",
   },
   {
     title: "Live Discussion Rooms",
-    description:
-      "Collaborate in real-time with voice chat, shared editors, and instant code previews. Perfect for brainstorming and debugging together.",
+    description: "Collaborate, brainstorm, and solve problems together in real time.",
     mediaType: "video",
     src: "/media/live-discussion.mp4",
   },
   {
     title: "AI-Powered Hints & Feedback",
-    description:
-      "Get instant AI assistance, tips, and code reviews to improve your solutions and boost your learning curve.",
+    description: "Get intelligent hints and feedback to boost your problem-solving skills.",
     mediaType: "image",
     src: "/media/ai-feedback.jpg",
   },
+  {
+    title: "Gamification System",
+    description: "Earn coins, unlock achievements, and climb the global leaderboard.",
+    mediaType: "image",
+    src: "/media/gamification.png",
+  },
+  {
+    title: "Friend System",
+    description: "Connect with friends, challenge them, and grow together as coders.",
+    mediaType: "image",
+    src: "/media/friend-system.gif",
+  },
 ];
 
-export default function FeaturesSection() {
+const Features = () => {
+  useEffect(() => {
+    const cards = document.querySelectorAll(".tilt-card");
+    VanillaTilt.init(cards, {
+      max: 15,
+      speed: 400,
+      glare: true,
+      "max-glare": 0.2,
+    });
+  }, []);
+
   return (
-    <section
-      id="features"
-      className="w-full bg-gradient-to-b from-[#0f172a] to-[#1e293b] py-20 px-6 sm:px-10"
-    >
-      <div className="max-w-7xl mx-auto">
-        <motion.h2
-          className="text-4xl md:text-5xl font-bold text-white text-center font-satoshi"
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, ease: "easeOut" }}
-        >
-          Everything You Need for Competitive Coding
-        </motion.h2>
-
-        <motion.p
-          className="text-lg text-gray-300 text-center mt-4 max-w-2xl mx-auto font-inter"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-        >
-          From real-time battles to AI-assisted learning, our platform gives you
-          the tools to master coding while having fun.
-        </motion.p>
-
-        <div className="mt-16 grid gap-12 md:grid-cols-3">
-          {features.map((feature, idx) => (
-            <FeatureCard key={idx} {...feature} index={idx} />
-          ))}
-        </div>
+    
+    <div id="features" className="relative bg-black py-24 overflow-hidden">
+  
+      <div className="absolute inset-0 -z-10">
+        <div className="w-full h-full bg-gradient-to-br from-cyan-900/20 via-black to-purple-900/20 animate-pulse" />
+        {[...Array(40)].map((_, i) => (
+          <motion.span
+            key={i}
+            className="absolute w-1 h-1 bg-cyan-400 rounded-full opacity-70"
+            animate={{
+              y: [0, -50, 0],
+              x: [0, 30, 0],
+              opacity: [0.2, 1, 0.2],
+            }}
+            transition={{
+              duration: 8 + i * 0.2,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+            style={{
+              top: `${Math.random() * 100}%`,
+              left: `${Math.random() * 100}%`,
+            }}
+          />
+        ))}
       </div>
-    </section>
+
+      {/* Heading */}
+      <motion.h2
+        initial={{ opacity: 0, y: -50 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 1 }}
+        viewport={{ once: true }}
+        className="text-center text-5xl font-extrabold text-cyan-400 drop-shadow-[0_0_25px_rgba(0,255,255,0.8)]"
+      >
+        <Sparkles className="inline-block mr-3 text-cyan-300 animate-pulse" />
+        Premium Features for Coders
+      </motion.h2>
+
+      {/* Subheading */}
+      <motion.p
+        initial={{ opacity: 0, y: -60 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 1.2, delay: 0.3 }}
+        viewport={{ once: true }}
+        className="text-center text-gray-300 mt-4 text-lg max-w-2xl mx-auto"
+      >
+        Unlock the ultimate coding experience with interactive battles, real-time discussions, and AI-driven feedback that feels like the future of learning.
+      </motion.p>
+
+      {/* Features Grid */}
+      <div className="mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 px-6 md:px-16">
+        {features.map((feature, index) => (
+          <motion.div
+            key={index}
+            initial={{ opacity: 0, y: 60 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: index * 0.2 }}
+            viewport={{ once: true }}
+          >
+            <Card className="tilt-card bg-gradient-to-br from-gray-900 to-black border border-cyan-600/30 shadow-xl rounded-2xl overflow-hidden hover:shadow-cyan-500/40">
+              <CardContent className="p-6 flex flex-col items-center">
+                <div className="w-full h-40 mb-4 overflow-hidden rounded-xl">
+                  {feature.mediaType === "video" ? (
+                    <video
+                      src={feature.src}
+                      autoPlay
+                      loop
+                      muted
+                      playsInline
+                      className="w-full h-full object-cover hover:scale-110 transition-transform duration-500"
+                    />
+                  ) : (
+                    <img
+                      src={feature.src}
+                      alt={feature.title}
+                      className="w-full h-full object-cover hover:scale-110 transition-transform duration-500"
+                    />
+                  )}
+                </div>
+                <h3 className="text-2xl font-bold text-cyan-300 drop-shadow-[0_0_12px_rgba(0,255,255,0.6)]">
+                  {feature.title}
+                </h3>
+                <p className="text-gray-400 mt-3 text-center text-base">
+                  {feature.description}
+                </p>
+              </CardContent>
+            </Card>
+          </motion.div>
+        ))}
+      </div>
+    </div>
   );
-}
+};
 
-function FeatureCard({ title, description, mediaType, src, index }) {
-  const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.2 });
-
-  return (
-    <motion.div
-      ref={ref}
-      className="flex flex-col items-center"
-      initial={{ opacity: 0, y: 50 }}
-      animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{
-        duration: 0.6,
-        delay: index * 0.15,
-        ease: "easeOut",
-      }}
-    >
-      <Card className="bg-[#1e293b] border-none shadow-lg rounded-2xl overflow-hidden w-full h-full hover:scale-[1.02] transition-transform duration-300">
-        <CardContent className="p-6 flex flex-col items-center text-center">
-          <div className="w-full h-56 mb-6 flex items-center justify-center">
-            {mediaType === "video" && (
-              <video
-                src={src}
-                className="w-full h-full object-cover rounded-lg"
-                autoPlay
-                muted
-                loop
-                playsInline
-                loading="lazy"
-                aria-label={`${title} demo video`}
-              />
-            )}
-
-            {mediaType === "lottie" && (
-              <Suspense fallback={<div className="w-full h-full flex items-center justify-center text-gray-400">Loading animation...</div>}>
-                <LottieWrapper src={src} className="w-full h-full" ariaLabel={`${title} animation`} />
-              </Suspense>
-            )}
-
-            {mediaType === "image" && (
-              <img
-                src={src}
-                alt={title}
-                loading="lazy"
-                className="w-full h-full object-cover rounded-lg"
-              />
-            )}
-          </div>
-
-          <h3 className="text-xl font-semibold text-white font-satoshi">
-            {title}
-          </h3>
-          <p className="text-gray-400 mt-3 font-inter">{description}</p>
-        </CardContent>
-      </Card>
-    </motion.div>
-  );
-}
+export default Features;

@@ -49,7 +49,7 @@ export default function QuickActions() {
         <div className="flex items-center justify-between">
           <div>
             <div className="text-sm text-slate-300">Join Room</div>
-            <div className="text-lg font-semibold text-white">Enter code & hop in</div>
+            <div className="text-lg font-semibold text-white">Enter code </div>
           </div>
           <div
             className="p-2 rounded-md"

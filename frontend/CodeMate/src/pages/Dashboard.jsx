@@ -5,7 +5,6 @@ import DashboardNavbar from "../components/layout/DashboardNavbar";
 import StatsCards from "../components/dashboard/StatsCards";
 import QuickActions from "../components/dashboard/QuickActions";
 import LiveFeed from "../components/dashboard/LiveFeed";
-import OngoingBattles from "../components/dashboard/OngoingBattles";
 import FriendActivity from "../components/dashboard/FriendActivity";
 import RewardPanel from "../components/dashboard/RewardPanel";
 import AIBuddyWidget from "../components/dashboard/AIBuddyWidget";
@@ -52,8 +51,6 @@ export default function Dashboard() {
           </Suspense>
           <LiveFeed />
         </div>
-
-        <OngoingBattles />
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <FriendActivity />

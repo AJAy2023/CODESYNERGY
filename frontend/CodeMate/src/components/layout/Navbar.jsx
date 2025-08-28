@@ -14,7 +14,8 @@ import {
 
 const navItems = [
   { label: "Home", icon: <IconHome size={18} />, href: "/", type: "home" },
-  { label: "Features", icon: <IconStars size={18} />, href: "#features" },
+  { label: "features", className: "hover:text-cyan-400", icon: <IconStars size={18} />, href: "#features" },
+  {label: "Upcoming", className: "hover:text-cyan-400", icon: <IconStars size={18} />, href: "#upcoming" },
 ];
 
 export default function Navbar() {
@@ -32,7 +33,7 @@ export default function Navbar() {
     e.preventDefault();
     if (type === "home") {
       navigate("/", { replace: true });
-      window.location.reload(); // force re-render
+      window.location.reload(); 
       return;
     }
     document.querySelector(href)?.scrollIntoView({ behavior: "smooth" });
