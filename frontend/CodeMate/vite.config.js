@@ -12,6 +12,7 @@ export default defineConfig({
      resolve: {
       alias: {
         '@': path.resolve(__dirname, './src'),
+        "@aceternity/ui": path.resolve(__dirname, "src/components/ui"),
       },
      },
 })

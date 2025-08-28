@@ -32,6 +32,10 @@ const RoomWaitingLobby = () => {
         const token = localStorage.getItem("token");
         if (!token) return;
 
+
+
+        // backend accepts either slug or _id
+
         const res = await axios.get(`${BASE_URL}/rooms/${routeParam}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
@@ -45,9 +49,12 @@ const RoomWaitingLobby = () => {
         setProblem(data.problem || null);
 
         const opponents = (data.participants || []).filter(
-          (p) => String(p.userId?._id || p.userId?.id || p.userId) !== String(data.creator?._id)
+          (p) =>
+            String(p.userId?._id || p.userId?.id || p.userId) !==
+            String(data.creator?._id)
         );
         setParticipant(opponents[0]?.userId || null);
+
 
         const onRoomUpdated = ({ creator: newCreator, participants, problem: newProblem }) => {
           setCreator(newCreator || {});
@@ -60,6 +67,21 @@ const RoomWaitingLobby = () => {
           setParticipant(opponents[0]?.userId || null);
           setProblem(newProblem || null);
         };
+
+        // join socket room
+        if (socket.connected) {
+          socket.emit("join-room", { roomId: data.roomId, userId });
+        } else {
+          socket.once("connect", () => {
+            socket.emit("join-room", { roomId: data.roomId, userId });
+          });
+        }
+      } catch (err) {
+        console.error("Error fetching room:", err.message);
+        // TODO: handle redirect if 404
+      }
+    };
+
 
         const onBattleStarted = ({ problem: startedProblem }) => {
           // Use the socket problem if provided, else fallback to current state
@@ -80,6 +102,7 @@ const RoomWaitingLobby = () => {
           setJoined(true);
         }
 
+
         return () => {
           mounted = false;
           socket.off("room-updated", onRoomUpdated);
@@ -87,6 +110,14 @@ const RoomWaitingLobby = () => {
         };
       } catch (err) {
         console.error("Error fetching room:", err.message);
+
+    const onBattleStarted = ({ starterId }) => {
+      console.log("battle-started event received, starterId:", starterId);
+      if (canonicalRoomId) {
+        navigate(`/battle/${canonicalRoomId}`);
+      } else {
+        navigate(`/battle/${routeParam}`);
+
       }
     };
 
@@ -100,7 +131,11 @@ const RoomWaitingLobby = () => {
   const handleDeleteRoom = async () => {
     try {
       const token = localStorage.getItem("token");
+
       const idToSend = routeParam;
+
+      const idToSend = dbRoomId || canonicalRoomId || routeParam;
+
       await axios.delete(`${BASE_URL}/rooms/delete/${idToSend}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -117,10 +152,16 @@ const RoomWaitingLobby = () => {
   };
 
   const handleStartBattle = () => {
+
     // Emit socket event as usual
     socket.emit("start-battle", { roomId: routeParam });
     // Immediately navigate with problem so battle page has it
     navigate(`/battle/${routeParam}`, { state: { problem } });
+
+    const idToSend = canonicalRoomId || routeParam;
+    socket.emit("start-battle", { roomId: idToSend });
+    navigate(`/battle/${idToSend}`);
+
   };
 
   return (
@@ -131,7 +172,11 @@ const RoomWaitingLobby = () => {
         </h2>
 
         <div className="flex justify-between items-start gap-6 w-full max-w-5xl">
+
           {/* Creator Card */}
+
+          {/* Creator */}
+
           <div className="bg-zinc-800 p-6 rounded-lg flex flex-col items-center w-1/3 shadow">
             <div className="bg-cyan-500 text-black w-14 h-14 rounded-full flex items-center justify-center text-2xl font-bold">
               {creator?.username ? creator.username.charAt(0).toUpperCase() : "?"}
@@ -148,7 +193,11 @@ const RoomWaitingLobby = () => {
             )}
           </div>
 
+
           {/* Problem Card */}
+
+          {/* Problem */}
+
           <div className="bg-zinc-800 border border-cyan-500 p-6 rounded-lg text-center shadow-md animate-pulse w-1/3">
             <h3 className="text-xl font-bold text-cyan-400 mb-2">
               <Target className="inline-block mr-2" />
@@ -157,6 +206,7 @@ const RoomWaitingLobby = () => {
             <p className="text-sm text-zinc-300">
               Quick Battle — Get matched instantly with an opponent of similar skill level.
             </p>
+
             {creator && participant && String(userId) === String(creatorId) && (
               <button
                 onClick={handleStartBattle}
@@ -168,7 +218,11 @@ const RoomWaitingLobby = () => {
             )}
           </div>
 
+
           {/* Participant Card */}
+
+          {/* Participant */}
+
           <div className="bg-zinc-800 p-6 rounded-lg flex flex-col items-center w-1/3 shadow">
             <div className="bg-purple-500 text-black w-14 h-14 rounded-full flex items-center justify-center text-2xl font-bold">
               {participant?.username ? participant.username.charAt(0).toUpperCase() : "?"}
