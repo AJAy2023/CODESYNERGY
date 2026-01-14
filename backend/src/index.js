@@ -2,6 +2,7 @@ const express  =  require("express");
 const app = express();
 const cors = require("cors");
 const path  = require('path');
+const cookieParser = require("cookie-parser");
 const http = require('http');
 const {Server} = require("socket.io");
 const server = http.createServer(app);
@@ -57,11 +58,11 @@ connectDB();
 
 // socket.io
 const socketHandler = require("./sockets/scoketHandler");
-socketHandler(io) 
+ socketHandler(io) 
 
 // Middleware to parse JSON
 app.use(express.json());
-
+app.use(cookieParser());
 // Routes
 app.use('/', authRoutes);
 app.use('/', problemsroutes)

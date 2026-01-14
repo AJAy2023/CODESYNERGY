@@ -1,13 +1,10 @@
 const mongoose = require('mongoose');
-const bcrypt = require('bcrypt');
-const jwt  = require('jsonwebtoken');
 const path  = require('path');
 require('dotenv').config({ path: path.join(__dirname, '../../.env') });
 const userSchema = new mongoose.Schema({
   username: {
     type: String,
     required: true,
-    unique: true,
     trim: true,
   },
   
@@ -17,7 +14,7 @@ const userSchema = new mongoose.Schema({
     minLength: 10,
     unique: true,
     lowercase: true,
-    trim: true,
+    trim:true,
     match: [/.+@.+\..+/, 'Please enter a valid email address'],
   },
 
@@ -25,12 +22,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-
   profilePic: {
     type: String,
     default: '', 
   },
-
   bio: {
     type: String,
     default: '',
@@ -72,34 +67,18 @@ const userSchema = new mongoose.Schema({
   type: Date,
   default: null
 },
+isverified:{
+  type:Boolean,
+  default:false,
+},
+refreshtoken:{
+type:String,
+default:''
+},
   createdAt: {
     type: Date,
     default: Date.now,
   }
 });
-
-userSchema.pre("save", async function (next) {
-    if (!this.isModified("password")) return next();
-    this.password = await bcrypt.hash(this.password, 10); 
-    next();
-  });
-     //comapre  methods 
-userSchema.methods.comparepass = async function(pass){
-    return await bcrypt.compare(pass , this.password)
-} 
-
-// jwttoken 
-userSchema.methods.generateToken = function()
-{
-  return jwt.sign(
-    {
-      id:this._id, role:this.role
-    },
-    process.env.JWT_SECRET,
-    {
-      expiresIn:'2d'
-    }
-  );
-};
 
 module.exports = mongoose.model('User', userSchema);
