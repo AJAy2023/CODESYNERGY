@@ -5,7 +5,7 @@ import DashboardNavbar from "../components/layout/DashboardNavbar";
 import StatsCards from "../components/dashboard/StatsCards";
 import QuickActions from "../components/dashboard/QuickActions";
 import LiveFeed from "../components/dashboard/LiveFeed";
-import FriendActivity from "../components/dashboard/FriendActivity";
+// import FriendActivity from "../components/dashboard/FriendActivity";
 import RewardPanel from "../components/dashboard/RewardPanel";
 import AIBuddyWidget from "../components/dashboard/AIBuddyWidget";
 import { BASE_URL } from "../api/config";
@@ -53,8 +53,8 @@ export default function Dashboard() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <FriendActivity />
-          <RewardPanel onClaim={() => alert("🎉 Claimed daily reward!")} />
+          {/* <FriendActivity /> */}
+          <RewardPanel onClaim={() => alert(" Claimed daily reward!")} />
         </div>
       </main>
 

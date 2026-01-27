@@ -7,7 +7,6 @@ import { BASE_URL } from "../api/config";
 const socket = io("http://localhost:8000/",  
   //   ,           https://codemate-1-nuih.onrender.com
 
-const socket = io(BASE_URL,
 
    {
   transports: ["websocket"],

@@ -2,11 +2,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 
-const friends = [
-  { name: "Ravi", active: true },
-  { name: "Sana", active: false },
-  { name: "Akash", active: true },
-];
+
 
 export default function FriendActivity() {
   return (

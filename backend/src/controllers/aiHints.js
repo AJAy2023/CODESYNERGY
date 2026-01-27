@@ -2,7 +2,6 @@ const axios = require("axios");
 const User = require("../models/user");
 const Problem  = require("../models/problems");
 const Hints = require("../models/hints");
-const path = require("path");
 require("dotenv").config({path:(__dirname , "../../.env")});
 
 const openRoute_URL = process.env.openRoute_URL;  
@@ -14,6 +13,7 @@ const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
 const gethints = async (req, res) => {
   try {
     const { problem_id, description, code, language } = req.body;
+    
     const userId = req.user.id;
 
     const user = await User.findById(userId);
