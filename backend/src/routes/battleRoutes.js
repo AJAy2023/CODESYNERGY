@@ -2,10 +2,10 @@
 const express = require("express");
 const router = express.Router();
 const { runBattleCode, submitBattleCode } = require("../controllers/battleSubmission");
-// const tokenVerify  = require("../middlewares/authmiddleware");
+
 
 // Run 
-router.post("/battle/run",  runBattleCode);
+router.post("/battle/run",  runBattleCode);  // verify route
 
 // Submit 
 router.post("/battle/submit", submitBattleCode);
