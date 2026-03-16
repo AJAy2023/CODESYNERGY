@@ -4,9 +4,9 @@ const bcrypt =  require("bcrypt");
 const verifyEmail = require("../nodemailer/sendEmail");
 const {genrateaccessToken, genraterefreshToken, generateResetToken} =  require("../utils/token");
 const jwt = require("jsonwebtoken");
-const Otp = require("../models/otp");
-const cookie =  require("cookie-parser");
+const { storeOtp, getOtp, deleteOtp, checkRateLimit, incrementRateLimit } = require("../utils/otpRedis");
 require("dotenv").config();
+
 // ===== Register =====
 const register = async (req, res) => {
   try {
@@ -29,8 +29,8 @@ const register = async (req, res) => {
     const existingUser = await User.findOne({ email });
 
     if (existingUser) {
-      if (!existingUser.isverified) {
-        return res.status(400).json({
+      if (!existingUser.isVerified) {
+        return res.status(409).json({
           success: false,
           message: "Email already registered but not verified"
         });
@@ -43,34 +43,14 @@ const register = async (req, res) => {
     }
 
 
-    const recentOtps = await Otp.find({
-      purpose: "register",
-      createdAt: { $gte: new Date(Date.now() - 30 * 60 * 1000) }
-    }).populate("userId");
-
-   
-    const emailOtpCount = recentOtps.filter(
-      otp => otp.userId && otp.userId.email === email
-    );
-
-    if (emailOtpCount.length >= 3) {
+    // Check rate limiting using Redis (by email, before creating user)
+    const rateLimitCheck = await checkRateLimit(null, "register", email);
+    
+    if (!rateLimitCheck.allowed) {
       return res.status(429).json({
         success: false,
-        message: "Too many OTP requests. Please try again later."
+        message: rateLimitCheck.message || "Too many OTP requests. Please try again later."
       });
-    }
-
-
-    if (emailOtpCount.length > 0) {
-      const lastOtpTime = emailOtpCount[0].createdAt;
-      const diffSeconds = (Date.now() - lastOtpTime.getTime()) / 1000;
-
-      if (diffSeconds < 60) {
-        return res.status(429).json({
-          success: false,
-          message: "Please wait 60 seconds before requesting another OTP."
-        });
-      }
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -79,27 +59,24 @@ const register = async (req, res) => {
       username,
       email,
       password: hashedPassword,
-      isverified: false
+      isVerified: false
     });
 
-    await Otp.deleteMany({
-      userId: user._id,
-      purpose: "register"
-    });
+    // Delete any existing OTPs for this user
+    await deleteOtp(user._id.toString(), "register");
+    
+    // Generate and store OTP in Redis
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
-
-    await Otp.create({
-      userId: user._id,
-      otp,
-      purpose: "register",
-      expireAt: new Date(Date.now() + 10 * 60 * 1000) // 10 min
-    });
+    await storeOtp(user._id.toString(), "register", otp, 600); // 10 minutes TTL
+    
+    // Increment rate limit counters
+    await incrementRateLimit(user._id.toString(), "register", email);
 
     try {
       await verifyEmail("register", email, { otp });
     } catch (mailErr) {
       await User.findByIdAndDelete(user._id);
-      await Otp.deleteMany({ userId: user._id });
+      await deleteOtp(user._id.toString(), "register");
 
       return res.status(500).json({
         success: false,
@@ -149,33 +126,32 @@ const verifyotp = async (req, res) => {
       });
     }
 
-    const otpDoc = await Otp.findOne({
-      userId: user._id
-    }).sort({ createdAt: -1 });
+    // Try to get OTP for both purposes (register and forget password)
+    let storedOtp = await getOtp(user._id.toString(), "register");
+    let purpose = "register";
+    
+    if (!storedOtp) {
+      storedOtp = await getOtp(user._id.toString(), "forgetPassword");
+      purpose = "forgetPassword";
+    }
 
-    if (!otpDoc) {
+    if (!storedOtp) {
       return res.status(400).json({
         success: false,
         message: "OTP not found or already used"
       });
     }
-    if (otpDoc.expireAt.getTime() < Date.now()) {
-      await Otp.deleteMany({ userId: user._id });
 
-      return res.status(400).json({
-        success: false,
-        message: "OTP expired. Please resend OTP"
-      });
-    }
-    if (otpDoc.otp !== enterOtp) {
+    // Redis TTL handles expiration automatically, but we check if OTP matches
+    if (storedOtp !== enterOtp) {
       return res.status(400).json({
         success: false,
         message: "Invalid OTP"
       });
     }
 
-    if (otpDoc.purpose === "register") {
-      user.isverified = true;
+    if (purpose === "register") {
+      user.isVerified = true;
 
       const payload = {
         _id: user._id,
@@ -185,15 +161,15 @@ const verifyotp = async (req, res) => {
       const accessToken = genrateaccessToken(payload);
       const refreshToken = genraterefreshToken(payload);
 
-      user.refreshtoken = refreshToken;
+      user.refreshToken = refreshToken;
       await user.save();
 
-      await Otp.deleteMany({ userId: user._id });
+      await deleteOtp(user._id.toString(), "register");
 
       res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
         secure: false, // true in production
-        sameSite: "strict",
+        sameSite: "strict",  // lax
         maxAge: 15 * 24 * 60 * 60 * 1000
       });
 
@@ -212,14 +188,13 @@ const verifyotp = async (req, res) => {
     }
 
   
-    if (otpDoc.purpose === "forgetpassword") {
+    if (purpose === "forgetPassword") {
       const resetToken = generateResetToken({
         _id: user._id,
         purpose: "reset_password"
       });
 
-       
-      await Otp.deleteMany({ userId: user._id });
+      await deleteOtp(user._id.toString(), "forgetpassword");
 
       return res.status(200).json({
         success: true,
@@ -366,44 +341,25 @@ const forgetpassword = async (req, res) => {
       });
     }
 
-    const recentOtps = await Otp.find({
-      userId: user._id,
-      purpose: "forgetpassword",
-      createdAt: { $gte: new Date(Date.now() - 30 * 60 * 1000) }
-    }).sort({ createdAt: -1 });
-
-    if (recentOtps.length >= 3) {
+    // Check rate limiting using Redis
+    const rateLimitCheck = await checkRateLimit(user._id.toString(), "forgetpassword");
+    
+    if (!rateLimitCheck.allowed) {
       return res.status(429).json({
         success: false,
-        message: "Too many OTP requests. Please try again later."
+        message: rateLimitCheck.message || "Too many OTP requests. Please try again later."
       });
     }
 
-    if (recentOtps.length > 0) {
-      const diffSeconds =
-        (Date.now() - recentOtps[0].createdAt.getTime()) / 1000;
+    // Delete any existing OTPs for this user
+    await deleteOtp(user._id.toString(), "forgetpassword");
 
-      if (diffSeconds < 60) {
-        return res.status(429).json({
-          success: false,
-          message: "Please wait 60 seconds before requesting another OTP."
-        });
-      }
-    }
-
-    await Otp.deleteMany({
-      userId: user._id,
-      purpose: "forgetpassword"
-    });
-
+    // Generate and store OTP in Redis
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
-
-    await Otp.create({
-      userId: user._id,
-      otp,
-      purpose: "forgetpassword",
-      expireAt: new Date(Date.now() + 10 * 60 * 1000)
-    });
+    await storeOtp(user._id.toString(), "forgetpassword", otp, 600); // 10 minutes TTL
+    
+    // Increment rate limit counters
+    await incrementRateLimit(user._id.toString(), "forgetpassword");
 
     await verifyEmail("forgetpassword", email, { otp });
 
@@ -568,41 +524,25 @@ const resendOtp = async (req, res) => {
     } else {
       purpose = "forgetpassword";
     }
-    const recentOtps = await Otp.find({
-      userId: user._id,
-      purpose,
-      createdAt: { $gte: new Date(Date.now() - 30 * 60 * 1000) }
-    }).sort({ createdAt: -1 });
-
-    if (recentOtps.length >= 3) {
+    // Check rate limiting using Redis
+    const rateLimitCheck = await checkRateLimit(user._id.toString(), purpose, purpose === "register" ? email : null);
+    
+    if (!rateLimitCheck.allowed) {
       return res.status(429).json({
         success: false,
-        message: "Too many OTP requests. Please try again later."
+        message: rateLimitCheck.message || "Too many OTP requests. Please try again later."
       });
     }
-    if (recentOtps.length > 0) {
-      const diffSeconds =
-        (Date.now() - recentOtps[0].createdAt.getTime()) / 1000;
 
-      if (diffSeconds < 60) {
-        return res.status(429).json({
-          success: false,
-          message: "Please wait 60 seconds before requesting another OTP."
-        });
-      }
-    }
-    await Otp.deleteMany({
-      userId: user._id,
-      purpose
-    });
+    // Delete any existing OTPs for this user
+    await deleteOtp(user._id.toString(), purpose);
+    
+    // Generate and store OTP in Redis
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
-
-    await Otp.create({
-      userId: user._id,
-      otp,
-      purpose,
-      expireAt: new Date(Date.now() + 10 * 60 * 1000)
-    });
+    await storeOtp(user._id.toString(), purpose, otp, 600); // 10 minutes TTL
+    
+    // Increment rate limit counters
+    await incrementRateLimit(user._id.toString(), purpose, purpose === "register" ? email : null);
 
   
     await verifyEmail(purpose, email, { otp });

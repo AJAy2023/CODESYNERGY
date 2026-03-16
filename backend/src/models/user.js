@@ -67,11 +67,11 @@ const userSchema = new mongoose.Schema({
   type: Date,
   default: null
 },
-isverified:{
+isVerified:{
   type:Boolean,
   default:false,
 },
-refreshtoken:{
+refreshToken:{
 type:String,
 default:''
 },

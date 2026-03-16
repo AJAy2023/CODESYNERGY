@@ -8,7 +8,7 @@ require("dotenv").config({path:(__dirname , "../../.env")});
 const openRoute_URL = process.env.openRoute_URL;  
 
 const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
-
+  
 // AI hints   
 
 const gethints = async (req, res) => {
