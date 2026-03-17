@@ -20,6 +20,7 @@ const profileSystem =  require("./routes/profilesystem");
 const Battle = require("./routes/battleRoutes");
 const progressBar = require("./routes/progress");
 const submissionRoute =  require("./routes/problemsubmission");
+const syncuser =  require("./routes/userRoutes");
 require('dotenv').config({path:path.join(__dirname , '../.env')});
 const PORT = process.env.PORT||8000;
 
@@ -79,6 +80,7 @@ app.use('/', hints);
 app.use('/', profileSystem);
 app.use('/', Battle);
 app.use('/', progressBar);
+app.use('/' , syncuser)
 // home route
 app.get('/', (req, res)=>{
     res.send("welcome to home page...!!");
