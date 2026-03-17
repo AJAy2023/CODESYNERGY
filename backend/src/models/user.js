@@ -7,6 +7,12 @@ const userSchema = new mongoose.Schema({
     required: true,
     trim: true,
   },
+
+  clerkId:{
+    type:String,
+    required:false,
+    unique:true
+  },
   
   email: {
     type: String,
