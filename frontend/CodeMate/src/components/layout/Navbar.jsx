@@ -1,5 +1,6 @@
 // src/components/layout/Navbar.jsx
 import React, { useState, useEffect } from "react";
+import { useUser ,  SignInButton ,   } from "@clerk/react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { Link, useNavigate } from "react-router-dom";
@@ -73,7 +74,7 @@ export default function Navbar() {
           ))}
           <Link
             to="/login"
-            className="flex items-center gap-1 px-4 py-2 rounded-lg bg-[#7c3aed] hover:bg-[#06b6d4] text-black font-medium transition-colors"
+            className="flex items-center gap-1 px-4 py-2 rounded-lg bg-[#06b6d4] hover:bg-[#7c3aed]  text-black font-medium transition-colors"
           >
             <IconLogin size={18} /> Login
           </Link>
@@ -83,7 +84,7 @@ export default function Navbar() {
           >
             <IconUserPlus size={18} /> Sign Up
           </Link>
-        </div>
+       </div>
 
         {/* Mobile Toggle */}
         <button className="md:hidden text-white" onClick={() => setOpen(!open)}>
