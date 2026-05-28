@@ -1,13 +1,11 @@
 const mongoose = require('mongoose');
-const path  = require('path');
-require('dotenv').config({ path: path.join(__dirname, '../../.env') });
 const userSchema = new mongoose.Schema({
   username: {
     type: String,
     required: true,
     trim: true,
   },
-  
+
   email: {
     type: String,
     required: true,
@@ -20,11 +18,12 @@ const userSchema = new mongoose.Schema({
 
   password: {
     type: String,
-    required: true
+    required: true,
+    minLength:6
   },
   profilePic: {
     type: String,
-    default: '', 
+    default: 'https://static.vecteezy.com/system/resources/thumbnails/020/765/399/small/default-profile-account-unknown-icon-black-silhouette-free-vector.jpg', 
   },
   bio: {
     type: String,
@@ -67,11 +66,11 @@ const userSchema = new mongoose.Schema({
   type: Date,
   default: null
 },
-isverified:{
+isVerified:{
   type:Boolean,
   default:false,
 },
-refreshtoken:{
+refreshToken:{
 type:String,
 default:''
 },
@@ -80,5 +79,6 @@ default:''
     default: Date.now,
   }
 });
+userSchema.index({ email: 1 });
 
 module.exports = mongoose.model('User', userSchema);

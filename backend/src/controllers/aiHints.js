@@ -4,11 +4,12 @@ const Problem  = require("../models/problems");
 const Hints = require("../models/hints");
 const path = require("path");
 require("dotenv").config({path:(__dirname , "../../.env")});
+require("dotenv").config();
 
 const openRoute_URL = process.env.openRoute_URL;  
 
 const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
-
+  
 // AI hints   
 
 const gethints = async (req, res) => {

@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import socket from "../../Collab/socket";
-import { Mic, MicOff, Trash2, LogOut, Rocket, Target } from "lucide-react";
 import axios from "axios";
 import { BASE_URL } from "../../api/config";
 
@@ -20,6 +19,7 @@ const RoomWaitingLobby = () => {
 
   useEffect(() => {
     const uid = localStorage.getItem("userId");
+    console.log("the uid :", uid);
     if (uid) setUserId(uid);
   }, []);
 
@@ -31,19 +31,12 @@ const RoomWaitingLobby = () => {
       try {
         const token = localStorage.getItem("token");
         if (!token) return;
-
-
-
-        // backend accepts either slug or _id
-
         const res = await axios.get(`${BASE_URL}/rooms/${routeParam}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
         if (!mounted) return;
         const data = res.data.room;
-        console.log("Fetched room data:", data);
-
         setCreator(data.creator || {});
         setCreatorId(data.creator?._id || data.creator?.id || null);
         setProblem(data.problem || null);
@@ -54,7 +47,6 @@ const RoomWaitingLobby = () => {
             String(data.creator?._id)
         );
         setParticipant(opponents[0]?.userId || null);
-
 
         const onRoomUpdated = ({ creator: newCreator, participants, problem: newProblem }) => {
           setCreator(newCreator || {});
@@ -68,23 +60,7 @@ const RoomWaitingLobby = () => {
           setProblem(newProblem || null);
         };
 
-        // join socket room
-        if (socket.connected) {
-          socket.emit("join-room", { roomId: data.roomId, userId });
-        } else {
-          socket.once("connect", () => {
-            socket.emit("join-room", { roomId: data.roomId, userId });
-          });
-        }
-      } catch (err) {
-        console.error("Error fetching room:", err.message);
-        // TODO: handle redirect if 404
-      }
-    };
-
-
         const onBattleStarted = ({ problem: startedProblem }) => {
-          // Use the socket problem if provided, else fallback to current state
           navigate(`/battle/${routeParam}`, { state: { problem: startedProblem || problem } });
         };
 
@@ -102,7 +78,6 @@ const RoomWaitingLobby = () => {
           setJoined(true);
         }
 
-
         return () => {
           mounted = false;
           socket.off("room-updated", onRoomUpdated);
@@ -110,14 +85,6 @@ const RoomWaitingLobby = () => {
         };
       } catch (err) {
         console.error("Error fetching room:", err.message);
-
-    const onBattleStarted = ({ starterId }) => {
-      console.log("battle-started event received, starterId:", starterId);
-      if (canonicalRoomId) {
-        navigate(`/battle/${canonicalRoomId}`);
-      } else {
-        navigate(`/battle/${routeParam}`);
-
       }
     };
 
@@ -132,9 +99,7 @@ const RoomWaitingLobby = () => {
     try {
       const token = localStorage.getItem("token");
 
-      const idToSend = routeParam;
-
-      const idToSend = dbRoomId || canonicalRoomId || routeParam;
+      let idToSend = routeParam;
 
       await axios.delete(`${BASE_URL}/rooms/delete/${idToSend}`, {
         headers: { Authorization: `Bearer ${token}` },

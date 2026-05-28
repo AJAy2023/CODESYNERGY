@@ -29,7 +29,7 @@ const verifyEmail = async (template, email, data = {}) => {
   html = html.replace("{{OTP_CODE}}", data.otp);
 }
 
-    else if (template === "forgetpassword") {
+    else if (template === "forgetPassword") {
       subject = "Reset your BuddyCode password";
       const templatePath  = path.join(
         __dirname ,

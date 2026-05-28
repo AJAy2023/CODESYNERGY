@@ -3,13 +3,13 @@ const jwt = require("jsonwebtoken");
 const path = require("path");
 require("dotenv").config({ path: path.join(__dirname, "../.env") });
 
-function genrateaccessToken(user) {
+function generateAccessToken(user) {
   return jwt.sign({ _id: user._id, role: user.role }, process.env.JWT_SECRET, {
     expiresIn: "15m",
   });
 }
 
-function genraterefreshToken(user) {
+function generateRefreshToken(user) {
   return jwt.sign(
     { _id: user._id, role: user.role },
     process.env.REFRESH_TOKEN_SECRET,
@@ -27,4 +27,4 @@ function generateResetToken(user) {
   );
 }
 
-module.exports = { genrateaccessToken, genraterefreshToken ,generateResetToken};
+module.exports = { generateAccessToken, generateRefreshToken ,generateResetToken};

@@ -1,5 +1,6 @@
 // src/components/BattleLobby.jsx
 import { useEffect, useState } from "react";
+import {BASE_URL}  from "../api/config";
 import axios from "axios";
 
 const BattleLobby = ({ onStart, opponent }) => {
@@ -8,7 +9,7 @@ const BattleLobby = ({ onStart, opponent }) => {
   useEffect(() => {
     const fetchProblems = async () => {
       try {
-        const res = await axios.get("https://codemate-1-nuih.onrender.com/problems");
+       const res = await axios.get(BASE_URL);
         setProblems(res.data);
       } catch (err) {
         console.error("Failed to load problems", err);

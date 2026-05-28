@@ -8,17 +8,19 @@ const {Server} = require("socket.io");
 const server = http.createServer(app);
 
 const connectDB = require('./config/db');
+// const { connectRedis } = require('./config/redis');
 const authRoutes = require('./routes/authRoutes');
-const problemsroutes = require("./routes/problemsroutes");
-const submissionController = require("./routes/problemsubmission");
 const problemunlock = require("./routes/unlockproblems");
 const leaderboardroutes = require("./routes/leaderboard");
 const friendRequests = require("./routes/friendRequests");
 const roomsystem = require("./routes/roomsystem");
+const problemsroutes =  require("./routes/problemsroutes");
 const hints = require("./routes/aihints");
 const profileSystem =  require("./routes/profilesystem");
 const Battle = require("./routes/battleRoutes");
 const progressBar = require("./routes/progress");
+const submissionRoute =  require("./routes/problemsubmission");
+const syncuser =  require("./routes/userRoutes");
 require('dotenv').config({path:path.join(__dirname , '../.env')});
 const PORT = process.env.PORT||8000;
 
@@ -53,8 +55,11 @@ app.use((req, res, next) => {
   next();
 })
 
-// conect db 
+// connect db 
 connectDB();
+
+// // connect redis
+// connectRedis();
 
 // socket.io
 const socketHandler = require("./sockets/scoketHandler");
@@ -66,8 +71,8 @@ app.use(cookieParser());
 // Routes
 app.use('/', authRoutes);
 app.use('/', problemsroutes)
-app.use('/',submissionController);
-app.use('/',problemunlock);
+app.use('/', submissionRoute );
+app.use('/',  problemunlock);
 app.use('/', leaderboardroutes);
 app.use('/', friendRequests);
 app.use('/', roomsystem);
@@ -75,6 +80,7 @@ app.use('/', hints);
 app.use('/', profileSystem);
 app.use('/', Battle);
 app.use('/', progressBar);
+app.use('/' , syncuser)
 // home route
 app.get('/', (req, res)=>{
     res.send("welcome to home page...!!");

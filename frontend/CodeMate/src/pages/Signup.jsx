@@ -27,7 +27,7 @@ export default function Signup() {
         password,
       });
 
-      alert("🎉 Registered successfully! You've earned 10 bonus coins. Please login to continue.");
+      alert("Registered successfully! You've earned 10 bonus coins. Please login to continue.");
       navigate("/login");
     } catch (err) {
       console.error("Signup error:", err?.response?.data);
