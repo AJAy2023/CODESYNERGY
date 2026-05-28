@@ -4,6 +4,7 @@ const Problem  = require("../models/problems");
 const Hints = require("../models/hints");
 const path = require("path");
 require("dotenv").config({path:(__dirname , "../../.env")});
+require("dotenv").config();
 
 const openRoute_URL = process.env.openRoute_URL;  
 

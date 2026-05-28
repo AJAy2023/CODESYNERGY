@@ -1,5 +1,6 @@
 // src/pages/CreateRoom.jsx
 import React, { useState, useEffect } from "react";
+import {BASE_URL} from "../api/config";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import {
@@ -36,7 +37,8 @@ const CreateRoom = () => {
     const interval = setInterval(async () => {
       try {
         const res = await axios.get(
-          `https://codemate-1-nuih.onrender.com/rooms/${createdRoom.roomId}`
+          // `https://codemate-1-nuih.onrender.com/rooms/${createdRoom.roomId}`
+          BASE_URL
         );
         const room = res.data.room;
 

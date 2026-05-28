@@ -2,16 +2,16 @@ const User = require("../models/user");
 const validator = require("email-validator");
 const bcrypt =  require("bcrypt");
 const verifyEmail = require("../nodemailer/sendEmail");
-const {genrateaccessToken, genraterefreshToken, generateResetToken} =  require("../utils/token");
+const {generateAccessToken, generateRefreshToken, generateResetToken} =  require("../utils/token");
 const jwt = require("jsonwebtoken");
-const { storeOtp, getOtp, deleteOtp, checkRateLimit, incrementRateLimit } = require("../utils/otpRedis");
+const { generateOtp,storedOtp,verifyOtp,deleteOtp} =  require("../utils/otpService");
 require("dotenv").config();
 
 // ===== Register =====
 const register = async (req, res) => {
   try {
     const { username, email, password } = req.body;
-
+    const  normalizedEmail = email.toLowerCase().trim();
     if (!username || !email || !password) {
       return res.status(400).json({
         success: false,
@@ -19,75 +19,40 @@ const register = async (req, res) => {
       });
     }
 
-    if (!validator.validate(email)) {
+    if (!validator.validate(normalizedEmail)) {
       return res.status(400).json({
         success: false,
         message: "Invalid email format"
       });
     }
 
-    const existingUser = await User.findOne({ email });
+    const existingUser = await User.findOne({ email:normalizedEmail });
 
     if (existingUser) {
-      if (!existingUser.isVerified) {
-        return res.status(409).json({
-          success: false,
-          message: "Email already registered but not verified"
-        });
-      }
-
-      return res.status(400).json({
+      return res.status(409).json({
         success: false,
         message: "User already exists. Please login"
       });
     }
-
-
-    // Check rate limiting using Redis (by email, before creating user)
-    const rateLimitCheck = await checkRateLimit(null, "register", email);
     
-    if (!rateLimitCheck.allowed) {
-      return res.status(429).json({
-        success: false,
-        message: rateLimitCheck.message || "Too many OTP requests. Please try again later."
-      });
-    }
-
     const hashedPassword = await bcrypt.hash(password, 10);
-
+    
     const user = await User.create({
       username,
-      email,
+      email: normalizedEmail,
       password: hashedPassword,
-      isVerified: false
+      isVerified: true
     });
 
-    // Delete any existing OTPs for this user
-    await deleteOtp(user._id.toString(), "register");
-    
-    // Generate and store OTP in Redis
-    const otp = Math.floor(100000 + Math.random() * 900000).toString();
-    await storeOtp(user._id.toString(), "register", otp, 600); // 10 minutes TTL
-    
-    // Increment rate limit counters
-    await incrementRateLimit(user._id.toString(), "register", email);
 
-    try {
-      await verifyEmail("register", email, { otp });
-    } catch (mailErr) {
-      await User.findByIdAndDelete(user._id);
-      await deleteOtp(user._id.toString(), "register");
-
-      return res.status(500).json({
-        success: false,
-        message: "Failed to send verification email. Please try again."
-      });
-    }
     return res.status(201).json({
-      success: true,
-      message: "Registration successful. OTP sent to your email."
-    });
-
+      success:true,
+      message:"user Register  successfully",
+      data:{
+        username: user.username,
+        email:user.email,
+      }
+    })
   } catch (err) {
     console.error("Register Error:", err.message);
     return res.status(500).json({
@@ -98,125 +63,11 @@ const register = async (req, res) => {
 };
 
 
-//  vefiryemail  
-
-const verifyotp = async (req, res) => {
-  try {
-    const { email, enterOtp } = req.body;
-
-    if (!email || !enterOtp) {
-      return res.status(400).json({
-        success: false,
-        message: "Please provide both email and OTP"
-      });
-    }
-
-    if (!validator.validate(email)) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid email format"
-      });
-    }
-
-    const user = await User.findOne({ email });
-    if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: "User not found"
-      });
-    }
-
-    // Try to get OTP for both purposes (register and forget password)
-    let storedOtp = await getOtp(user._id.toString(), "register");
-    let purpose = "register";
-    
-    if (!storedOtp) {
-      storedOtp = await getOtp(user._id.toString(), "forgetPassword");
-      purpose = "forgetPassword";
-    }
-
-    if (!storedOtp) {
-      return res.status(400).json({
-        success: false,
-        message: "OTP not found or already used"
-      });
-    }
-
-    // Redis TTL handles expiration automatically, but we check if OTP matches
-    if (storedOtp !== enterOtp) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid OTP"
-      });
-    }
-
-    if (purpose === "register") {
-      user.isVerified = true;
-
-      const payload = {
-        _id: user._id,
-        role: user.role
-      };
-
-      const accessToken = genrateaccessToken(payload);
-      const refreshToken = genraterefreshToken(payload);
-
-      user.refreshToken = refreshToken;
-      await user.save();
-
-      await deleteOtp(user._id.toString(), "register");
-
-      res.cookie("refreshToken", refreshToken, {
-        httpOnly: true,
-        secure: false, // true in production
-        sameSite: "strict",  // lax
-        maxAge: 15 * 24 * 60 * 60 * 1000
-      });
-
-      return res.status(200).json({
-        success: true,
-        message: "Email verified & logged in successfully ",
-        accessToken,
-        user: {
-          id: user._id,
-          username: user.username,
-          email: user.email,
-          coins: user.coins,
-          role: user.role
-        }
-      });
-    }
-
-  
-    if (purpose === "forgetPassword") {
-      const resetToken = generateResetToken({
-        _id: user._id,
-        purpose: "reset_password"
-      });
-
-      await deleteOtp(user._id.toString(), "forgetpassword");
-
-      return res.status(200).json({
-        success: true,
-        message: "OTP verified. You may reset your password.",
-        resetToken
-      });
-    }
-
-  } catch (err) {
-    console.error("Verify OTP Error:", err);
-    return res.status(500).json({
-      success: false,
-      message: "Internal server error"
-    });
-  }
-};
-
-
-
 const login = async (req, res) => {
   try {
     const { email, password } = req.body;
+
+    const normalizedEmail = email.toLowerCase().trim();
 
     if (!email || !password) {
       return res.status(400).json({
@@ -225,25 +76,18 @@ const login = async (req, res) => {
       });
     }
 
-    if (!validator.validate(email)) {
+    if (!validator.validate(normalizedEmail)) {
       return res.status(400).json({
         success: false,
         message: "Invalid email format"
       });
     }
 
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email : normalizedEmail });
     if (!user) {
-      return res.status(401).json({
+      return res.status(404).json({
         success: false,
         message: "Invalid email or password"
-      });
-    }
-
-    if (!user.isverified) {
-      return res.status(403).json({
-        success: false,
-        message: "Please verify your email before logging in"
       });
     }
 
@@ -260,10 +104,10 @@ const login = async (req, res) => {
       role: user.role
     };
 
-    const accessToken = genrateaccessToken(payload);
-    const refreshToken = genraterefreshToken(payload);
+    const accessToken = generateAccessToken(payload);
+    const refreshToken = generateRefreshToken(payload);
 
-    user.refreshtoken = refreshToken;
+    user.refreshToken = refreshToken;
 
     const today = new Date().toDateString();
 
@@ -274,7 +118,6 @@ const login = async (req, res) => {
       user.coins += 5;
       user.lastLoginReward = new Date();
     }
-
     await user.save();
 
     res.cookie("refreshToken", refreshToken, {
@@ -293,7 +136,7 @@ const login = async (req, res) => {
         username: user.username,
         email: user.email,
         role: user.role,
-        coins: user.coins
+        coins: user.coins,
       }
     });
 
@@ -307,11 +150,11 @@ const login = async (req, res) => {
 };
 
 
-//  fotgotpass  
-
-const forgetpassword = async (req, res) => {
+//  forgetPassword  
+const forgetPassword = async (req, res) => {
   try {
     const { email } = req.body;
+    const normalizedEmail = email.toLowerCase().trim();
     if (!email) {
       return res.status(400).json({
         success: false,
@@ -319,49 +162,28 @@ const forgetpassword = async (req, res) => {
       });
     }
 
-    if (!validator.validate(email)) {
+    if (!validator.validate(normalizedEmail)) {
       return res.status(400).json({
         success: false,
         message: "Invalid email format"
       });
     }
 
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email:normalizedEmail});
     if (!user) {
       return res.status(404).json({
         success: false,
         message: "User not found"
       });
     }
-
-    if (!user.isverified) {
-      return res.status(403).json({
-        success: false,
-        message: "Please verify your email first"
-      });
-    }
-
-    // Check rate limiting using Redis
-    const rateLimitCheck = await checkRateLimit(user._id.toString(), "forgetpassword");
-    
-    if (!rateLimitCheck.allowed) {
-      return res.status(429).json({
-        success: false,
-        message: rateLimitCheck.message || "Too many OTP requests. Please try again later."
-      });
-    }
-
-    // Delete any existing OTPs for this user
-    await deleteOtp(user._id.toString(), "forgetpassword");
-
-    // Generate and store OTP in Redis
-    const otp = Math.floor(100000 + Math.random() * 900000).toString();
-    await storeOtp(user._id.toString(), "forgetpassword", otp, 600); // 10 minutes TTL
-    
-    // Increment rate limit counters
-    await incrementRateLimit(user._id.toString(), "forgetpassword");
-
-    await verifyEmail("forgetpassword", email, { otp });
+ // remove old OTP
+ await deleteOtp(normalizedEmail, "forgetPassword");
+ 
+ // generateOtp 
+  const  otp = generateOtp()
+  // stored  otp 
+   await  storedOtp(normalizedEmail,  "forgetPassword", otp, 600)
+    await verifyEmail("forgetPassword", email, { otp });
 
     return res.status(200).json({
       success: true,
@@ -378,12 +200,69 @@ const forgetpassword = async (req, res) => {
   }
 };
 
+//  verifyForgotPasswordOtp
+
+
+const  verifyForgotPasswordOtp = async(req, res)=>{
+  try
+  {
+    const {email, userOtp} =  req.body;
+    if(!email || !userOtp)
+    {
+      return res.status(400).json({
+         success:false,
+         message:" please fill all the  required fields"
+      });
+    }
+   
+    const  normalizedEmail = email.toLowerCase().trim();
+    
+    const  isValid  =  await verifyOtp(normalizedEmail ,"forgetPassword",userOtp, 600);
+   
+    console.log("the isValid  otp  " , isValid); // false
+    if(!isValid)
+      {
+        return  res.status(400).json({
+          success:false,
+          message:"Invalid or Expired"
+        });
+      }
+      
+      //find the  the  user  
+      const  user   = await User.find({email:normalizedEmail}) 
+      if(!user)
+      {
+        return res.status(404).json({
+          success:false,
+          message:"User not  found"
+        });
+      }
+      const  resetToken  =  jwt.sign(
+        {_id:user._id, purpose: "resetPassword"},(process.env.RESET_TOKEN_SECRET),{expiresIn:"10m"}
+      );
+
+      return res.status(200).json({
+        success:true,
+        message:"OTP verified successfully",
+        resetToken
+      })
+  }catch(err)
+  {
+    return res.status(500).json({
+      success:false,
+      message:"Internal server error"
+    });
+  }
+}
+
+
+
 
 // reset password  
 const resetpassword = async (req, res) => {
   try {
-    const { email, newpassword, confrimpassword, resetToken } = req.body;
-    if (!email || !newpassword || !confrimpassword || !resetToken) {
+    const { email, newPassword, confirmPassword, resetToken } = req.body;
+    if (!email || !newPassword || !confirmPassword || !resetToken) {
       return res.status(400).json({
         success: false,
         message: "All fields are required"
@@ -397,7 +276,7 @@ const resetpassword = async (req, res) => {
       });
     }
 
-    if (newpassword !== confrimpassword) {
+    if (newPassword !== confirmPassword) {
       return res.status(400).json({
         success: false,
         message: "Passwords do not match"
@@ -430,13 +309,13 @@ const resetpassword = async (req, res) => {
       });
     }
 
-    const hashedPassword = await bcrypt.hash(newpassword, 10);
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
 
     user.password = hashedPassword;
-    user.refreshtoken = "";
+    user.refreshToken = "";
 
     await user.save();
-       await verifyEmail("resetpaasword", email, { });
+       await verifyEmail("resetPassword", email, { });
     return res.status(200).json({
       success: true,
       message: "Password reset successful. Please login again."
@@ -463,10 +342,10 @@ const logout = async (req, res) => {
       });
     }
 
-    const user = await User.findOne({ refreshtoken: refreshToken });
+   const user = await User.findOne({ refreshToken: refreshToken });
 
     if (user) {
-      user.refreshtoken = "";
+      user.refreshToken = "";
       await user.save();
     }
 
@@ -490,76 +369,8 @@ const logout = async (req, res) => {
     });
   }
 };
-// resend otp  
-const resendOtp = async (req, res) => {
-  try {
-    const { email } = req.body;
+ 
 
-    if (!email) {
-      return res.status(400).json({
-        success: false,
-        message: "Email is required"
-      });
-    }
-
-    if (!validator.validate(email)) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid email format"
-      });
-    }
-
-    const user = await User.findOne({ email });
-    if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: "User not found"
-      });
-    }
-
-    let purpose;
-
-    if (!user.isverified) {
-      purpose = "register";
-    } else {
-      purpose = "forgetpassword";
-    }
-    // Check rate limiting using Redis
-    const rateLimitCheck = await checkRateLimit(user._id.toString(), purpose, purpose === "register" ? email : null);
-    
-    if (!rateLimitCheck.allowed) {
-      return res.status(429).json({
-        success: false,
-        message: rateLimitCheck.message || "Too many OTP requests. Please try again later."
-      });
-    }
-
-    // Delete any existing OTPs for this user
-    await deleteOtp(user._id.toString(), purpose);
-    
-    // Generate and store OTP in Redis
-    const otp = Math.floor(100000 + Math.random() * 900000).toString();
-    await storeOtp(user._id.toString(), purpose, otp, 600); // 10 minutes TTL
-    
-    // Increment rate limit counters
-    await incrementRateLimit(user._id.toString(), purpose, purpose === "register" ? email : null);
-
-  
-    await verifyEmail(purpose, email, { otp });
-
-    return res.status(200).json({
-      success: true,
-      message: "OTP resent successfully"
-    });
-
-  } catch (err) {
-    console.error("Resend OTP Error:", err);
-    return res.status(500).json({
-      success: false,
-      message: "Internal server error"
-    });
-  }
-};
 // refresh token 
 const refreshToken = async (req, res) => {
   try {
@@ -581,7 +392,7 @@ const refreshToken = async (req, res) => {
     }
     const user = await User.findById(decoded._id);
 
-    if (!user || user.refreshtoken !== refreshToken) {
+    if (!user || user.refreshToken !== refreshToken) {
       return res.status(401).json({
         success: false,
         message: "Refresh token mismatch. Please login again."
@@ -592,7 +403,7 @@ const refreshToken = async (req, res) => {
       role: user.role
     };
 
-    const accessToken = genrateaccessToken(payload);
+    const accessToken = generateAccessToken(payload);
     return res.status(200).json({
       success: true,
       accessToken
@@ -606,4 +417,16 @@ const refreshToken = async (req, res) => {
     });
   }
 };
-module.exports = { register, login, verifyotp , forgetpassword, resetpassword,logout, resendOtp ,refreshToken};
+
+
+
+
+
+module.exports = { register, 
+ login,
+ forgetPassword,
+ verifyForgotPasswordOtp,
+ resetpassword,
+ logout, 
+ refreshToken
+};
