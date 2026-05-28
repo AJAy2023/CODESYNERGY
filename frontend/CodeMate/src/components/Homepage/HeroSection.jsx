@@ -84,8 +84,8 @@ export default function HeroSection() {
 
   // avatars data (you can replace with real images later)
   const avatars = [
-    { id: "rv", label: "Ravi", src: null },
-    { id: "aj", label: "Ajay", src: null },
+    { id: "rv", label: "Ajay", src: null },
+    { id: "aj", label: "Amol", src: null },
     { id: "dh", label: "Dhruv", src: null },
     { id: "th", label: "Thushar", src: null },
   ];
@@ -133,9 +133,7 @@ export default function HeroSection() {
           className="lg:w-1/2 text-center lg:text-left"
         >
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold leading-tight text-white">
-            <span>Battle </span>
-
-          
+            <span>Battle </span>      
             <motion.span
               className="bg-clip-text text-transparent"
               style={{
@@ -178,8 +176,7 @@ export default function HeroSection() {
 
           <div className="mt-6 sm:mt-8 flex flex-wrap gap-3 justify-center lg:justify-start">
             <a
-              href="/register"
-              navigate="/register"
+              href="/coming-soon"
               className="inline-flex items-center gap-2 rounded-full px-5 py-2.5 font-semibold"
               style={{
                 background: `linear-gradient(180deg, ${GUARDIAN}, ${shadeHex(GUARDIAN, -12)})`,
@@ -233,7 +230,7 @@ export default function HeroSection() {
             >
               {/* avatar stack & invite */}
               <div className="flex items-center justify-between mb-4">
-                <div className="flex -space-x-4 items-center">
+                <div className="flex -space-x-2 items-center">
                   {avatars.map((t, i) => (
                     <motion.div
                       key={t.id}
@@ -399,7 +396,7 @@ function hexToRgba(hex, alpha = 1) {
   const b = num & 255;
   return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 }
-
+ 
 // shade: -100..100 where negative darkens, positive lightens
 function shadeHex(hex, percent) {
   const h = hex.replace("#", "");
