@@ -2,11 +2,11 @@ import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 
 const codeLines = [
-  'const socket = io("https://buddycode.dev");',
+  'const socket = io("https://buddycode.fun");',
   "socket.on('connect', () => {",
   "   console.log('Connected to battle room!');",
   "});",
-  "socket.emit('joinRoom', { roomId: '18', user: 'Ravi' });",
+  "socket.emit('joinRoom', { roomId: '01', user: 'Aj' });",
   "socket.on('battleStart', () => {",
   "   console.log(' Battle started! Time to code...');",
   "});",
@@ -54,7 +54,18 @@ export default function LiveCodingShowcase() {
       </div>
 
       {/* Live code feed */}
-      <pre className="text-green-400 font-mono text-sm leading-relaxed overflow-hidden px-2 py-1">
+      <pre
+  className="
+    text-green-400
+    font-mono
+    text-sm
+    leading-relaxed
+    px-2
+    py-1
+    h-64
+  overflow-hidden
+  "
+>
         {displayedCode.map((line, i) => (
           <motion.div
             key={i}

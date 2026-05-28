@@ -1,8 +1,9 @@
 // src/App.jsx
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import Home from "./pages/Home";
-import Login from "./pages/Login";
-import Signup from "./pages/Signup";
+// import Login from "./pages/Login";
+// import Signup from "./pages/Signup";
+import ComingSoon from "./Collab/pages/ComigSoon";
 import Dashboard from "./pages/Dashboard";
 import PrivateRoute from "./components/PrivateRoute";
 import { AnimatePresence } from "framer-motion";
@@ -35,8 +36,7 @@ function App() {
 
         <Routes location={location} key={location.pathname}>
           <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Signup />} />
+          <Route path="/coming-soon" element={<ComingSoon />} />
           <Route path="/problems" element={<Problems />} />
           <Route path="/:id" element={<SolveProblem />} />
           <Route path="/rank/leaderboard" element={<Leaderboard />} />
