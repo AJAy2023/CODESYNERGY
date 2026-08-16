@@ -27,27 +27,19 @@ const PORT = process.env.PORT||8000;
 
 //cors setup
 
-const allowedOrigins = [
-  "http://localhost:5173",
-  "http://127.0.0.1:5173",
-  process.env.FRONTEND_URL
-].filter(Boolean);
-
 const corsOptions = {
-  origin: (origin, callback) => {
-    callback(null, true);
-  },
-  credentials: true
+  origin: true,
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization", "x-refresh-token"]
 };
 
 app.use(cors(corsOptions));
 
-app.options("*", cors(corsOptions));
-
 // socket.io setup for cors 
 const io = new Server(server, {
   cors: {
-    origin: (origin, callback) => callback(null, true),
+    origin: true,
     credentials: true,
     methods: ["GET", "POST"]
   }
