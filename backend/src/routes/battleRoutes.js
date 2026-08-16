@@ -5,7 +5,7 @@ const { runBattleCode, submitBattleCode } = require("../controllers/battleSubmis
 
 
 // Run 
-router.post("/battle/run",  runBattleCode);  // verify route
+router.post("/battle/run",  runBattleCode);  
 
 // Submit 
 router.post("/battle/submit", submitBattleCode);
