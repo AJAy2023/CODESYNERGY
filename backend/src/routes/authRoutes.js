@@ -6,11 +6,11 @@ const { register, login, verifyForgotPasswordOtp, forgetPassword, resetpassword,
 // Importing middlewares
 const verifyToken = require("../middlewares/authMiddleware");
 const adminOnly = require("../middlewares/adminmiddleware");
-const rateLimit = require("../middlewares/rateLimit");
+// const rateLimit = require("../middlewares/rateLimit");
 
 // Routes
 router.post("/register", register);
-router.post("/login", rateLimit, login);
+router.post("/login", login);
 
 router.post("/forget-password", forgetPassword);
 router.post('/verifyOtp', verifyForgotPasswordOtp);
