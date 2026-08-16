@@ -1,12 +1,12 @@
 const express = require('express');
 const router = express.Router();
 // Importing controllers
-const { register, login, verifyForgotPasswordOtp, forgetPassword, resetpassword,logout, refreshToken} = require('../controllers/authController');
+const { register, login, verifyForgotPasswordOtp, forgetPassword, resetpassword, logout, refreshToken } = require('../controllers/authController');
 
 // Importing middlewares
-const verifyToken = require('../middlewares/authMiddleware');
-const adminOnly = require('../middlewares/adminMiddleware');
-const rateLimit  = require('../middlewares/rateLimit');
+const verifyToken = require('../middlewares/authmiddleware.js');
+const adminOnly = require('../middlewares/adminmiddleware');
+const rateLimit = require('../middlewares/ratelimit');
 
 // Routes
 router.post("/register", register);
@@ -17,7 +17,7 @@ router.post('/verifyOtp', verifyForgotPasswordOtp);
 router.post("/reset-password", resetpassword);
 router.post("/logout", verifyToken, logout);
 
-router.post("/refresh-Token",refreshToken);
+router.post("/refresh-Token", refreshToken);
 
 // Protected route (for logged in users)
 router.get("/user-profile", verifyToken, (req, res) => {
