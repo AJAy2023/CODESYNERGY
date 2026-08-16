@@ -1,15 +1,51 @@
-// src/Collab/JoinRoom.jsx
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowLeft, XCircle } from "lucide-react";
+import { ArrowLeft, XCircle, Volume2, VolumeX } from "lucide-react";
 import axios from "axios";
 import { BASE_URL } from "../api/config";
 
 const JoinRoom = () => {
   const [roomCode, setRoomCode] = useState("");
   const [loading, setLoading] = useState(false);
+  const [isMuted, setIsMuted] = useState(false);
+  const audioRef = useRef(null);
   const navigate = useNavigate();
+
+  // Avengers Battle Theme Audio
+  useEffect(() => {
+    const audio = new Audio("/media/battelsong/TheAvengers.mp4");
+    audio.loop = true;
+    audio.volume = 0.5;
+    audioRef.current = audio;
+
+    const playPromise = audio.play();
+    if (playPromise !== undefined) {
+      playPromise.catch((err) => {
+        if (err.name !== "AbortError") {
+          console.warn("Theme audio play error:", err);
+        }
+      });
+    }
+
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.currentTime = 0;
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    if (isMuted) {
+      audio.pause();
+    } else {
+      const p = audio.play();
+      if (p !== undefined) p.catch(() => {});
+    }
+  }, [isMuted]);
 
   const handleJoin = async (e) => {
     e.preventDefault();
@@ -99,6 +135,15 @@ const JoinRoom = () => {
           className="absolute top-3 left-3 p-2 rounded-full bg-white/10 hover:bg-white/20 transition cursor-pointer"
         >
           <ArrowLeft className="w-5 h-5 text-white" />
+        </button>
+
+        {/* Audio Mute Toggle Button */}
+        <button
+          onClick={() => setIsMuted((prev) => !prev)}
+          className="absolute top-3 right-12 p-2 rounded-full bg-white/10 hover:bg-white/20 transition cursor-pointer text-cyan-400"
+          title={isMuted ? "Unmute Battle Song" : "Mute Battle Song"}
+        >
+          {isMuted ? <VolumeX className="w-5 h-5 text-rose-400" /> : <Volume2 className="w-5 h-5 text-cyan-400" />}
         </button>
 
         {/* Close Button */}

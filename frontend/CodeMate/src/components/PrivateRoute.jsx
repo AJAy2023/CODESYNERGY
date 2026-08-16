@@ -1,16 +1,16 @@
 import { Navigate } from "react-router-dom";
-import { useUser } from "@clerk/react";   //  useUser is  hook
-function PrivateRoute({children}){
-  const {isSignedIn ,  isLoaded} =  useUser();
-  if(!isLoaded)
-  {
-    return <div>Loading.....</div>
+import { useAuth } from "../context/AuthContext";
+
+export default function PrivateRoute({ children }) {
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return <div className="text-white p-6">Loading...</div>;
   }
-  if(!isSignedIn)
-  {
-    return <Navigate to="/" />
+
+  if (!user) {
+    return <Navigate to="/login" replace />;
   }
+
   return children;
 }
-
-export default PrivateRoute

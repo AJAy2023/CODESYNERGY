@@ -221,6 +221,10 @@ export default function SolveProblem() {
         language,
       });
 
+      if (res?.data?.user) {
+        localStorage.setItem("userData", JSON.stringify(res.data.user));
+      }
+
       const normalized = normalizeTestResponse(res?.data);
       if (normalized) {
         setTestResults(normalized);
@@ -329,10 +333,7 @@ export default function SolveProblem() {
         </div>
 
         <div className="flex items-center gap-3">
-          <div className="flex items-center gap-1 bg-zinc-800/60 backdrop-blur-sm px-3 py-1 rounded-md">
-            <Flame size={16} className="text-yellow-400" />
-            <span className="text-sm text-yellow-300">🔥 5-Day Streak</span>
-          </div>
+         
 
           <div className="flex items-center gap-1 bg-zinc-800/60 backdrop-blur-sm px-3 py-1 rounded-md">
             <Coins size={16} />

@@ -4,15 +4,20 @@ import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { BASE_URL } from "../../api/config";
 import { getToken } from "../../utils/auth";
+import { useAuth } from "@/context/AuthContext";
 import DashboardNavbar from "@/components/layout/DashboardNavbar";
 import { ArrowLeft, Award, Users, Pencil, Save, X } from "lucide-react";
 
 export default function ViewProfile() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { user: currentUser } = useAuth();
 
-  const meId = useMemo(() => localStorage.getItem("userId"), []);
-  const isSelf = meId && meId === id;
+  const meId = useMemo(
+    () => currentUser?.id || currentUser?._id || localStorage.getItem("userId"),
+    [currentUser]
+  );
+  const isSelf = meId && (meId === id || id === "me");
 
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -31,10 +36,16 @@ export default function ViewProfile() {
     const fetchProfile = async () => {
       setLoading(true);
       try {
-        const token = getToken();
+        const token = getToken() || localStorage.getItem("token");
+        const fetchId = (id === "me" || !id) ? meId : id;
+
+        if (!fetchId) {
+          setLoading(false);
+          return;
+        }
 
         // 1) Profile data
-        const res = await axios.get(`${BASE_URL}/profile/${id}`, {
+        const res = await axios.get(`${BASE_URL}/profile/${fetchId}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setProfile(res.data.profile);

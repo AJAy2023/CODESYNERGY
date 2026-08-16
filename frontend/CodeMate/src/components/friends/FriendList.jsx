@@ -1,19 +1,22 @@
-// src/components/friends/FriendList.jsx
 import { useEffect, useState, useCallback } from "react";
-// import { getFriendsList } from "../../api/friends";
+import { getFriendList } from "../../api/friends";
+import { useAuth } from "@/context/AuthContext";
 import FriendCard from "./FriendCard";
+
+import socket from "../../Collab/socket";
 
 export default function FriendList() {
   const [friends, setFriends] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { user } = useAuth();
 
-  const userId = localStorage.getItem("userId");
+  const userId = user?.id || user?._id || localStorage.getItem("userId");
 
   const load = useCallback(async () => {
     if (!userId) return;
     try {
       setLoading(true);
-      const res = await getFriendsList(userId);
+      const res = await getFriendList(userId);
       setFriends(res?.data?.friends || []);
     } catch (err) {
       console.error(err);
@@ -26,7 +29,12 @@ export default function FriendList() {
     load();
     const onRefresh = () => load();
     window.addEventListener("friends:refresh", onRefresh);
-    return () => window.removeEventListener("friends:refresh", onRefresh);
+    socket.on("friends:refresh", onRefresh);
+
+    return () => {
+      window.removeEventListener("friends:refresh", onRefresh);
+      socket.off("friends:refresh", onRefresh);
+    };
   }, [load]);
 
   if (!userId) {

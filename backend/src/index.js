@@ -29,20 +29,25 @@ const PORT = process.env.PORT||8000;
 
 const allowedOrigins = [
   "http://localhost:5173",
-  "http://127.0.0.1:5173"
-];
+  "http://127.0.0.1:5173",
+  process.env.FRONTEND_URL
+].filter(Boolean);
 
-app.use(cors({
-  origin: allowedOrigins,
+const corsOptions = {
+  origin: (origin, callback) => {
+    callback(null, true);
+  },
   credentials: true
-}));
+};
 
-app.options("*", cors());
+app.use(cors(corsOptions));
+
+app.options("*", cors(corsOptions));
 
 // socket.io setup for cors 
 const io = new Server(server, {
   cors: {
-    origin: allowedOrigins,
+    origin: (origin, callback) => callback(null, true),
     credentials: true,
     methods: ["GET", "POST"]
   }

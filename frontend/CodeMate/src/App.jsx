@@ -1,8 +1,9 @@
 // src/App.jsx
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import Home from "./pages/Home";
-// import Login from "./pages/Login";
-// import Signup from "./pages/Signup";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
+import ForgotPassword from "./pages/ForgotPassword";
 import ComingSoon from "./Collab/pages/ComigSoon";
 import Dashboard from "./pages/Dashboard";
 import PrivateRoute from "./components/PrivateRoute";
@@ -23,6 +24,7 @@ import FriendList from "./components/friends/FriendList";
 import FriendCard from "./components/friends/FriendCard";
 import FriendRequests from "./components/friends/FriendRequests";
 import DiscussionRoom from "./Collab/DiscussionRoom";
+import FriendsPage from "./pages/FriendsPage";
 
 function App() {
   const location = useLocation(); 
@@ -35,35 +37,32 @@ function App() {
         <Toaster position="top-right" reverseOrder={false} />
 
         <Routes location={location} key={location.pathname}>
+          {/* Public Routes */}
           <Route path="/" element={<Home />} />
-          <Route path="/coming-soon" element={<ComingSoon />} />
-          <Route path="/problems" element={<Problems />} />
-          <Route path="/:id" element={<SolveProblem />} />
-          <Route path="/rank/leaderboard" element={<Leaderboard />} />
-          <Route path="/rooms/createroom" element={<CodingRooms />} />
-          <Route path="/room/:roomId" element={<RoomPage />} />
-          <Route path="/search" element={<SearchFriend />} />
-          <Route path="/waitingroom/:roomId" element={<RoomWaitingLobby />} />
-          <Route path="/battle/:roomId" element={<RoomPage />} />
-          <Route path="/discussion/:roomId" element={<DiscussionRoom />} />
-          
-          {/* Profile Routes */}
-          <Route path="/profile/:id" element={<ViewProfile />} />
-          <Route path="/profile/update" element={<EditProfile />} />
-          <Route path="/user-profile" element={<MyProfile />} />
-          <Route path="/friends/list/:id" element={<FriendList />} />
-          <Route path="/friends/card/:id" element={<FriendCard />} />
-          <Route path="/friends/requests" element={<FriendRequests />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Signup />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
 
-          {/* Private Dashboard Route */}
-          <Route
-            path="/dashboard"
-            element={
-              <PrivateRoute>
-                <Dashboard />
-              </PrivateRoute>
-            }
-          />
+          {/* Protected Application Routes */}
+          <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
+          <Route path="/problems" element={<PrivateRoute><Problems /></PrivateRoute>} />
+          <Route path="/:id" element={<PrivateRoute><SolveProblem /></PrivateRoute>} />
+          <Route path="/rank/leaderboard" element={<PrivateRoute><Leaderboard /></PrivateRoute>} />
+          <Route path="/rooms/createroom" element={<PrivateRoute><CodingRooms /></PrivateRoute>} />
+          <Route path="/room/:roomId" element={<PrivateRoute><RoomPage /></PrivateRoute>} />
+          <Route path="/search" element={<PrivateRoute><SearchFriend /></PrivateRoute>} />
+          <Route path="/waitingroom/:roomId" element={<PrivateRoute><RoomWaitingLobby /></PrivateRoute>} />
+          <Route path="/battle/:roomId" element={<PrivateRoute><RoomPage /></PrivateRoute>} />
+          <Route path="/discussion/:roomId" element={<PrivateRoute><DiscussionRoom /></PrivateRoute>} />
+          
+          {/* Protected Profile & Friends Routes */}
+          <Route path="/profile/:id" element={<PrivateRoute><ViewProfile /></PrivateRoute>} />
+          <Route path="/profile/update" element={<PrivateRoute><EditProfile /></PrivateRoute>} />
+          <Route path="/user-profile" element={<PrivateRoute><MyProfile /></PrivateRoute>} />
+          <Route path="/friends/list/:id" element={<PrivateRoute><FriendList /></PrivateRoute>} />
+          <Route path="/friends/card/:id" element={<PrivateRoute><FriendCard /></PrivateRoute>} />
+          <Route path="/friends/requests" element={<PrivateRoute><FriendRequests /></PrivateRoute>} />
+          <Route path="/friends" element={<PrivateRoute><FriendsPage /></PrivateRoute>} />
         </Routes>
 
         {/* Modal route for JoinRoom */}
