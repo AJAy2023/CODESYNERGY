@@ -6,9 +6,7 @@ const cookieParser = require("cookie-parser");
 const http = require('http');
 const {Server} = require("socket.io");
 const server = http.createServer(app);
-
 const connectDB = require('./config/db');
-// const { connectRedis } = require('./config/redis');
 const authRoutes = require('./routes/authRoutes');
 const problemunlock = require("./routes/unlockproblems");
 const leaderboardroutes = require("./routes/leaderboard");
@@ -82,6 +80,9 @@ app.use('/', Battle);
 app.use('/', progressBar);
 app.use('/' , syncuser)
 // home route
+app.get('/health' ,(req, res)=>{
+  res.send("server is running ...!!");
+})
 app.get('/', (req, res)=>{
     res.send("welcome to home page...!!");
 })

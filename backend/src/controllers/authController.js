@@ -122,21 +122,22 @@ const login = async (req, res) => {
 
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
-      secure: false, 
-      sameSite: "strict",
+      secure: true, 
+      sameSite: "lax",
       maxAge: 15 * 24 * 60 * 60 * 1000 
     });
 
     return res.status(200).json({
       success: true,
       message: "Login successful",
-      accessToken,
+      refreshToken,
       user: {
         id: user._id,
         username: user.username,
         email: user.email,
         role: user.role,
         coins: user.coins,
+        token: accessToken
       }
     });
 
@@ -176,19 +177,21 @@ const forgetPassword = async (req, res) => {
         message: "User not found"
       });
     }
- // remove old OTP
- await deleteOtp(normalizedEmail, "forgetPassword");
+  // remove old OTP
+  await deleteOtp(normalizedEmail, "forgetPassword");
+  
+  // generateOtp 
+  const otp = generateOtp();
  
- // generateOtp 
-  const  otp = generateOtp()
-  // stored  otp 
-   await  storedOtp(normalizedEmail,  "forgetPassword", otp, 600)
-    await verifyEmail("forgetPassword", email, { otp });
 
-    return res.status(200).json({
-      success: true,
-      message: "OTP sent successfully to your email"
-    });
+  // stored otp 
+  await storedOtp(normalizedEmail, "forgetPassword", otp, 600);
+  await verifyEmail("forgetPassword", email, { otp });
+
+  return res.status(200).json({
+    success: true,
+    message: "OTP sent successfully to your email"
+  });
 
   } catch (err) {
     console.error("Forget Password Error:", err);
@@ -203,57 +206,54 @@ const forgetPassword = async (req, res) => {
 //  verifyForgotPasswordOtp
 
 
-const  verifyForgotPasswordOtp = async(req, res)=>{
-  try
-  {
-    const {email, userOtp} =  req.body;
-    if(!email || !userOtp)
-    {
+const verifyForgotPasswordOtp = async (req, res) => {
+  try {
+    const { email, userOtp } = req.body;
+    if (!email || !userOtp) {
       return res.status(400).json({
-         success:false,
-         message:" please fill all the  required fields"
+        success: false,
+        message: "Please fill all required fields"
       });
     }
-   
-    const  normalizedEmail = email.toLowerCase().trim();
-    
-    const  isValid  =  await verifyOtp(normalizedEmail ,"forgetPassword",userOtp, 600);
-   
-    console.log("the isValid  otp  " , isValid); // false
-    if(!isValid)
-      {
-        return  res.status(400).json({
-          success:false,
-          message:"Invalid or Expired"
-        });
-      }
-      
-      //find the  the  user  
-      const  user   = await User.find({email:normalizedEmail}) 
-      if(!user)
-      {
-        return res.status(404).json({
-          success:false,
-          message:"User not  found"
-        });
-      }
-      const  resetToken  =  jwt.sign(
-        {_id:user._id, purpose: "resetPassword"},(process.env.RESET_TOKEN_SECRET),{expiresIn:"10m"}
-      );
 
-      return res.status(200).json({
-        success:true,
-        message:"OTP verified successfully",
-        resetToken
-      })
-  }catch(err)
-  {
+    const normalizedEmail = email.toLowerCase().trim();
+
+    const isValid = await verifyOtp(normalizedEmail, "forgetPassword", userOtp, 600);
+
+    if (!isValid) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid or expired OTP"
+      });
+    }
+
+    const user = await User.findOne({ email: normalizedEmail });
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found"
+      });
+    }
+
+    const resetToken = jwt.sign(
+      { _id: user._id, purpose: "reset_password" },
+      process.env.RESET_TOKEN_SECRET,
+      { expiresIn: "10m" }
+    );
+
+    return res.status(200).json({
+      success: true,
+      message: "OTP verified successfully",
+      resetToken
+    });
+  } catch (err) {
+    console.error("Verify Forgot Password OTP Error:", err);
     return res.status(500).json({
-      success:false,
-      message:"Internal server error"
+      success: false,
+      message: "Internal server error"
     });
   }
-}
+};
 
 
 
@@ -352,7 +352,7 @@ const logout = async (req, res) => {
 
     res.clearCookie("refreshToken", {
       httpOnly: true,
-      secure: false, 
+      secure: true, 
       sameSite: "strict"
     });
 
@@ -374,7 +374,7 @@ const logout = async (req, res) => {
 // refresh token 
 const refreshToken = async (req, res) => {
   try {
-    const refreshToken = req.cookies?.refreshToken;
+    const refreshToken = req.cookies?.refreshToken || req.body?.refreshToken || req.headers["x-refresh-token"];
     if (!refreshToken) {
       return res.status(401).json({
         success: false,
@@ -410,7 +410,6 @@ const refreshToken = async (req, res) => {
     });
 
   } catch (err) {
-    console.error("Refresh Token Error:", err);
     return res.status(500).json({
       success: false,
       message: "Internal server error"

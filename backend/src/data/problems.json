@@ -4,12 +4,42 @@
     "description": "Find indices of two numbers such that they add up to target.",
     "difficulty": "Easy",
     "problemType": "Array",
-    "tags": ["Array", "Hash Table"],
+    "tags": [
+      "Array",
+      "Hash Table"
+    ],
     "examples": [
-      { "input": [[2,7,11,15], 9], "output": [0,1] }
+      {
+        "input": [
+          [
+            2,
+            7,
+            11,
+            15
+          ],
+          9
+        ],
+        "output": [
+          0,
+          1
+        ]
+      }
     ],
     "hiddenTestCases": [
-      { "input": [[3,2,4], 6], "output": [1,2] }
+      {
+        "input": [
+          [
+            3,
+            2,
+            4
+          ],
+          6
+        ],
+        "output": [
+          1,
+          2
+        ]
+      }
     ],
     "boilerplateCode": {
       "javascript": "function twoSum(nums, target) {\n  // your code here\n}",
@@ -25,18 +55,30 @@
     },
     "isFree": true
   },
-
   {
     "title": "Valid Parentheses",
     "description": "Check if a string of brackets is valid.",
     "difficulty": "Easy",
     "problemType": "Stack",
-    "tags": ["Stack", "String"],
+    "tags": [
+      "Stack",
+      "String"
+    ],
     "examples": [
-      { "input": ["()[]{}"], "output": true }
+      {
+        "input": [
+          "()[]{}"
+        ],
+        "output": true
+      }
     ],
     "hiddenTestCases": [
-      { "input": ["(]"], "output": false }
+      {
+        "input": [
+          "(]"
+        ],
+        "output": false
+      }
     ],
     "boilerplateCode": {
       "javascript": "function isValid(s) {\n  // your code here\n}",
@@ -52,18 +94,29 @@
     },
     "isFree": true
   },
-
   {
     "title": "Palindrome Number",
     "description": "Determine whether an integer is a palindrome.",
     "difficulty": "Easy",
     "problemType": "Math",
-    "tags": ["Math"],
+    "tags": [
+      "Math"
+    ],
     "examples": [
-      { "input": [121], "output": true }
+      {
+        "input": [
+          121
+        ],
+        "output": true
+      }
     ],
     "hiddenTestCases": [
-      { "input": [-121], "output": false }
+      {
+        "input": [
+          -121
+        ],
+        "output": false
+      }
     ],
     "boilerplateCode": {
       "javascript": "function isPalindrome(x) {\n  // your code here\n}",
@@ -79,18 +132,46 @@
     },
     "isFree": true
   },
-
   {
     "title": "Binary Search",
     "description": "Search for a target in a sorted array.",
     "difficulty": "Easy",
     "problemType": "Array",
-    "tags": ["Array", "Binary Search"],
+    "tags": [
+      "Array",
+      "Binary Search"
+    ],
     "examples": [
-      { "input": [[-1,0,3,5,9,12], 9], "output": 4 }
+      {
+        "input": [
+          [
+            -1,
+            0,
+            3,
+            5,
+            9,
+            12
+          ],
+          9
+        ],
+        "output": 4
+      }
     ],
     "hiddenTestCases": [
-      { "input": [[-1,0,3,5,9,12], 2], "output": -1 }
+      {
+        "input": [
+          [
+            -1,
+            0,
+            3,
+            5,
+            9,
+            12
+          ],
+          2
+        ],
+        "output": -1
+      }
     ],
     "boilerplateCode": {
       "javascript": "function search(nums, target) {\n  // your code here\n}",
@@ -106,18 +187,29 @@
     },
     "isFree": true
   },
-
   {
     "title": "Climbing Stairs",
     "description": "Count number of distinct ways to climb stairs.",
     "difficulty": "Easy",
     "problemType": "Dynamic Programming",
-    "tags": ["Dynamic Programming"],
+    "tags": [
+      "Dynamic Programming"
+    ],
     "examples": [
-      { "input": [2], "output": 2 }
+      {
+        "input": [
+          2
+        ],
+        "output": 2
+      }
     ],
     "hiddenTestCases": [
-      { "input": [3], "output": 3 }
+      {
+        "input": [
+          3
+        ],
+        "output": 3
+      }
     ],
     "boilerplateCode": {
       "javascript": "function climbStairs(n) {\n  // your code here\n}",
@@ -138,12 +230,34 @@
     "description": "Return the sum of all elements in the array.",
     "difficulty": "Easy",
     "problemType": "Array",
-    "tags": ["Array", "Loop"],
+    "tags": [
+      "Array",
+      "Loop"
+    ],
     "examples": [
-      { "input": [[1,2,3,4]], "output": 10 }
+      {
+        "input": [
+          [
+            1,
+            2,
+            3,
+            4
+          ]
+        ],
+        "output": 10
+      }
     ],
     "hiddenTestCases": [
-      { "input": [[5,5,5]], "output": 15 }
+      {
+        "input": [
+          [
+            5,
+            5,
+            5
+          ]
+        ],
+        "output": 15
+      }
     ],
     "boilerplateCode": {
       "javascript": "function sumArray(arr) {\n  // your code here\n}",
@@ -159,18 +273,40 @@
     },
     "isFree": true
   },
-
   {
     "title": "Count Even Numbers",
     "description": "Count how many even numbers are in the array.",
     "difficulty": "Easy",
     "problemType": "Array",
-    "tags": ["Array", "Loop"],
+    "tags": [
+      "Array",
+      "Loop"
+    ],
     "examples": [
-      { "input": [[1,2,3,4]], "output": 2 }
+      {
+        "input": [
+          [
+            1,
+            2,
+            3,
+            4
+          ]
+        ],
+        "output": 2
+      }
     ],
     "hiddenTestCases": [
-      { "input": [[2,4,6,8]], "output": 4 }
+      {
+        "input": [
+          [
+            2,
+            4,
+            6,
+            8
+          ]
+        ],
+        "output": 4
+      }
     ],
     "boilerplateCode": {
       "javascript": "function countEven(arr) {\n  // your code here\n}",
@@ -186,18 +322,29 @@
     },
     "isFree": true
   },
-
   {
     "title": "Reverse String",
     "description": "Reverse the given string.",
     "difficulty": "Easy",
     "problemType": "String",
-    "tags": ["String"],
+    "tags": [
+      "String"
+    ],
     "examples": [
-      { "input": ["hello"], "output": "olleh" }
+      {
+        "input": [
+          "hello"
+        ],
+        "output": "olleh"
+      }
     ],
     "hiddenTestCases": [
-      { "input": ["abcd"], "output": "dcba" }
+      {
+        "input": [
+          "abcd"
+        ],
+        "output": "dcba"
+      }
     ],
     "boilerplateCode": {
       "javascript": "function reverseString(s) {\n  // your code here\n}",
@@ -213,18 +360,30 @@
     },
     "isFree": true
   },
-
   {
     "title": "Check Prime Number",
     "description": "Return true if number is prime.",
     "difficulty": "Easy",
     "problemType": "Math",
-    "tags": ["Math", "Loop"],
+    "tags": [
+      "Math",
+      "Loop"
+    ],
     "examples": [
-      { "input": [5], "output": true }
+      {
+        "input": [
+          5
+        ],
+        "output": true
+      }
     ],
     "hiddenTestCases": [
-      { "input": [4], "output": false }
+      {
+        "input": [
+          4
+        ],
+        "output": false
+      }
     ],
     "boilerplateCode": {
       "javascript": "function isPrime(n) {\n  // your code here\n}",
@@ -240,18 +399,30 @@
     },
     "isFree": true
   },
-
   {
     "title": "Factorial",
     "description": "Return factorial of a number.",
     "difficulty": "Easy",
     "problemType": "Math",
-    "tags": ["Math", "Loop"],
+    "tags": [
+      "Math",
+      "Loop"
+    ],
     "examples": [
-      { "input": [5], "output": 120 }
+      {
+        "input": [
+          5
+        ],
+        "output": 120
+      }
     ],
     "hiddenTestCases": [
-      { "input": [3], "output": 6 }
+      {
+        "input": [
+          3
+        ],
+        "output": 6
+      }
     ],
     "boilerplateCode": {
       "javascript": "function factorial(n) {\n  // your code here\n}",
@@ -267,18 +438,38 @@
     },
     "isFree": true
   },
-
   {
     "title": "Find Maximum Element",
     "description": "Return the maximum element in the array.",
     "difficulty": "Easy",
     "problemType": "Array",
-    "tags": ["Array"],
+    "tags": [
+      "Array"
+    ],
     "examples": [
-      { "input": [[1,5,3,9]], "output": 9 }
+      {
+        "input": [
+          [
+            1,
+            5,
+            3,
+            9
+          ]
+        ],
+        "output": 9
+      }
     ],
     "hiddenTestCases": [
-      { "input": [[-1,-5,-3]], "output": -1 }
+      {
+        "input": [
+          [
+            -1,
+            -5,
+            -3
+          ]
+        ],
+        "output": -1
+      }
     ],
     "boilerplateCode": {
       "javascript": "function findMax(arr) {\n  // your code here\n}",
@@ -294,18 +485,38 @@
     },
     "isFree": true
   },
-
   {
     "title": "Find Minimum Element",
     "description": "Return the minimum element in the array.",
     "difficulty": "Easy",
     "problemType": "Array",
-    "tags": ["Array"],
+    "tags": [
+      "Array"
+    ],
     "examples": [
-      { "input": [[1,5,3,9]], "output": 1 }
+      {
+        "input": [
+          [
+            1,
+            5,
+            3,
+            9
+          ]
+        ],
+        "output": 1
+      }
     ],
     "hiddenTestCases": [
-      { "input": [[-1,-5,-3]], "output": -5 }
+      {
+        "input": [
+          [
+            -1,
+            -5,
+            -3
+          ]
+        ],
+        "output": -5
+      }
     ],
     "boilerplateCode": {
       "javascript": "function findMin(arr) {\n  // your code here\n}",
@@ -321,18 +532,29 @@
     },
     "isFree": true
   },
-
   {
     "title": "Count Vowels",
     "description": "Count number of vowels in a string.",
     "difficulty": "Easy",
     "problemType": "String",
-    "tags": ["String"],
+    "tags": [
+      "String"
+    ],
     "examples": [
-      { "input": ["hello"], "output": 2 }
+      {
+        "input": [
+          "hello"
+        ],
+        "output": 2
+      }
     ],
     "hiddenTestCases": [
-      { "input": ["aeiou"], "output": 5 }
+      {
+        "input": [
+          "aeiou"
+        ],
+        "output": 5
+      }
     ],
     "boilerplateCode": {
       "javascript": "function countVowels(s) {\n  // your code here\n}",
@@ -348,18 +570,29 @@
     },
     "isFree": true
   },
-
   {
     "title": "Check Palindrome String",
     "description": "Check if string is palindrome.",
     "difficulty": "Easy",
     "problemType": "String",
-    "tags": ["String"],
+    "tags": [
+      "String"
+    ],
     "examples": [
-      { "input": ["madam"], "output": true }
+      {
+        "input": [
+          "madam"
+        ],
+        "output": true
+      }
     ],
     "hiddenTestCases": [
-      { "input": ["hello"], "output": false }
+      {
+        "input": [
+          "hello"
+        ],
+        "output": false
+      }
     ],
     "boilerplateCode": {
       "javascript": "function isPalindromeStr(s) {\n  // your code here\n}",
@@ -375,18 +608,47 @@
     },
     "isFree": true
   },
-
   {
     "title": "Frequency Count",
     "description": "Return frequency of elements.",
     "difficulty": "Easy",
     "problemType": "Array",
-    "tags": ["Array", "HashMap"],
+    "tags": [
+      "Array",
+      "HashMap"
+    ],
     "examples": [
-      { "input": [[1,1,2,3]], "output": {"1":2,"2":1,"3":1} }
+      {
+        "input": [
+          [
+            1,
+            1,
+            2,
+            3
+          ]
+        ],
+        "output": {
+          "1": 2,
+          "2": 1,
+          "3": 1
+        }
+      }
     ],
     "hiddenTestCases": [
-      { "input": [[4,4,4,5]], "output": {"4":3,"5":1} }
+      {
+        "input": [
+          [
+            4,
+            4,
+            4,
+            5
+          ]
+        ],
+        "output": {
+          "4": 3,
+          "5": 1
+        }
+      }
     ],
     "boilerplateCode": {
       "javascript": "function freq(arr) {\n  // your code here\n}",
@@ -398,6 +660,658 @@
     },
     "wrapperCode": {
       "javascript": "const input = {input};\nconsole.log(JSON.stringify(freq(...input)));",
+      "java": ""
+    },
+    "isFree": false
+  },
+  {
+    "title": "Longest Subarray with Sum K",
+    "description": "Find the length of the longest contiguous subarray whose elements sum to k.",
+    "difficulty": "Medium",
+    "problemType": "Array",
+    "tags": [
+      "Array",
+      "Hash Table",
+      "Prefix Sum"
+    ],
+    "examples": [
+      {
+        "input": [
+          [
+            1,
+            -1,
+            5,
+            -2,
+            3
+          ],
+          3
+        ],
+        "output": 4
+      }
+    ],
+    "hiddenTestCases": [
+      {
+        "input": [
+          [
+            -2,
+            -1,
+            2,
+            1
+          ],
+          1
+        ],
+        "output": 2
+      }
+    ],
+    "boilerplateCode": {
+      "javascript": "function longestSubarraySumK(arr, k) {\n  // your code here\n}",
+      "java": "class Solution {\n  public int longestSubarraySumK(int[] arr, int k) {\n    return 0;\n  }\n}"
+    },
+    "functionSignature": {
+      "javascript": "function longestSubarraySumK(arr, k)",
+      "java": "public int longestSubarraySumK(int[] arr, int k)"
+    },
+    "wrapperCode": {
+      "javascript": "const input = {input};\nconsole.log(JSON.stringify(longestSubarraySumK(...input)));",
+      "java": ""
+    },
+    "isFree": false
+  },
+  {
+    "title": "Product of Array Except Self",
+    "description": "Return an array where each element is the product of all elements except the element at the same index.",
+    "difficulty": "Medium",
+    "problemType": "Array",
+    "tags": [
+      "Array",
+      "Prefix Product"
+    ],
+    "examples": [
+      {
+        "input": [
+          [
+            1,
+            2,
+            3,
+            4
+          ]
+        ],
+        "output": [
+          24,
+          12,
+          8,
+          6
+        ]
+      }
+    ],
+    "hiddenTestCases": [
+      {
+        "input": [
+          [
+            -1,
+            1,
+            0,
+            -3,
+            3
+          ]
+        ],
+        "output": [
+          0,
+          0,
+          9,
+          0,
+          0
+        ]
+      }
+    ],
+    "boilerplateCode": {
+      "javascript": "function productExceptSelf(nums) {\n  // your code here\n}",
+      "java": "class Solution {\n  public int[] productExceptSelf(int[] nums) {\n    return new int[]{};\n  }\n}"
+    },
+    "functionSignature": {
+      "javascript": "function productExceptSelf(nums)",
+      "java": "public int[] productExceptSelf(int[] nums)"
+    },
+    "wrapperCode": {
+      "javascript": "const input = {input};\nconsole.log(JSON.stringify(productExceptSelf(...input)));",
+      "java": ""
+    },
+    "isFree": false
+  },
+  {
+    "title": "Longest Substring Without Repeating Characters",
+    "description": "Find the length of the longest substring containing no repeated characters.",
+    "difficulty": "Medium",
+    "problemType": "String",
+    "tags": [
+      "String",
+      "Hash Table",
+      "Sliding Window"
+    ],
+    "examples": [
+      {
+        "input": [
+          "abcabcbb"
+        ],
+        "output": 3
+      }
+    ],
+    "hiddenTestCases": [
+      {
+        "input": [
+          "pwwkew"
+        ],
+        "output": 3
+      }
+    ],
+    "boilerplateCode": {
+      "javascript": "function lengthOfLongestSubstring(s) {\n  // your code here\n}",
+      "java": "class Solution {\n  public int lengthOfLongestSubstring(String s) {\n    return 0;\n  }\n}"
+    },
+    "functionSignature": {
+      "javascript": "function lengthOfLongestSubstring(s)",
+      "java": "public int lengthOfLongestSubstring(String s)"
+    },
+    "wrapperCode": {
+      "javascript": "const input = {input};\nconsole.log(JSON.stringify(lengthOfLongestSubstring(...input)));",
+      "java": ""
+    },
+    "isFree": false
+  },
+  {
+    "title": "Merge Intervals",
+    "description": "Merge all overlapping intervals and return the resulting non-overlapping intervals.",
+    "difficulty": "Medium",
+    "problemType": "Array",
+    "tags": [
+      "Array",
+      "Sorting",
+      "Intervals"
+    ],
+    "examples": [
+      {
+        "input": [
+          [
+            [
+              1,
+              3
+            ],
+            [
+              2,
+              6
+            ],
+            [
+              8,
+              10
+            ],
+            [
+              15,
+              18
+            ]
+          ]
+        ],
+        "output": [
+          [
+            1,
+            6
+          ],
+          [
+            8,
+            10
+          ],
+          [
+            15,
+            18
+          ]
+        ]
+      }
+    ],
+    "hiddenTestCases": [
+      {
+        "input": [
+          [
+            [
+              1,
+              4
+            ],
+            [
+              4,
+              5
+            ]
+          ]
+        ],
+        "output": [
+          [
+            1,
+            5
+          ]
+        ]
+      }
+    ],
+    "boilerplateCode": {
+      "javascript": "function merge(intervals) {\n  // your code here\n}",
+      "java": "class Solution {\n  public int[][] merge(int[][] intervals) {\n    return new int[][]{};\n  }\n}"
+    },
+    "functionSignature": {
+      "javascript": "function merge(intervals)",
+      "java": "public int[][] merge(int[][] intervals)"
+    },
+    "wrapperCode": {
+      "javascript": "const input = {input};\nconsole.log(JSON.stringify(merge(...input)));",
+      "java": ""
+    },
+    "isFree": false
+  },
+  {
+    "title": "Top K Frequent Elements",
+    "description": "Return the k most frequent elements in the array.",
+    "difficulty": "Medium",
+    "problemType": "Array",
+    "tags": [
+      "Array",
+      "Hash Table",
+      "Heap",
+      "Bucket Sort"
+    ],
+    "examples": [
+      {
+        "input": [
+          [
+            1,
+            1,
+            1,
+            2,
+            2,
+            3
+          ],
+          2
+        ],
+        "output": [
+          1,
+          2
+        ]
+      }
+    ],
+    "hiddenTestCases": [
+      {
+        "input": [
+          [
+            4,
+            4,
+            4,
+            5,
+            5,
+            6
+          ],
+          1
+        ],
+        "output": [
+          4
+        ]
+      }
+    ],
+    "boilerplateCode": {
+      "javascript": "function topKFrequent(nums, k) {\n  // your code here\n}",
+      "java": "class Solution {\n  public int[] topKFrequent(int[] nums, int k) {\n    return new int[]{};\n  }\n}"
+    },
+    "functionSignature": {
+      "javascript": "function topKFrequent(nums, k)",
+      "java": "public int[] topKFrequent(int[] nums, int k)"
+    },
+    "wrapperCode": {
+      "javascript": "const input = {input};\nconsole.log(JSON.stringify(topKFrequent(...input)));",
+      "java": ""
+    },
+    "isFree": false
+  },
+  {
+    "title": "Minimum Size Subarray Sum",
+    "description": "Find the minimum length of a contiguous subarray whose sum is at least target.",
+    "difficulty": "Medium",
+    "problemType": "Array",
+    "tags": [
+      "Array",
+      "Sliding Window",
+      "Two Pointers"
+    ],
+    "examples": [
+      {
+        "input": [
+          7,
+          [
+            2,
+            3,
+            1,
+            2,
+            4,
+            3
+          ]
+        ],
+        "output": 2
+      }
+    ],
+    "hiddenTestCases": [
+      {
+        "input": [
+          4,
+          [
+            1,
+            4,
+            4
+          ]
+        ],
+        "output": 1
+      }
+    ],
+    "boilerplateCode": {
+      "javascript": "function minSubArrayLen(target, nums) {\n  // your code here\n}",
+      "java": "class Solution {\n  public int minSubArrayLen(int target, int[] nums) {\n    return 0;\n  }\n}"
+    },
+    "functionSignature": {
+      "javascript": "function minSubArrayLen(target, nums)",
+      "java": "public int minSubArrayLen(int target, int[] nums)"
+    },
+    "wrapperCode": {
+      "javascript": "const input = {input};\nconsole.log(JSON.stringify(minSubArrayLen(...input)));",
+      "java": ""
+    },
+    "isFree": false
+  },
+  {
+    "title": "Number of Islands",
+    "description": "Count the number of connected groups of land cells in a binary grid.",
+    "difficulty": "Hard",
+    "problemType": "Graph",
+    "tags": [
+      "Graph",
+      "DFS",
+      "BFS",
+      "Matrix"
+    ],
+    "examples": [
+      {
+        "input": [
+          [
+            "11000",
+            "11000",
+            "00100",
+            "00011"
+          ]
+        ],
+        "output": 3
+      }
+    ],
+    "hiddenTestCases": [
+      {
+        "input": [
+          [
+            "11110",
+            "11010",
+            "11000",
+            "00000"
+          ]
+        ],
+        "output": 1
+      }
+    ],
+    "boilerplateCode": {
+      "javascript": "function numIslands(grid) {\n  // your code here\n}",
+      "java": "class Solution {\n  public int numIslands(char[][] grid) {\n    return 0;\n  }\n}"
+    },
+    "functionSignature": {
+      "javascript": "function numIslands(grid)",
+      "java": "public int numIslands(char[][] grid)"
+    },
+    "wrapperCode": {
+      "javascript": "const input = {input};\nconsole.log(JSON.stringify(numIslands(...input)));",
+      "java": ""
+    },
+    "isFree": false
+  },
+  {
+    "title": "Word Break",
+    "description": "Determine whether a string can be segmented into one or more dictionary words.",
+    "difficulty": "Hard",
+    "problemType": "Dynamic Programming",
+    "tags": [
+      "Dynamic Programming",
+      "String",
+      "Hash Set"
+    ],
+    "examples": [
+      {
+        "input": [
+          "leetcode",
+          [
+            "leet",
+            "code"
+          ]
+        ],
+        "output": true
+      }
+    ],
+    "hiddenTestCases": [
+      {
+        "input": [
+          "catsandog",
+          [
+            "cats",
+            "dog",
+            "sand",
+            "and",
+            "cat"
+          ]
+        ],
+        "output": false
+      }
+    ],
+    "boilerplateCode": {
+      "javascript": "function wordBreak(s, wordDict) {\n  // your code here\n}",
+      "java": "class Solution {\n  public boolean wordBreak(String s, java.util.List<String> wordDict) {\n    return false;\n  }\n}"
+    },
+    "functionSignature": {
+      "javascript": "function wordBreak(s, wordDict)",
+      "java": "public boolean wordBreak(String s, List<String> wordDict)"
+    },
+    "wrapperCode": {
+      "javascript": "const input = {input};\nconsole.log(JSON.stringify(wordBreak(...input)));",
+      "java": ""
+    },
+    "isFree": false
+  },
+  {
+    "title": "Trapping Rain Water",
+    "description": "Calculate how much water can be trapped between elevation bars after raining.",
+    "difficulty": "Hard",
+    "problemType": "Array",
+    "tags": [
+      "Array",
+      "Two Pointers",
+      "Stack"
+    ],
+    "examples": [
+      {
+        "input": [
+          [
+            0,
+            1,
+            0,
+            2,
+            1,
+            0,
+            1,
+            3,
+            2,
+            1,
+            2,
+            1
+          ]
+        ],
+        "output": 6
+      }
+    ],
+    "hiddenTestCases": [
+      {
+        "input": [
+          [
+            4,
+            2,
+            0,
+            3,
+            2,
+            5
+          ]
+        ],
+        "output": 9
+      }
+    ],
+    "boilerplateCode": {
+      "javascript": "function trap(height) {\n  // your code here\n}",
+      "java": "class Solution {\n  public int trap(int[] height) {\n    return 0;\n  }\n}"
+    },
+    "functionSignature": {
+      "javascript": "function trap(height)",
+      "java": "public int trap(int[] height)"
+    },
+    "wrapperCode": {
+      "javascript": "const input = {input};\nconsole.log(JSON.stringify(trap(...input)));",
+      "java": ""
+    },
+    "isFree": false
+  },
+  {
+    "title": "LRU Cache",
+    "description": "Design a cache that supports get and put operations with constant average time complexity.",
+    "difficulty": "Hard",
+    "problemType": "Design",
+    "tags": [
+      "Design",
+      "Hash Table",
+      "Linked List"
+    ],
+    "examples": [
+      {
+        "input": [
+          2,
+          [
+            [
+              "put",
+              1,
+              1
+            ],
+            [
+              "put",
+              2,
+              2
+            ],
+            [
+              "get",
+              1
+            ],
+            [
+              "put",
+              3,
+              3
+            ],
+            [
+              "get",
+              2
+            ]
+          ]
+        ],
+        "output": [
+          null,
+          null,
+          1,
+          null,
+          -1
+        ]
+      }
+    ],
+    "hiddenTestCases": [
+      {
+        "input": [
+          1,
+          [
+            [
+              "put",
+              1,
+              10
+            ],
+            [
+              "get",
+              1
+            ],
+            [
+              "put",
+              2,
+              20
+            ],
+            [
+              "get",
+              1
+            ]
+          ]
+        ],
+        "output": [
+          null,
+          10,
+          null,
+          -1
+        ]
+      }
+    ],
+    "boilerplateCode": {
+      "javascript": "function lruCache(capacity, operations) {\n  // your code here\n}",
+      "java": "class Solution {\n  public int[] lruCache(int capacity, String[][] operations) {\n    return new int[]{};\n  }\n}"
+    },
+    "functionSignature": {
+      "javascript": "function lruCache(capacity, operations)",
+      "java": "public int[] lruCache(int capacity, String[][] operations)"
+    },
+    "wrapperCode": {
+      "javascript": "const input = {input};\nconsole.log(JSON.stringify(lruCache(...input)));",
+      "java": ""
+    },
+    "isFree": false
+  },
+  {
+    "title": "Edit Distance",
+    "description": "Find the minimum number of insertions, deletions, and replacements needed to transform one string into another.",
+    "difficulty": "Hard",
+    "problemType": "Dynamic Programming",
+    "tags": [
+      "Dynamic Programming",
+      "String"
+    ],
+    "examples": [
+      {
+        "input": [
+          "horse",
+          "ros"
+        ],
+        "output": 3
+      }
+    ],
+    "hiddenTestCases": [
+      {
+        "input": [
+          "intention",
+          "execution"
+        ],
+        "output": 5
+      }
+    ],
+    "boilerplateCode": {
+      "javascript": "function minDistance(word1, word2) {\n  // your code here\n}",
+      "java": "class Solution {\n  public int minDistance(String word1, String word2) {\n    return 0;\n  }\n}"
+    },
+    "functionSignature": {
+      "javascript": "function minDistance(word1, word2)",
+      "java": "public int minDistance(String word1, String word2)"
+    },
+    "wrapperCode": {
+      "javascript": "const input = {input};\nconsole.log(JSON.stringify(minDistance(...input)));",
       "java": ""
     },
     "isFree": false

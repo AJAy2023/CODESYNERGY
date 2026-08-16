@@ -75,23 +75,33 @@ const submitProblem = async (req, res) => {
     await submission.save();
 
     // Award coins & mark problem solved if accepted
-    if (allPassed && !user.solvedProblems.includes(problem._id)) {
+    const problemIdStr = String(problem._id);
+    const alreadySolved = (user.solvedProblems || []).some(id => String(id) === problemIdStr);
+
+    if (allPassed && !alreadySolved) {
       user.solvedProblems.push(problem._id);
 
       if (problem.difficulty === "Easy") {
-        user.coins += 5;
+        user.coins = (user.coins || 0) + 5;
+        user.score = (user.score || 0) + 10;
       } else if (problem.difficulty === "Medium") {
-        user.coins += 10;
+        user.coins = (user.coins || 0) + 10;
+        user.score = (user.score || 0) + 20;
       } else if (problem.difficulty === "Hard") {
-        user.coins += 15;
+        user.coins = (user.coins || 0) + 15;
+        user.score = (user.score || 0) + 30;
       }
 
       await user.save();
     }
 
+    const freshUser = await User.findById(user._id).select("-password");
+
     return res.status(200).json({
       msg: allPassed ? "All test cases passed" : "Some test cases failed",
-      status: allPassed ? "Accepted" : "Wrong Answer"
+      status: allPassed ? "Accepted" : "Wrong Answer",
+      coins: freshUser?.coins || 0,
+      user: freshUser
     });
 
   } catch (error) {
