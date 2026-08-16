@@ -4,8 +4,8 @@ const router = express.Router();
 const { register, login, verifyForgotPasswordOtp, forgetPassword, resetpassword, logout, refreshToken } = require('../controllers/authController');
 
 // Importing middlewares
-const verifyToken = require('../middlewares/authmiddleware.js');
-const adminOnly = require('../middlewares/adminmiddleware');
+const verifyToken = require("../middlewares/authmiddleware");
+const adminOnly = require("../middlewares/adminmiddleware");
 const rateLimit = require('../middlewares/ratelimit');
 
 // Routes
