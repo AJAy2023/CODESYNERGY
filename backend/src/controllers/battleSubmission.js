@@ -1,5 +1,8 @@
+const mongoose = require("mongoose");
 const Room = require("../models/room");
 const Problem = require("../models/problems");
+const User = require("../models/user");
+const Submission = require("../models/submission");
 const exicutecode = require("../utils/judge0");
  require("dotenv").config({path:(__dirname,  "../../.env")});
 const languageMap = {
@@ -15,7 +18,9 @@ const runBattleCode = async (req, res) => {
     const langId = languageMap[langKey];
     if (!langId) return res.status(400).json({ msg: "Language not supported" });
 
-    const room = await Room.findOne({ roomId: room_id }).populate("problem");
+    const room = await Room.findOne({
+      $or: [{ roomId: room_id }, { _id: mongoose.isValidObjectId(room_id) ? room_id : null }],
+    }).populate("problem");
     if (!room) return res.status(404).json({ msg: "Room not found" });
 
     const problem = room.problem;
@@ -58,7 +63,9 @@ const submitBattleCode = async (req, res) => {
     const langId = languageMap[langKey];
     if (!langId) return res.status(400).json({ msg: "Language not supported" });
 
-    const room = await Room.findOne({ roomId: room_id }).populate("problem");
+    const room = await Room.findOne({
+      $or: [{ roomId: room_id }, { _id: mongoose.isValidObjectId(room_id) ? room_id : null }],
+    }).populate("problem");
     if (!room) return res.status(404).json({ msg: "Room not found" });
 
     const problem = room.problem;
@@ -104,7 +111,45 @@ const submitBattleCode = async (req, res) => {
       }
     }
 
-    //  Save submission
+    // Save Submission model instance for Weekly Progress Chart
+    try {
+      const submission = new Submission({
+        user: user_id,
+        problem: problem._id,
+        code,
+        language: langKey,
+        status: allPassed ? "Accepted" : "Wrong Answer",
+        submittedAt: new Date()
+      });
+      await submission.save();
+
+      // Award coins & mark problem as solved in User model
+      if (allPassed) {
+        const user = await User.findById(user_id);
+        if (user) {
+          const problemIdStr = String(problem._id);
+          const alreadySolved = (user.solvedProblems || []).some(id => String(id) === problemIdStr);
+          if (!alreadySolved) {
+            user.solvedProblems.push(problem._id);
+            if (problem.difficulty === "Easy") {
+              user.coins = (user.coins || 0) + 5;
+              user.score = (user.score || 0) + 10;
+            } else if (problem.difficulty === "Medium") {
+              user.coins = (user.coins || 0) + 10;
+              user.score = (user.score || 0) + 20;
+            } else if (problem.difficulty === "Hard") {
+              user.coins = (user.coins || 0) + 15;
+              user.score = (user.score || 0) + 30;
+            }
+            await user.save();
+          }
+        }
+      }
+    } catch (subErr) {
+      console.warn("Failed to record Submission/User stats in submitBattleCode:", subErr.message);
+    }
+
+    // Save room submission
     room.submissions = room.submissions || {};
     room.submissions[user_id] = {
       status: allPassed ? "Accepted" : "Wrong Answer",
@@ -114,7 +159,6 @@ const submitBattleCode = async (req, res) => {
 
     //  Ensure participants array is not empty
     const participants = room.participants.map(p => String(p.userId));
-    console.log("Participants in room:", participants);
 
     let winner = null;
 
@@ -125,10 +169,15 @@ const submitBattleCode = async (req, res) => {
       room.roomStatus = "completed";
       await room.save();
 
-      req.io.to(room.roomId).emit("battle-result", {
+      const payload = {
         winner,
         submissions: room.submissions,
-      });
+        message: "Battle completed! A solution was accepted.",
+      };
+      req.io.to(room.roomId).emit("battle-result", payload);
+      if (room_id && room_id !== room.roomId) {
+        req.io.to(room_id).emit("battle-result", payload);
+      }
     }
     // Case 2: Both submitted → decide by correctness/time
     else if (participants.length === 2 && participants.every(p => room.submissions[p])) {
@@ -147,20 +196,28 @@ const submitBattleCode = async (req, res) => {
         room.roomStatus = "completed";
         await room.save();
 
-        req.io.to(room.roomId).emit("battle-result", {
+        const payload = {
           winner,
           submissions: room.submissions,
-        });
+          message: "Battle completed! Both participants submitted.",
+        };
+        req.io.to(room.roomId).emit("battle-result", payload);
+        if (room_id && room_id !== room.roomId) {
+          req.io.to(room_id).emit("battle-result", payload);
+        }
       }
     }
 
-    console.log("Final Winner decided:", room.winnerId);
+ 
+    const freshUser = await User.findById(user_id).select("-password");
 
     return res.json({
       msg: "Submission recorded",
       status: allPassed ? "Accepted" : "Wrong Answer",
       failedCase,
       winner: room.winnerId || null,
+      coins: freshUser?.coins || 0,
+      user: freshUser,
     });
 
   } catch (err) {

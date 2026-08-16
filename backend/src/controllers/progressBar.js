@@ -1,13 +1,19 @@
+const mongoose = require("mongoose");
 const Submission = require("../models/submission");
 const User = require("../models/user");
 
 const getProgress = async (req, res) => {
   try {
-   
-    const clerkId = req.params.id;
+    const userId = req.params.userId || req.params.id;
 
-    // find user using clerkId
-    const user = await User.findOne({ clerkId });
+    let user = null;
+    if (mongoose.Types.ObjectId.isValid(userId)) {
+      user = await User.findById(userId);
+    }
+    if (!user) {
+      user = await User.findOne({ clerkId: userId });
+    }
+
     if (!user) {
       return res.status(404).json({ msg: "User not found" });
     }

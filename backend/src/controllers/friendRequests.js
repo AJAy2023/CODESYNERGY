@@ -11,12 +11,14 @@ const sendRequest = async (req, res) => {
 
   const existing = await FriendSchema.findOne({ 
     sender: senderId, 
-    receiver:receiverId ,
+    receiver: receiverId,
     status: { $in: ["pending", "accepted"] }
   });
-  const reverse = await FriendSchema.findOne({ sender: receiverId, receiver: senderId,
+  const reverse = await FriendSchema.findOne({ 
+    sender: receiverId, 
+    receiver: senderId,
     status: { $in: ["pending", "accepted"] }
-   });
+  });
 
   if (existing || reverse) {
     return res.status(400).json({ msg: "Friend request already exists" });
@@ -24,6 +26,10 @@ const sendRequest = async (req, res) => {
 
   const request = new FriendSchema({ sender: senderId, receiver: receiverId, status: "pending" });
   await request.save();
+
+  if (req.io) {
+    req.io.emit("friends:refresh");
+  }
 
   res.status(200).json({ msg: "Friend request sent", request });
 };
@@ -42,20 +48,27 @@ const acceptRequest = async (req, res) => {
     request.status = "accepted";
     await request.save();
 
-    // Update both users' friends arrays
+    // Update both users' friends arrays safely with ObjectId string checks
     const sender = await User.findById(request.sender);
     const receiver = await User.findById(request.receiver);
 
     if (sender && receiver) {
-      if (!sender.friends.includes(receiver._id)) {
+      const senderHasReceiver = sender.friends.some(id => String(id) === String(receiver._id));
+      if (!senderHasReceiver) {
         sender.friends.push(receiver._id);
       }
-      if (!receiver.friends.includes(sender._id)) {
+
+      const receiverHasSender = receiver.friends.some(id => String(id) === String(sender._id));
+      if (!receiverHasSender) {
         receiver.friends.push(sender._id);
       }
 
       await sender.save();
       await receiver.save();
+    }
+
+    if (req.io) {
+      req.io.emit("friends:refresh");
     }
 
     res.status(200).json({ msg: "Friend request accepted", request });
@@ -68,9 +81,7 @@ const acceptRequest = async (req, res) => {
 
 const rejectRequest = async (req, res) => {
   const requestId = req.params.id;
-  console.log("the requested  id :" , requestId);
   const request = await FriendSchema.findById(requestId);
-console.log("the request found  from the  friendschema : ", request);
 
   if (!request || request.status !== "pending") {
     return res.status(404).json({ msg: "Pending request not found" });
@@ -79,27 +90,47 @@ console.log("the request found  from the  friendschema : ", request);
   request.status = "rejected";
   await request.save();
 
+  if (req.io) {
+    req.io.emit("friends:refresh");
+  }
+
   res.status(200).json({ msg: "Friend request rejected", request });
 };
 
 
 const getFriendList = async (req, res) => {
-  const userId = req.params.userId;
+  try {
+    const userId = req.params.userId;
+    const user = await User.findById(userId).populate("friends", "username profilePic email");
 
-  const acceptedFriends = await FriendSchema.find({
-    $or: [{ sender: userId }, { receiver: userId }],
-    status: "accepted"
-  }).populate("sender receiver", "username profilePic");
+    const acceptedFriends = await FriendSchema.find({
+      $or: [{ sender: userId }, { receiver: userId }],
+      status: "accepted"
+    }).populate("sender receiver", "username profilePic email");
 
-  const friends = acceptedFriends.map(f =>
-    f.sender._id.toString() === userId ? f.receiver : f.sender
-  );
+    const schemaFriends = acceptedFriends
+      .filter(f => f.sender && f.receiver)
+      .map(f => String(f.sender._id || f.sender) === String(userId) ? f.receiver : f.sender);
 
-  res.status(200).json({ msg: "Friend list fetched successfully",  friends:  friends});
+    const combinedMap = new Map();
+    if (user && Array.isArray(user.friends)) {
+      user.friends.forEach(f => {
+        if (f && f._id) combinedMap.set(String(f._id), f);
+      });
+    }
+    schemaFriends.forEach(f => {
+      if (f && f._id) combinedMap.set(String(f._id), f);
+    });
+
+    const friends = Array.from(combinedMap.values());
+    res.status(200).json({ msg: "Friend list fetched successfully", friends });
+  } catch (err) {
+    res.status(500).json({ msg: "Server error", error: err.message });
+  }
 };
 
 
-// delete the frined request  
+// delete the friend request  
 const unfriend = async (req, res) => {
   try {
     const { userId1, userId2 } = req.body;
@@ -117,6 +148,13 @@ const unfriend = async (req, res) => {
     }
     friendship.status = "removed";
     await friendship.save();
+
+    await User.findByIdAndUpdate(userId1, { $pull: { friends: userId2 } });
+    await User.findByIdAndUpdate(userId2, { $pull: { friends: userId1 } });
+
+    if (req.io) {
+      req.io.emit("friends:refresh");
+    }
 
     return res.status(200).json({ msg: "Friend removed successfully" });
   } catch (err) {
@@ -197,16 +235,19 @@ const cancelRequest = async (req, res) => {
 
     await FriendSchema.findByIdAndDelete(requestId);
 
+    if (req.io) {
+      req.io.emit("friends:refresh");
+    }
+
     return res.status(200).json({ msg: "Friend request canceled successfully" });
   } catch (err) {
     res.status(500).json({ msg: "Server error", error: err.message });
   }
 };
 
-//get the  status 
 const getFriendStatus = async (req, res) => {
   try {
-    const currentUserId = req.user.id; 
+    const currentUserId = req.user?.id || req.user?._id; 
     const otherUserId = req.params.userId;
 
   

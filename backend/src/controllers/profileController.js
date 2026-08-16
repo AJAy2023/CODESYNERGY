@@ -1,3 +1,4 @@
+const mongoose = require("mongoose");
 const User = require("../models/user");
 const badges = require("../models/badges"); 
 
@@ -5,18 +6,29 @@ const badges = require("../models/badges");
 
 const viewprofileData = async (req, res) => {
   try {
-    const currentUserId = req.user.id;
-    const { id } = req.params;
+    const currentUserId = req.user?.id || req.user?._id;
+    let { id } = req.params;
 
-    const requester = await User.findById(currentUserId);
-    if (!requester) {
-      return res.status(400).json({ msg: "Please login to view profiles." });
+    if (!id || id === "me" || id === "undefined") {
+      id = currentUserId;
     }
 
-    const targetUser = await User.findById(id)
+    if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ msg: "Invalid user ID provided." });
+    }
+
+    let targetUser = await User.findById(id)
       .select("username bio profilePic badges coins score friends unlockedProblems solvedProblems")
       .populate("badges", "name icon")
       .populate("friends", "username profilePic");
+
+    if (!targetUser && currentUserId) {
+      // Fallback to current logged in user's profile
+      targetUser = await User.findById(currentUserId)
+        .select("username bio profilePic badges coins score friends unlockedProblems solvedProblems")
+        .populate("badges", "name icon")
+        .populate("friends", "username profilePic");
+    }
 
     if (!targetUser) {
       return res.status(404).json({ msg: "User profile not found." });
@@ -43,8 +55,12 @@ const viewprofileData = async (req, res) => {
 // Update  profile
 const updateprofile = async (req, res) => {
   try {
-    const userID = req.user.id;
+    const userID = req.user?.id || req.user?._id;
     const { username, bio, profilePic } = req.body;
+
+    if (!userID) {
+      return res.status(400).json({ msg: "Authentication error: please login." });
+    }
 
     const verifyuser = await User.findById(userID);
     if (!verifyuser) {
@@ -55,7 +71,7 @@ const updateprofile = async (req, res) => {
 
     //  username must be unique (except for current user)
     const existuser = await User.findOne({ username });
-    if (existuser && existuser._id.toString() !== userID) {
+    if (existuser && existuser._id.toString() !== userID.toString()) {
       return res.status(400).json({
         msg: "Username already taken.",
       });
@@ -82,7 +98,10 @@ const updateprofile = async (req, res) => {
 // Delete the  account
 const deleteaccount = async (req, res) => {
   try {
-    const userID = req.user.id;
+    const userID = req.user?.id || req.user?._id;
+    if (!userID) {
+      return res.status(400).json({ msg: "Authentication error: please login." });
+    }
     const deletedUser = await User.findByIdAndDelete(userID);
 
     if (!deletedUser) {

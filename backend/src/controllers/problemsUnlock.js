@@ -29,8 +29,9 @@ const unlockProblems = async (req, res) => {
       });
     }
 
-    //  Check if already unlocked
-    if (user.unlockedProblems.includes(problem_id)) {
+    // Check if already unlocked
+    const alreadyUnlocked = (user.unlockedProblems || []).some(id => String(id) === String(problem_id));
+    if (alreadyUnlocked) {
       return res.status(200).json({
         msg: "Problem already unlocked",
         unlocked: true,

@@ -15,7 +15,7 @@ const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
 const gethints = async (req, res) => {
   try {
     const { problem_id, description, code, language } = req.body;
-    const userId = req.user.id;
+    const userId = req.user?.id || req.user?._id;
 
     const user = await User.findById(userId);
     if (!user) {
@@ -34,7 +34,7 @@ const gethints = async (req, res) => {
       return res.status(429).json({ message: "Daily hint limit reached (2 per day)" });
     }
 
-    // Step 3: Call OpenRouter API
+ 
     const prompt = `
       You are an AI coding assistant. The user is solving this problem:
       Problem: ${description}

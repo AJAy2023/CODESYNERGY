@@ -8,50 +8,67 @@ const createroom = async (req, res) => {
   try {
     const { userId, roomname, roomId, problem, roomType, peoplecount, videoEnabled, audioEnabled } = req.body;
 
+    if (!userId || !mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({ msg: "Invalid user ID provided." });
+    }
+
     const user = await User.findById(userId);
     if (!user) return res.status(404).json({ msg: "User not found" });
 
-    const roomActive = await Room.findOne({ isActive: true, createdBy: userId });
-    if (roomActive) return res.status(400).json({ msg: "You can't create multiple rooms" });
+    // Check if room with same roomId already exists
+    const existingRoom = await Room.findOne({ roomId });
+    if (existingRoom) {
+      return res.status(400).json({ msg: "Room ID already exists. Please choose a different Room ID." });
+    }
 
-    // Validate room type
-    if (roomType === 'battle' && peoplecount !== 2) {
+    // Auto-deactivate stale active rooms for this user (older than 1 hour)
+    const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
+    await Room.updateMany(
+      { createdBy: userId, isActive: true, createdAt: { $lt: oneHourAgo } },
+      { $set: { isActive: false, roomStatus: "cancelled" } }
+    );
+
+    const roomActive = await Room.findOne({ isActive: true, createdBy: userId });
+    if (roomActive) {
+      return res.status(400).json({ msg: "You already have an active room. Please leave or close your active room first." });
+    }
+
+    const lowerRoomType = (roomType || "battle").toLowerCase();
+
+    // Validate room type & count
+    if (lowerRoomType === 'battle' && peoplecount && peoplecount !== 2) {
       return res.status(400).json({ msg: "Battle room must have exactly 2 people" });
     }
-    if (roomType === 'discussion' && peoplecount < 2) {
-      return res.status(400).json({ msg: "Discussion room must have at least 2 people" });
+
+    let finalPeopleCount = peoplecount ? parseInt(peoplecount, 10) : 2;
+    if (lowerRoomType === 'discussion') {
+      finalPeopleCount = Math.max(2, Math.min(4, finalPeopleCount || 4));
+    } else {
+      finalPeopleCount = 2;
     }
 
-    //  use a new variable instead of reassigning const
-    let finalPeopleCount = peoplecount;
-    if (roomType === 'discussion') {
-      finalPeopleCount = 4;
-    }
-
-    // Determine problem: either user-provided or random
+    // Determine problem: user-provided or random
     let chosenProblemId = problem;
-    if (!chosenProblemId) {
+    if (!chosenProblemId || !mongoose.Types.ObjectId.isValid(chosenProblemId)) {
       const count = await Problem.countDocuments();
-      if (count === 0) return res.status(404).json({ msg: "No problems available" });
+      if (count === 0) return res.status(404).json({ msg: "No problems available in database" });
       const rand = Math.floor(Math.random() * count);
       const randomProblem = await Problem.findOne().skip(rand);
+      if (!randomProblem) return res.status(404).json({ msg: "No problems available" });
       chosenProblemId = randomProblem._id;
     } else {
-      if (!mongoose.Types.ObjectId.isValid(chosenProblemId)) {
-        return res.status(400).json({ msg: "Invalid problem ID" });
-      }
       const prob = await Problem.findById(chosenProblemId);
       if (!prob) return res.status(404).json({ msg: "Problem not found" });
     }
 
     const newroom = await Room.create({
-      roomName: roomname,
+      roomName: roomname || `Room-${roomId}`,
       roomId,
-      roomType,
+      roomType: lowerRoomType,
       problem: chosenProblemId,
       peopleCount: finalPeopleCount, 
       createdBy: userId,
-      roomStatus: roomType === "battle" ? "waiting" : "active", 
+      roomStatus: lowerRoomType === "battle" ? "waiting" : "active", 
       isActive: true,
       videoEnabled: videoEnabled ?? true,
       audioEnabled: audioEnabled ?? true,
@@ -67,7 +84,10 @@ const createroom = async (req, res) => {
 
   } catch (err) {
     console.error("Create room error:", err);
-    return res.status(500).json({ msg: "server error", error: err.message });
+    if (err.code === 11000) {
+      return res.status(400).json({ msg: "Room ID already exists. Please generate or choose another Room ID." });
+    }
+    return res.status(500).json({ msg: "Server error creating room", error: err.message });
   }
 };
 
@@ -198,16 +218,23 @@ const getRoomStatus = async (req, res) => {
 
 const getUsersRooms = async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user?.id || req.user?._id;
+
+    if (!userId) {
+      return res.status(200).json({
+        myRooms: [],
+        msg: "No authenticated user"
+      });
+    }
 
     const rooms = await Room.find({
       createdBy: userId,
       isActive: true,
-    }).select('roomname roomStatus createdAt');
+    }).select('roomName roomId roomStatus createdAt');
 
     return res.status(200).json({
       myRooms: rooms,
-      msg:"Active rooms "
+      msg: "Active rooms"
     });
   } catch (error) {
     console.error("Error in getUsersRooms:", error.message);
@@ -223,24 +250,25 @@ const getUsersRooms = async (req, res) => {
 
 const deleteroom = async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user?.id || req.user?._id || req.body?.userId;
     const roomid = req.params.roomid;
 
-    if (!roomid) return res.status(400).json({ msg: "wrong room id" });
+    if (!roomid) return res.status(400).json({ msg: "Invalid room ID" });
 
     const query = mongoose.isValidObjectId(roomid)
-      ? { $or: [{ _id: roomid }, { roomId: roomid }], createdBy: userId }
-      : { roomId: roomid, createdBy: userId };
+      ? { $or: [{ _id: roomid }, { roomId: roomid }] }
+      : { roomId: roomid };
 
     const room = await Room.findOneAndDelete(query);
 
     if (!room) {
-      return res.status(400).json({ msg: "room not found or unauthorized" });
+      return res.status(404).json({ msg: "Room not found or already deleted" });
     }
 
-    return res.status(200).json({ msg: "room deleted successfully." });
+    return res.status(200).json({ msg: "Room deleted successfully." });
   } catch (err) {
-    return res.status(500).json({ msg: "internal server error", error: err.message });
+    console.error("Error in deleteroom:", err);
+    return res.status(500).json({ msg: "Internal server error", error: err.message });
   }
 };
 module.exports={createroom , joinRoom, leaveRoom,getRoomById,getRoomStatus , getUsersRooms, deleteroom}
