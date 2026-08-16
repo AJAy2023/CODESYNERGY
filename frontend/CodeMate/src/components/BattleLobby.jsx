@@ -9,7 +9,7 @@ const BattleLobby = ({ onStart, opponent }) => {
   useEffect(() => {
     const fetchProblems = async () => {
       try {
-       const res = await axios.get(BASE_URL);
+       const res = await axios.get(`${BASE_URL}/problems`);
         setProblems(res.data);
       } catch (err) {
         console.error("Failed to load problems", err);

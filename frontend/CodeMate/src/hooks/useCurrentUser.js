@@ -1,18 +1,14 @@
-import {useUser} from "@clerk/react";
+import { useAuth } from "../context/AuthContext";
 
+export default function useCurrentUser() {
+  const { user, loading } = useAuth();
 
-
-export default function useCurrentUser()
-{
-
-    const  {user,  isLoaded , isSignedIn} = useUser();
-
-    return {
-        user,
-        userId :user?.id,
-        isLoaded,
-        isSignedIn
-    }
+  return {
+    user,
+    userId: user?.id || user?._id,
+    isLoaded: !loading,
+    isSignedIn: !!user,
+  };
 }
 
 

@@ -37,8 +37,7 @@ const CreateRoom = () => {
     const interval = setInterval(async () => {
       try {
         const res = await axios.get(
-          // `https://codemate-1-nuih.onrender.com/rooms/${createdRoom.roomId}`
-          BASE_URL
+          `${BASE_URL}/rooms/${createdRoom.roomId}`
         );
         const room = res.data.room;
 
@@ -72,7 +71,7 @@ const CreateRoom = () => {
 
     try {
       const res = await axios.post(
-        "https://codemate-1-nuih.onrender.com/rooms/createroom",
+        `${BASE_URL}/rooms/createroom`,
         {
           userId,
           roomname: roomName,

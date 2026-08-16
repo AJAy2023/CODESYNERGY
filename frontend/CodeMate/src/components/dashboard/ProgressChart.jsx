@@ -12,13 +12,13 @@ import {
 } from "recharts";
 import axios from "axios";
 import { BASE_URL } from "../../api/config";
-import { useUser } from "@clerk/react";
+import { useAuth } from "../../context/AuthContext";
 const GUARDIAN = "#0AA1C0";
 
 const DAY_NAMES = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 export default function ProgressChart({ userId: propUserId = null }) {
-  const { user, isLoaded } = useUser();
+  const { user, loading: authLoading } = useAuth();
   const [chartData, setChartData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -29,10 +29,9 @@ export default function ProgressChart({ userId: propUserId = null }) {
       setLoading(true);
       setError(null);
 
-      
-      const uid = propUserId || user?.id;
+      const uid = propUserId || user?.id || user?._id;
       if (!uid) {
-        setError("No userId found (pass prop or set localStorage 'userId').");
+        setError("No userId found.");
         setLoading(false);
         return;
       }
@@ -114,7 +113,7 @@ export default function ProgressChart({ userId: propUserId = null }) {
     return () => {
       mounted = false;
     };
-  }, [propUserId]);
+  }, [propUserId, user?.id, user?._id]);
 
  
   const maxVal = Math.max(1, ...(chartData.map(d => Number(d.value) || 0)));

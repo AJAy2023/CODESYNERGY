@@ -1,15 +1,16 @@
-// src/pages/Signup.jsx
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import { BASE_URL } from "../api/config";
 import { motion } from "framer-motion";
 import Navbar from "@/components/layout/Navbar";
+import { Eye, EyeOff } from "lucide-react";
 
 export default function Signup() {
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
@@ -26,12 +27,15 @@ export default function Signup() {
         email,
         password,
       });
-
       alert("Registered successfully! You've earned 10 bonus coins. Please login to continue.");
       navigate("/login");
     } catch (err) {
       console.error("Signup error:", err?.response?.data);
-      setError(err?.response?.data?.msg || "Signup failed. Please try again.");
+      setError(
+        err?.response?.data?.message ||
+        err?.response?.data?.msg ||
+        "Signup failed. Please try again."
+      );
     }
   };
 
@@ -82,16 +86,26 @@ export default function Signup() {
               required
             />
 
-            <motion.input
-              whileFocus={{ scale: 1.02 }}
-              transition={{ duration: 0.2 }}
-              type="password"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full p-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#7c3aed]"
-              required
-            />
+            <div className="relative">
+              <motion.input
+                whileFocus={{ scale: 1.02 }}
+                transition={{ duration: 0.2 }}
+                type={showPassword ? "text" : "password"}
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full p-3 pr-12 rounded-lg bg-white/10 border border-white/20 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#7c3aed]"
+                required
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword((prev) => !prev)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors p-1 cursor-pointer"
+                aria-label={showPassword ? "Hide password" : "Show password"}
+              >
+                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+              </button>
+            </div>
 
             <motion.button
               whileHover={{ scale: 1.03 }}

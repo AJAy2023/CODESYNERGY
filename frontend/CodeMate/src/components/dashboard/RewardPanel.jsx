@@ -2,7 +2,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import Lottie from "lottie-react";
-import rewardAnimation from "../../assets/reward.json"; // same as used earlier
+import rewardAnimation from "../../assets/reward.json"; 
 
 export default function RewardPanel({ onClaim }) {
   return (

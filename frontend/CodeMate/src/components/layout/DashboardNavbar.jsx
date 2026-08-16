@@ -1,13 +1,14 @@
-// src/components/layout/DashboardNavbar.jsx
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { Search, Bell, MessageSquare, User, Coins } from "lucide-react";
+import { Search, Bell, MessageSquare, User, Coins, LogOut, Users } from "lucide-react";
 import { searchUsers } from "../../api/friends";
+import { useAuth } from "../../context/AuthContext";
 const GUARDIAN = "#0AA1C0";
 
 export default function DashboardNavbar({ user }) {
   const navigate = useNavigate();
+  const { logout } = useAuth();
   const [openMobile, setOpenMobile] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [q, setQ] = useState("");
@@ -47,6 +48,11 @@ export default function DashboardNavbar({ user }) {
       clearTimeout(debounce);
     };
   }, [q]);
+
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
 
   return (
     <motion.header
@@ -155,7 +161,7 @@ export default function DashboardNavbar({ user }) {
           </AnimatePresence>
         </div>
 
-        {/* right actions (unchanged) */}
+        {/* right actions */}
         <div className="flex items-center gap-3">
           <div
             className="hidden md:flex items-center gap-3 px-3 py-2 rounded-lg cursor-pointer"
@@ -170,20 +176,25 @@ export default function DashboardNavbar({ user }) {
             <div className="text-sm font-semibold text-white">{user?.coins ?? 0}</div>
           </div>
 
+          {/* Friends & Requests Button with Count */}
           <button
-            onClick={() => navigate("/notifications")}
-            title="Notifications"
-            className="p-2 rounded-md hover:bg-white/3 transition"
+            onClick={() => navigate("/friends")}
+            title="View Friends & Requests"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 transition cursor-pointer"
+            aria-label="Friends and Requests"
           >
-            <Bell size={18} className="text-slate-200" />
+            <Users size={16} className="text-emerald-400" />
+            <span className="text-xs font-bold">{Array.isArray(user?.friends) ? user.friends.length : (user?.friendCount || 0)} Friends</span>
           </button>
 
+          {/* Messages Coming Soon Button */}
           <button
-            onClick={() => navigate("/messages")}
-            title="Messages"
-            className="p-2 rounded-md hover:bg-white/3 transition"
+            onClick={() => alert("🚀 Message & Notification System: Coming Soon!\nWe are actively working on this feature.")}
+            title="Messages & Notifications - Coming Soon"
+            className="px-3 py-1.5 text-xs font-semibold rounded-lg bg-cyan-500/10 text-cyan-300 border border-cyan-500/30 hover:bg-cyan-500/20 transition cursor-pointer flex items-center gap-1.5 shadow-sm"
           >
-            <MessageSquare size={18} className="text-slate-200" />
+            <MessageSquare size={14} className="text-cyan-400" />
+            <span>Coming Soon</span>
           </button>
 
           <button
@@ -196,6 +207,15 @@ export default function DashboardNavbar({ user }) {
             <span className="hidden md:inline text-sm text-slate-200">
               {user?.username ?? "You"}
             </span>
+          </button>
+
+          <button
+            onClick={handleLogout}
+            title="Logout"
+            className="p-2 rounded-md hover:bg-white/10 text-rose-400 hover:text-rose-300 transition cursor-pointer"
+            aria-label="Logout"
+          >
+            <LogOut size={18} />
           </button>
 
           {/* mobile toggle */}

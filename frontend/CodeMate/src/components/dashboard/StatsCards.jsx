@@ -32,7 +32,7 @@ function hasEnoughData(u) {
 }
 
 export default function StatsCards({ user }) {
-  // Accept either: user (profile), { profile: user }, or full response { profile, stats }
+
   const incoming = user?.profile ?? user ?? {};
 
   const [fetchedProfile, setFetchedProfile] = useState(null);
@@ -75,7 +75,7 @@ export default function StatsCards({ user }) {
             });
             if (profileRes && profileRes.status === 200) break;
           } catch (err) {
-            // continue to next url
+            
             profileRes = null;
           }
         }
@@ -163,9 +163,9 @@ export default function StatsCards({ user }) {
       : 0;
 
   const stats = [
-    { label: "Problems Solved", value: Number(solvedCount || 0), Icon: Code2 },
-    { label: "Coins", value: Number(coins || 0), Icon: Coins },
-    { label: "Friends", value: Number(friendsCount || 0), Icon: Users },
+    { label: "Problems Solved", value: Number(solvedCount || 0), Icon: Code2, href: "/problems" },
+    { label: "Coins", value: Number(coins || 0), Icon: Coins, href: "/problems" },
+    { label: "Friends", value: Number(friendsCount || 0), Icon: Users, href: "/friends" },
     {
       label: "Leaderboard Rank",
       value: u?.rank ? u.rank : "Top 10",

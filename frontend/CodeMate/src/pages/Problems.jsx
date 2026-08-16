@@ -247,17 +247,19 @@ export default function Problems() {
         const coinsLeft =
           typeof data.coinsLeft === "number" ? data.coinsLeft : (user.coins ?? 0) - unlockCost;
 
-        // update user: coins + unlockedProblems
+        // update user: coins + unlockedProblems & persist to localStorage
         setUser((prev) => {
           const prevUnlocked = (prev?.unlockedProblems || []).map(String);
           const newUnlocked = prevUnlocked.includes(String(problem._id))
             ? prevUnlocked
             : [...prevUnlocked, String(problem._id)];
-          return {
+          const updated = {
             ...prev,
             coins: coinsLeft,
             unlockedProblems: newUnlocked,
           };
+          localStorage.setItem("userData", JSON.stringify(updated));
+          return updated;
         });
 
         // update problems array (not strictly necessary for isUnlocked but keeps local dataset consistent)

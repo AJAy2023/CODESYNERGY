@@ -1,8 +1,6 @@
-// src/components/friends/FriendCard.jsx
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-// import { deleteFriend } from "../../api/friends";
-
+import { unfriend } from "../../api/friends";
 
 export default function FriendCard({ friend }) {
   const navigate = useNavigate();
@@ -16,7 +14,7 @@ export default function FriendCard({ friend }) {
     try {
       setRemoving(true);
       const me = localStorage.getItem("userId");
-      await deleteFriend(me, friend._id);
+      await unfriend(me, friend._id);
       window.dispatchEvent(new CustomEvent("friends:refresh")); 
     } catch (err) {
       alert(err?.response?.data?.msg || "Failed to remove friend");

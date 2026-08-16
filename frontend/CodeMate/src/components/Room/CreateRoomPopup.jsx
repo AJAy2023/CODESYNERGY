@@ -1,17 +1,17 @@
 // src/components/Room/CreateRoomPopup.jsx
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { BASE_URL } from "../../api/config";
 import socket from "../../Collab/socket";
 import { motion } from "framer-motion";
-import { ArrowLeft, X, Link2, Loader2, Video, Mic } from "lucide-react";
+import { ArrowLeft, X, Link2, Loader2, Video, Mic, RefreshCw, Volume2, VolumeX } from "lucide-react";
 
 const GUARDIAN = "#0AA1C0";
 const MAX_DISCUSSION = 4;
 const MIN_DISCUSSION = 2;
 
-const CreateRoomPopup = ({ onClose }) => {
+export default function CreateRoomPopup({ onClose }) {
   const navigate = useNavigate();
 
   const [roomName, setRoomName] = useState("");
@@ -23,14 +23,101 @@ const CreateRoomPopup = ({ onClose }) => {
   const [audio, setAudio] = useState(true);
   const [loading, setLoading] = useState(false);
 
+  // Audio / Sound state
+  const [isMuted, setIsMuted] = useState(false);
+  const [activeRoom, setActiveRoom] = useState(null);
+  const audioCtxRef = useRef(null);
+  const audioIntervalRef = useRef(null);
+
+  const generateUniqueId = () => {
+    const unique = `room-${Math.random().toString(36).substring(2, 8)}`;
+    setRoomId(unique);
+    localStorage.setItem("roomId", unique);
+  };
+
+  const fetchActiveRoom = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+      const res = await axios.get(`${BASE_URL}/rooms/active-rooms`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (res.data?.myRooms && res.data.myRooms.length > 0) {
+        setActiveRoom(res.data.myRooms[0]);
+      } else {
+        setActiveRoom(null);
+      }
+    } catch (err) {
+      console.error("Fetch active room error:", err);
+    }
+  };
+
+  const handleDeleteActiveRoom = async (roomIdToDelete) => {
+    try {
+      const token = localStorage.getItem("token");
+      await axios.delete(`${BASE_URL}/rooms/delete/${roomIdToDelete}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      socket.emit("room-deleted", roomIdToDelete);
+      setActiveRoom(null);
+      generateUniqueId();
+    } catch (err) {
+      console.error("Delete active room error:", err);
+    }
+  };
+
   const isDiscussion = useMemo(
     () => String(roomType).toLowerCase() === "discussion",
     [roomType]
   );
 
+  // Avengers Battle Theme Audio
+  const audioRef = useRef(null);
+
   useEffect(() => {
-    setRoomName(localStorage.getItem("roomName") || "");
-    setRoomId(localStorage.getItem("roomId") || "");
+    const audio = new Audio("/media/battelsong/TheAvengers.mp4");
+    audio.loop = true;
+    audio.volume = 0.5;
+    audioRef.current = audio;
+
+    const playPromise = audio.play();
+    if (playPromise !== undefined) {
+      playPromise.catch((err) => {
+        if (err.name !== "AbortError") {
+          console.warn("Theme audio play error:", err);
+        }
+      });
+    }
+
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.currentTime = 0;
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    if (isMuted) {
+      audio.pause();
+    } else {
+      const p = audio.play();
+      if (p !== undefined) p.catch(() => {});
+    }
+  }, [isMuted]);
+
+  useEffect(() => {
+    fetchActiveRoom();
+    setRoomName(localStorage.getItem("roomName") || "Code Synergy Arena");
+    const savedRoomId = localStorage.getItem("roomId");
+    if (savedRoomId && savedRoomId.length >= 3) {
+      setRoomId(savedRoomId);
+    } else {
+      generateUniqueId();
+    }
+
     setRoomType(localStorage.getItem("roomType") || "Battle");
     setMembersCount(localStorage.getItem("membersCount") || "2");
     setVideo(localStorage.getItem("video") === "true" || true);
@@ -233,16 +320,57 @@ const CreateRoomPopup = ({ onClose }) => {
                    Create Room
                 </span>
               </h2>
-              <button
-                onClick={onClose}
-                className="inline-flex items-center justify-center w-9 h-9 rounded-full border border-white/10 hover:border-white/20 hover:bg-white/5 transition"
-                title="Close"
-              >
-                <X className="w-5 h-5 text-slate-200" />
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => setIsMuted((prev) => !prev)}
+                  className="inline-flex items-center justify-center w-9 h-9 rounded-full border border-white/10 hover:border-white/20 hover:bg-white/5 transition text-slate-200"
+                  title={isMuted ? "Unmute Lobby Music" : "Mute Lobby Music"}
+                >
+                  {isMuted ? <VolumeX className="w-4 h-4 text-rose-400" /> : <Volume2 className="w-4 h-4 text-emerald-400" />}
+                </button>
+                <button
+                  onClick={onClose}
+                  className="inline-flex items-center justify-center w-9 h-9 rounded-full border border-white/10 hover:border-white/20 hover:bg-white/5 transition"
+                  title="Close"
+                >
+                  <X className="w-5 h-5 text-slate-200" />
+                </button>
+              </div>
             </div>
 
             <div className="px-5 sm:px-6 pb-6 pt-3">
+              {/* Active Room Warning & Quick Controls */}
+              {activeRoom && (
+                <div className="mb-4 p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-200 text-sm flex flex-col sm:flex-row items-center justify-between gap-3">
+                  <div>
+                    <div className="font-semibold text-amber-300">Active Room Found</div>
+                    <div className="text-xs text-slate-300 font-mono mt-0.5">
+                      {activeRoom.roomId || activeRoom.roomName}
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        onClose();
+                        navigate(`/waitingroom/${activeRoom.roomId}`);
+                      }}
+                      className="px-3 py-1.5 rounded-lg bg-cyan-500 hover:bg-cyan-400 text-black font-bold text-xs transition cursor-pointer"
+                    >
+                      Rejoin
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleDeleteActiveRoom(activeRoom.roomId || activeRoom._id)}
+                      className="px-3 py-1.5 rounded-lg bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs transition cursor-pointer"
+                    >
+                      Delete Room
+                    </button>
+                  </div>
+                </div>
+              )}
+
               {/* Room Name */}
               <div className="mb-3.5">
                 <input
@@ -263,8 +391,8 @@ const CreateRoomPopup = ({ onClose }) => {
                 />
               </div>
 
-              {/* Room ID */}
-              <div className="mb-3.5">
+              {/* Room ID (with Regenerate Unique ID button) */}
+              <div className="mb-3.5 relative flex items-center">
                 <input
                   type="text"
                   placeholder="Room ID"
@@ -274,13 +402,21 @@ const CreateRoomPopup = ({ onClose }) => {
                     localStorage.setItem("roomId", e.target.value);
                   }}
                   className="
-                    w-full px-4 py-3 rounded-xl
+                    w-full px-4 py-3 pr-12 rounded-xl
                     bg-zinc-900/70 border border-cyan-600/30
                     placeholder-white/40 text-white
                     focus:outline-none focus:ring-2 focus:ring-cyan-400/60 focus:border-cyan-400/50
                     transition
                   "
                 />
+                <button
+                  type="button"
+                  onClick={generateUniqueId}
+                  title="Generate Unique Room ID"
+                  className="absolute right-3 p-1.5 rounded-lg text-slate-400 hover:text-cyan-300 hover:bg-white/10 transition cursor-pointer"
+                >
+                  <RefreshCw className="w-4 h-4" />
+                </button>
               </div>
 
               {/* Problem select (styled button-like) */}
@@ -420,4 +556,4 @@ const CreateRoomPopup = ({ onClose }) => {
   );
 };
 
-export default CreateRoomPopup;
+// export default CreateRoomPopup;

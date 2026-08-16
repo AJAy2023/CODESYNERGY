@@ -17,25 +17,39 @@ export default function AIBuddyWidget() {
               exit={{ scale: 0.94, opacity: 0, y: 10 }}
               className="w-80 bg-white/4 backdrop-blur-lg rounded-xl p-3 border border-white/6 shadow-lg"
             >
-              <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center justify-between mb-3 border-b border-white/10 pb-2">
                 <div className="flex items-center gap-2">
-                  <div className="w-9 h-9 rounded-full bg-white/6 flex items-center justify-center text-white font-semibold">AI</div>
+                  <div className="w-9 h-9 rounded-full bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center text-cyan-300 font-bold text-xs">AI</div>
                   <div>
-                    <div className="text-sm font-semibold">AI Buddy</div>
-                    <div className="text-xs text-slate-400">Ask for hints, translations, walkthroughs</div>
+                    <div className="text-sm font-bold text-cyan-300">AI Coding Buddy</div>
+                    <div className="text-[10px] text-emerald-400 font-medium">Coming Soon 🚀</div>
                   </div>
                 </div>
-                <button onClick={() => setOpen(false)} className="text-slate-300">✕</button>
+                <button onClick={() => setOpen(false)} className="text-slate-400 hover:text-white transition">✕</button>
               </div>
 
-              <div className="h-36 overflow-auto bg-transparent rounded p-2 border border-white/3">
-                <div className="text-sm text-slate-200 mb-2">AI: Hey coder — what do you want to solve today?</div>
-                <div className="text-sm text-slate-400">You: Show me hints for Two Sum</div>
+              <div className="bg-zinc-950/80 rounded-xl p-3 border border-white/10 space-y-2">
+                <div className="text-xs text-slate-300 font-semibold flex items-center gap-1.5 text-cyan-300">
+                  <span>🤖</span>
+                  <span>AI Buddy Assistant Status:</span>
+                </div>
+                <p className="text-xs text-slate-400 leading-relaxed">
+                  Your AI Coding Buddy will be active soon! We are actively working on building real-time code hints, debugging assistance, and problem walkthroughs.
+                </p>
               </div>
 
-              <div className="mt-2 flex gap-2">
-                <input placeholder="Ask the AI buddy..." className="flex-1 px-3 py-2 rounded bg-[#00000022] text-white outline-none" />
-                <button className="px-3 py-2 rounded bg-emerald-500 text-black">Send</button>
+              <div className="mt-3 flex gap-2">
+                <input
+                  disabled
+                  placeholder="AI Buddy activating soon..."
+                  className="flex-1 px-3 py-2 text-xs rounded-lg bg-zinc-900 border border-white/10 text-slate-500 cursor-not-allowed outline-none"
+                />
+                <button
+                  onClick={() => alert("🚀 AI Buddy: Coming Soon!\nWe are actively working on this feature.")}
+                  className="px-3 py-2 rounded-lg bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 text-xs font-bold hover:bg-cyan-500/30 transition cursor-pointer"
+                >
+                  Notify
+                </button>
               </div>
             </motion.div>
           )}

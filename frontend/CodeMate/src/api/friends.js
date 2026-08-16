@@ -50,3 +50,7 @@ export const getFriendStatus = (userId) => {
 export const unfriend = (userId1, userId2) => {
   return axios.post(`${BASE_URL}/friends/delete`, { userId1, userId2 }, { headers: authHeaders() });
 };
+
+export const getFriendList = (userId) => {
+  return axios.get(`${BASE_URL}/friends/list/${userId}`, { headers: authHeaders() });
+};

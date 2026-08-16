@@ -1,34 +1,36 @@
-// // src/pages/Login.jsx
+// src/pages/Login.jsx
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { useAuth } from "@/context/AuthContext";
 import axios from "axios";
 import { BASE_URL } from "../api/config";
 import { motion } from "framer-motion";
 import Navbar from "@/components/layout/Navbar";
+import { Eye, EyeOff } from "lucide-react";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError("");
 
     try {
       const res = await axios.post(`${BASE_URL}/login`, { email, password });
 
-      const token = res.data.token;
-      const userId = res.data.user.id;
-
-      localStorage.setItem("token", token);
-      localStorage.setItem("userId", userId);
-      localStorage.setItem("userData", JSON.stringify(res.data.user));
-    
-
-      navigate("/dashboard");
+      if (res.data.success && res.data.user) {
+        login(res.data.user);
+        navigate("/dashboard");
+      } else {
+        setError(res.data.message || "Login failed.");
+      }
     } catch (err) {
-      setError("Invalid credentials or server error.");
+      setError(err?.response?.data?.message || "Invalid credentials or server error.");
     }
   };
 
@@ -68,16 +70,26 @@ export default function Login() {
               required
             />
 
-            <motion.input
-              whileFocus={{ scale: 1.02 }}
-              transition={{ duration: 0.2 }}
-              type="password"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full p-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#7c3aed]"
-              required
-            />
+            <div className="relative">
+              <motion.input
+                whileFocus={{ scale: 1.02 }}
+                transition={{ duration: 0.2 }}
+                type={showPassword ? "text" : "password"}
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full p-3 pr-12 rounded-lg bg-white/10 border border-white/20 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#7c3aed]"
+                required
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword((prev) => !prev)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors p-1 cursor-pointer"
+                aria-label={showPassword ? "Hide password" : "Show password"}
+              >
+                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+              </button>
+            </div>
 
             <motion.button
               whileHover={{ scale: 1.03 }}
@@ -91,7 +103,7 @@ export default function Login() {
           </form>
 
           <div className="mt-6 flex justify-between text-sm text-gray-400">
-            <Link to="#" className="hover:text-[#06b6d4] transition-colors">
+            <Link to="/forgot-password" className="hover:text-[#06b6d4] transition-colors">
               Forgot Password?
             </Link>
             <span>

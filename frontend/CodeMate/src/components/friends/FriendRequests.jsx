@@ -9,6 +9,8 @@ import {
 } from "../../api/friends";
 import { useNavigate } from "react-router-dom";
 
+import socket from "../../Collab/socket";
+
 export default function FriendRequests() {
   const [incoming, setIncoming] = useState([]);
   const [outgoing, setOutgoing] = useState([]);
@@ -44,10 +46,14 @@ export default function FriendRequests() {
   useEffect(() => {
     load();
 
-    // optional: listen to global refresh events if other parts of app update friend requests
     const handler = () => load();
     window.addEventListener("friends:refresh", handler);
-    return () => window.removeEventListener("friends:refresh", handler);
+    socket.on("friends:refresh", handler);
+
+    return () => {
+      window.removeEventListener("friends:refresh", handler);
+      socket.off("friends:refresh", handler);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
