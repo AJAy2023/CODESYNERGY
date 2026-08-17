@@ -1,5 +1,5 @@
-// src/Components/HomePage/HeroSection.jsx
 import React, { useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 
@@ -175,8 +175,8 @@ export default function HeroSection() {
           </p>
 
           <div className="mt-6 sm:mt-8 flex flex-wrap gap-3 justify-center lg:justify-start">
-            <a
-              href="/register"
+            <Link
+              to="/register"
               className="inline-flex items-center gap-2 rounded-full px-5 py-2.5 font-semibold"
               style={{
                 background: `linear-gradient(180deg, ${GUARDIAN}, ${shadeHex(GUARDIAN, -12)})`,
@@ -185,7 +185,7 @@ export default function HeroSection() {
               }}
             >
               Get Started <ArrowRight size={16} />
-            </a>
+            </Link>
 
             <a
               href="#features"
