@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from "react"; 
 import { useParams, useNavigate, useLocation } from "react-router-dom"; 
-import socket from "./socket"; // Socket.io connection for real-time communication
+import socket from "./socket"; 
 import { Mic, MicOff, Video, VideoOff, ScreenShare, LogOut, Clock, Code, Swords, User, Play, Sparkles, Terminal, Loader2, Send } from "lucide-react"; // Icons for UI
-import Editor from "@monaco-editor/react"; // Monaco code editor
-import axios from "axios"; // HTTP client
-import { BASE_URL } from "../api/config"; // API base URL
+import Editor from "@monaco-editor/react"; 
+import axios from "axios"; 
+import { BASE_URL } from "../api/config";
 
 const RoomPage = () => {
   const { roomId } = useParams();
@@ -22,6 +22,10 @@ const RoomPage = () => {
   const peerIdRef = useRef(null);
   const streamReadyRef = useRef(false);
   const isBattleActiveRef = useRef(false);
+
+  // Active Media Streams in React State
+  const [localStream, setLocalStream] = useState(null);
+  const [remoteStream, setRemoteStream] = useState(null);
 
   // State for mic on/off
   const [micOn, setMicOn] = useState(true);
@@ -130,41 +134,97 @@ const RoomPage = () => {
     });
   };
 
-  // Ensure peer connection exists
-  const ensurePeer = () => {
-    if (peerConnectionRef.current) return peerConnectionRef.current;
+  // Reliable helper to get local Camera + Microphone stream
+  const getLocalMedia = async () => {
+    if (localStreamRef.current && localStreamRef.current.active) {
+      return localStreamRef.current;
+    }
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: true,
+        audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true },
+      });
+      localStreamRef.current = stream;
+      setLocalStream(stream);
+      streamReadyRef.current = true;
+      return stream;
+    } catch (e) {
+      console.warn("getUserMedia failed or denied:", e);
+      // Fallback: try audio-only if video is blocked
+      try {
+        const audioOnly = await navigator.mediaDevices.getUserMedia({ audio: true });
+        localStreamRef.current = audioOnly;
+        setLocalStream(audioOnly);
+        streamReadyRef.current = true;
+        setCamOn(false);
+        return audioOnly;
+      } catch (err) {
+        console.error("All media failed:", err);
+        setCamOn(false);
+        setMicOn(false);
+        return null;
+      }
+    }
+  };
+
+  // Ensure remote stream is bound to video element across React re-renders
+  useEffect(() => {
+    if (remoteVideoRef.current && remoteStream) {
+      remoteVideoRef.current.srcObject = remoteStream;
+      remoteVideoRef.current.muted = false;
+      remoteVideoRef.current.volume = 1.0;
+      remoteVideoRef.current.play().catch((err) => console.warn("Remote video play error:", err));
+    }
+  }, [remoteStream]);
+
+  // Ensure local stream is bound to video element across React re-renders
+  useEffect(() => {
+    if (localVideoRef.current && localStream) {
+      localVideoRef.current.srcObject = localStream;
+      localVideoRef.current.muted = true;
+      localVideoRef.current.play().catch((err) => console.warn("Local video play error:", err));
+    }
+  }, [localStream]);
+
+  // Ensure peer connection exists with active media tracks
+  const ensurePeer = (stream) => {
+    if (peerConnectionRef.current) {
+      if (stream) {
+        const currentTracks = stream.getTracks();
+        const senders = peerConnectionRef.current.getSenders();
+        currentTracks.forEach((t) => {
+          const existing = senders.find((s) => s.track && s.track.kind === t.kind);
+          try {
+            if (existing) existing.replaceTrack(t);
+            else peerConnectionRef.current.addTrack(t, stream);
+          } catch (err) {
+            console.warn("Track attach error:", err);
+          }
+        });
+      }
+      return peerConnectionRef.current;
+    }
 
     const pc = new RTCPeerConnection(config);
     peerConnectionRef.current = pc;
 
     // Add local tracks if available
-    if (localStreamRef.current) {
-      const tracks = localStreamRef.current.getTracks();
-      tracks.forEach((t) => {
+    const activeStream = stream || localStreamRef.current;
+    if (activeStream) {
+      activeStream.getTracks().forEach((t) => {
         try {
-          const existingSender = pc.getSenders().find((s) => s.track && s.track.kind === t.kind);
-          if (existingSender) existingSender.replaceTrack(t);
-          else pc.addTrack(t, localStreamRef.current);
+          pc.addTrack(t, activeStream);
         } catch (e) {
-          console.warn("track add/replace error:", e);
+          console.warn("track add error:", e);
         }
       });
     }
 
-    // Handle incoming tracks
+    // Handle incoming remote media tracks
     pc.ontrack = (event) => {
       console.log("[PC] ontrack fired, streams:", event.streams);
-      const stream = (event.streams && event.streams[0]) || null;
-      const targetStream = stream || new MediaStream([event.track].filter(Boolean));
-
-      if (remoteVideoRef.current) {
-        remoteVideoRef.current.srcObject = targetStream;
-        remoteVideoRef.current.play().catch((err) => console.warn("Remote video play error:", err));
-      }
-      if (remoteAudioRef.current) {
-        remoteAudioRef.current.srcObject = targetStream;
-        remoteAudioRef.current.play().catch((err) => console.warn("Remote audio play error:", err));
-      }
+      const stream = (event.streams && event.streams[0]) || new MediaStream([event.track].filter(Boolean));
+      setRemoteStream(stream);
     };
 
     // Handle ICE candidates
@@ -174,7 +234,6 @@ const RoomPage = () => {
           candidate: event.candidate,
           roomId,
           from: userId,
-          to: peerIdRef.current || null,
         });
       }
     };
@@ -198,21 +257,6 @@ const RoomPage = () => {
         console.warn("Failed to add buffered ICE candidate:", e);
       }
     }
-  };
-
-  // Wait for local stream to be ready
-  const waitForLocalStream = async () => {
-    if (localStreamRef.current) return;
-    await new Promise((resolve) => {
-      const maxWaitMs = 4000;
-      const started = Date.now();
-      const t = setInterval(() => {
-        if (localStreamRef.current || Date.now() - started > maxWaitMs) {
-          clearInterval(t);
-          resolve();
-        }
-      }, 50);
-    });
   };
 
   // Debounce code edits
@@ -429,44 +473,68 @@ const RoomPage = () => {
       setCodeUser2(code);
     };
 
-    const handleBattleStarted = async ({ starterId, opponentId, problem: p }) => {
-      console.log("battle-started event:", { starterId, opponentId, problem: !!p });
-      if (p) {
-        setProblem(p);
-        const starter = extractBoilerplate(p, language);
-        setCodeUser1((prev) => (prev === "// Your Code Here" || !prev ? starter : prev));
+    const startBattleOffer = async () => {
+      // If already connected and active, do not re-negotiate
+      if (peerConnectionRef.current && (peerConnectionRef.current.connectionState === "connected" || peerConnectionRef.current.iceConnectionState === "connected")) {
+        return;
       }
 
-      const me = userId;
-      const amStarter = String(starterId) === String(me);
-      peerIdRef.current = amStarter ? opponentId : starterId;
-      isBattleActiveRef.current = true;
+      const stream = await getLocalMedia();
+      const pc = ensurePeer(stream);
 
-      await waitForLocalStream();
-      const pc = ensurePeer();
+      // If we already prepared a local offer, re-send it to the newly arrived peer
+      if (pc.signalingState === "have-local-offer" && pc.localDescription) {
+        console.log("[RoomPage] Re-sending existing local offer to peer");
+        socket.emit("webrtc-offer", {
+          sdp: pc.localDescription,
+          roomId,
+          from: userId,
+        });
+        return;
+      }
 
-      if (amStarter) {
+      if (pc.signalingState !== "stable") return;
+      try {
         const offer = await pc.createOffer();
         await pc.setLocalDescription(offer);
         logPC(pc, "after setLocalDescription(offer)");
         socket.emit("webrtc-offer", {
           sdp: offer,
           roomId,
-          from: me,
-          to: peerIdRef.current,
+          from: userId,
         });
-      } else {
-        logPC(pc, "participant waiting for offer");
+      } catch (err) {
+        console.error("Battle createOffer error:", err);
       }
     };
 
+    const handleBattlePeerReady = () => {
+      console.log("[RoomPage] Peer is ready, initiating/re-sending offer...");
+      startBattleOffer();
+    };
+
     const handleOffer = async ({ sdp, from }) => {
+      if (String(from) === String(userId)) return;
       console.log("webrtc-offer received from:", from);
       peerIdRef.current = from;
-      await waitForLocalStream();
-      const pc = ensurePeer();
+
+      // If already connected, ignore redundant offers
+      if (peerConnectionRef.current && (peerConnectionRef.current.connectionState === "connected" || peerConnectionRef.current.iceConnectionState === "connected")) {
+        console.log("[RoomPage] Already connected, ignoring extra offer");
+        return;
+      }
+
+      const stream = await getLocalMedia();
+      const pc = ensurePeer(stream);
       try {
-        await pc.setRemoteDescription(new RTCSessionDescription(sdp));
+        if (pc.signalingState !== "stable") {
+          await Promise.all([
+            pc.setLocalDescription({ type: "rollback" }),
+            pc.setRemoteDescription(new RTCSessionDescription(sdp)),
+          ]);
+        } else {
+          await pc.setRemoteDescription(new RTCSessionDescription(sdp));
+        }
         remoteDescSetRef.current = true;
         await drainPendingCandidates();
         const answer = await pc.createAnswer();
@@ -475,7 +543,6 @@ const RoomPage = () => {
           sdp: answer,
           roomId,
           from: userId,
-          to: from,
         });
       } catch (e) {
         console.error("Error handling offer:", e);
@@ -483,9 +550,14 @@ const RoomPage = () => {
     };
 
     const handleAnswer = async ({ sdp, from }) => {
-      console.log("webrtc-answer received", { from });
+      if (String(from) === String(userId)) return;
+      console.log("webrtc-answer received from:", from);
       peerIdRef.current = from || peerIdRef.current;
-      const pc = ensurePeer();
+      const pc = peerConnectionRef.current;
+      if (!pc || pc.signalingState !== "have-local-offer") {
+        console.log("[RoomPage] Ignoring answer — PC state is", pc?.signalingState);
+        return;
+      }
       try {
         await pc.setRemoteDescription(new RTCSessionDescription(sdp));
         remoteDescSetRef.current = true;
@@ -498,19 +570,14 @@ const RoomPage = () => {
     const handleIce = async ({ candidate, from }) => {
       if (String(from) === String(userId)) return;
       const pc = peerConnectionRef.current;
-      if (!pc) {
+      if (!pc || !pc.remoteDescription) {
         pendingCandidatesRef.current.push(candidate);
         return;
       }
       try {
-        if (pc.remoteDescription) {
-          await pc.addIceCandidate(candidate);
-        } else {
-          pendingCandidatesRef.current.push(candidate);
-        }
+        await pc.addIceCandidate(candidate);
       } catch (e) {
-        console.warn("addIceCandidate failed (late remote desc?):", e);
-        pendingCandidatesRef.current.push(candidate);
+        console.warn("addIceCandidate failed:", e);
       }
     };
 
@@ -526,15 +593,69 @@ const RoomPage = () => {
       if (remoteAudioRef.current) remoteAudioRef.current.srcObject = null;
     };
 
+    const onRoomJoined = (data) => {
+      console.log("[RoomPage] room-joined event received:", data);
+      const room = data?.room || data;
+      if (room?.winnerId) checkAndSetWinner(room.winnerId);
+      if (room?.problem) {
+        if (typeof room.problem === "object" && room.problem.title) {
+          setProblem(room.problem);
+          const starter = extractBoilerplate(room.problem, language);
+          setCodeUser1((prev) => (prev === "// Your Code Here" || !prev ? starter : prev));
+        } else {
+          fetchProblemById(room.problem);
+        }
+      }
+
+      const creatorCid = room?.creator?._id || room?.createdBy;
+      const isCreator = String(creatorCid) === String(userId);
+      const participants = room?.participants || [];
+      const hasOpponent = participants.some((p) => {
+        const pid = p.userId?._id || p.userId?.id || p.userId;
+        return String(pid) !== String(creatorCid);
+      });
+
+      if (isCreator && hasOpponent) {
+        startBattleOffer();
+      } else if (!isCreator) {
+        socket.emit("battle-peer-ready", { roomId, userId });
+      }
+    };
+
+    const onRoomUpdated = (data) => {
+      console.log("[RoomPage] room-updated event received:", data);
+      const room = data?.room || data;
+      if (room?.winnerId) checkAndSetWinner(room.winnerId);
+      if (room?.problem) {
+        if (typeof room.problem === "object" && room.problem.title) {
+          setProblem(room.problem);
+          const starter = extractBoilerplate(room.problem, language);
+          setCodeUser1((prev) => (prev === "// Your Code Here" || !prev ? starter : prev));
+        } else {
+          fetchProblemById(room.problem);
+        }
+      }
+
+      const creatorCid = room?.creator?._id || room?.createdBy;
+      const isCreator = String(creatorCid) === String(userId);
+      const participants = room?.participants || [];
+      const hasOpponent = participants.some((p) => {
+        const pid = p.userId?._id || p.userId?.id || p.userId;
+        return String(pid) !== String(creatorCid);
+      });
+
+      if (isCreator && hasOpponent) {
+        startBattleOffer();
+      }
+    };
+
     // Attach socket listeners
-    socket.emit("join-room", { roomId, userId });
+    socket.on("room-joined", onRoomJoined);
+    socket.on("room-updated", onRoomUpdated);
     socket.on("join-ack", handleJoinAck);
     socket.on("room-state", handleRoomState);
-    socket.on("room-updated", (data) => {
-      if (data?.winnerId) checkAndSetWinner(data.winnerId);
-    });
     socket.on("code-edit", handleCodeEdit);
-    socket.on("battle-started", handleBattleStarted);
+    socket.on("battle-peer-ready", handleBattlePeerReady);
     socket.on("webrtc-offer", handleOffer);
     socket.on("webrtc-answer", handleAnswer);
     socket.on("webrtc-ice", handleIce);
@@ -542,18 +663,28 @@ const RoomPage = () => {
     socket.on("peer-left", handleUserLeft);
 
     // Reconnect handler
+    let wasConnected = socket.connected;
     const onSocketConnect = () => {
-      console.log("socket reconnected, re-joining room");
+      if (!wasConnected) {
+        wasConnected = true;
+        return;
+      }
+      console.log("[RoomPage] socket reconnected — re-joining room");
       try {
         socket.emit("join-room", { roomId, userId });
-        socket.emit("request-room-state", { roomId });
       } catch (e) {
         console.warn("rejoin failed", e);
       }
     };
+    const onSocketDisconnect = () => { wasConnected = false; };
     socket.on("connect", onSocketConnect);
+    socket.on("disconnect", onSocketDisconnect);
 
-    // Fetch room data
+    // Acquire camera & join room on mount
+    getLocalMedia().then(() => {
+      socket.emit("join-room", { roomId, userId });
+    });
+
     (async () => {
       try {
         const token = localStorage.getItem("token");
@@ -573,46 +704,19 @@ const RoomPage = () => {
             await fetchProblemById(room.problem);
           }
         }
+
+        const creatorCid = room?.creator?._id || room?.createdBy;
+        const isCreator = String(creatorCid) === String(userId);
+
+        if (isCreator) {
+          startBattleOffer();
+        } else {
+          socket.emit("battle-peer-ready", { roomId, userId });
+        }
       } catch (err) {
         console.error("Problem fetch failed", err?.message);
       }
     })();
-
-    // Request room state
-    try {
-      socket.emit("request-room-state", { roomId });
-    } catch (e) {
-      /* ignore */
-    }
-
-    // Get user media
-    navigator.mediaDevices
-      .getUserMedia({ video: true, audio: { echoCancellation: true, noiseSuppression: true } })
-      .then((stream) => {
-        localStreamRef.current = stream;
-        streamReadyRef.current = true;
-        if (localVideoRef.current) {
-          localVideoRef.current.srcObject = stream;
-          localVideoRef.current.muted = true;
-        }
-        if (peerConnectionRef.current) {
-          const pc = peerConnectionRef.current;
-          stream.getTracks().forEach((t) => {
-            const existing = pc.getSenders().find((s) => s.track && s.track.kind === t.kind);
-            try {
-              if (existing) existing.replaceTrack(t);
-              else pc.addTrack(t, stream);
-            } catch (e) {
-              console.warn("add/replace track error:", e);
-            }
-          });
-        }
-      })
-      .catch((e) => {
-        console.error("getUserMedia failed:", e);
-        setCamOn(false);
-        setMicOn(false);
-      });
 
     // Prevent accidental refresh
     const beforeUnload = (e) => {
@@ -630,14 +734,19 @@ const RoomPage = () => {
       try {
         socket.emit("leave-room", { roomId, userId });
       } catch (err) {}
+      socket.off("room-joined", onRoomJoined);
+      socket.off("room-updated", onRoomUpdated);
       socket.off("join-ack", handleJoinAck);
       socket.off("room-state", handleRoomState);
       socket.off("code-edit", handleCodeEdit);
-      socket.off("battle-started", handleBattleStarted);
+      socket.off("battle-peer-ready", handleBattlePeerReady);
       socket.off("webrtc-offer", handleOffer);
       socket.off("webrtc-answer", handleAnswer);
       socket.off("webrtc-ice", handleIce);
+      socket.off("user-left", handleUserLeft);
+      socket.off("peer-left", handleUserLeft);
       socket.off("connect", onSocketConnect);
+      socket.off("disconnect", onSocketDisconnect);
 
       if (peerConnectionRef.current) {
         try {
@@ -680,100 +789,25 @@ const RoomPage = () => {
   };
 
   // Toggle microphone
-  const toggleMic = async () => {
-    let ls = localStreamRef.current;
-    let audioTrack = ls?.getAudioTracks()?.[0];
-
-    // If audio track is missing or stopped, acquire microphone stream from browser
-    if (!audioTrack || audioTrack.readyState === "ended") {
-      try {
-        const audioStream = await navigator.mediaDevices.getUserMedia({
-          audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true },
-          video: false,
-        });
-        audioTrack = audioStream.getAudioTracks()[0];
-        if (!localStreamRef.current) localStreamRef.current = new MediaStream();
-        localStreamRef.current.addTrack(audioTrack);
-        ls = localStreamRef.current;
-      } catch (err) {
-        console.error("Acquiring microphone failed:", err);
-        setMicOn(false);
-        return;
-      }
-    }
-
-    // Toggle track enabled state
-    const nextState = !audioTrack.enabled;
-    audioTrack.enabled = nextState;
-    setMicOn(nextState);
-
-    // Update WebRTC peer connection audio sender
-    if (peerConnectionRef.current) {
-      const pc = peerConnectionRef.current;
-      const sender = pc.getSenders().find((s) => s.track && s.track.kind === "audio");
-      try {
-        if (sender) {
-          await sender.replaceTrack(audioTrack);
-        } else {
-          pc.addTrack(audioTrack, ls);
-        }
-      } catch (e) {
-        console.warn("Failed to attach audio track to peerConnection:", e);
-      }
+  // Toggle microphone
+  const toggleMic = () => {
+    if (!localStreamRef.current) return;
+    const tracks = localStreamRef.current.getAudioTracks();
+    if (tracks.length > 0) {
+      const nextState = !tracks[0].enabled;
+      tracks.forEach((t) => (t.enabled = nextState));
+      setMicOn(nextState);
     }
   };
 
   // Toggle camera
-  const toggleCam = async () => {
-    let ls = localStreamRef.current;
-    let videoTrack = ls?.getVideoTracks()?.[0];
-
-    if (camOn && videoTrack) {
-      try {
-        videoTrack.enabled = false;
-        videoTrack.stop();
-        if (typeof ls.removeTrack === "function") ls.removeTrack(videoTrack);
-        const sender = peerConnectionRef.current?.getSenders().find((s) => s.track && s.track.kind === "video");
-        if (sender) {
-          try {
-            await sender.replaceTrack(null);
-          } catch (err) {
-            console.warn("replaceTrack(null) failed", err);
-          }
-        }
-      } catch (e) {
-        console.warn("Error stopping video track:", e);
-      }
-      setCamOn(false);
-      if (localVideoRef.current) localVideoRef.current.srcObject = ls;
-      socket.emit("cam-toggled", { roomId, userId, camOn: false });
-      return;
-    }
-
-    try {
-      const newStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
-      const newVideoTrack = newStream.getVideoTracks()[0];
-      if (!localStreamRef.current) localStreamRef.current = new MediaStream();
-      localStreamRef.current.addTrack(newVideoTrack);
-      if (localVideoRef.current) localVideoRef.current.srcObject = localStreamRef.current;
-
-      const sender = peerConnectionRef.current?.getSenders().find((s) => s.track && s.track.kind === "video");
-      if (sender) {
-        try {
-          await sender.replaceTrack(newVideoTrack);
-        } catch (e) {
-          console.warn("replaceTrack(newVideoTrack) failed", e);
-        }
-      } else if (peerConnectionRef.current) {
-        try {
-          peerConnectionRef.current.addTrack(newVideoTrack, localStreamRef.current);
-        } catch (e) {}
-      }
-      setCamOn(true);
-      socket.emit("cam-toggled", { roomId, userId, camOn: true });
-    } catch (err) {
-      console.error("Re-acquiring camera failed", err);
-      setCamOn(false);
+  const toggleCam = () => {
+    if (!localStreamRef.current) return;
+    const tracks = localStreamRef.current.getVideoTracks();
+    if (tracks.length > 0) {
+      const nextState = !tracks[0].enabled;
+      tracks.forEach((t) => (t.enabled = nextState));
+      setCamOn(nextState);
     }
   };
 
@@ -930,10 +964,9 @@ const RoomPage = () => {
                 <video ref={localVideoRef} autoPlay muted playsInline className="w-full h-full object-cover" />
                 <span className="absolute bottom-1.5 left-1.5 px-2 py-0.5 rounded bg-black/70 text-[10px] text-cyan-300 font-mono font-bold">You</span>
               </div>
-              {/* Remote Video & Dedicated Audio */}
+              {/* Remote Video */}
               <div className="h-28 rounded-xl overflow-hidden border border-purple-500/40 bg-zinc-950 relative shadow-inner">
                 <video ref={remoteVideoRef} autoPlay playsInline className="w-full h-full object-cover" />
-                <audio ref={remoteAudioRef} autoPlay playsInline className="hidden" />
                 <span className="absolute bottom-1.5 left-1.5 px-2 py-0.5 rounded bg-black/70 text-[10px] text-purple-300 font-mono font-bold">Opponent</span>
               </div>
             </div>

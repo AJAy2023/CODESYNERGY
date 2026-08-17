@@ -1,6 +1,6 @@
 // src/components/Room/CreateRoomPopup.jsx
 import React, { useEffect, useState, useMemo, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { data, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { BASE_URL } from "../../api/config";
 import socket from "../../Collab/socket";
@@ -104,13 +104,13 @@ export default function CreateRoomPopup({ onClose }) {
       audio.pause();
     } else {
       const p = audio.play();
-      if (p !== undefined) p.catch(() => {});
+      if (p !== undefined) p.catch(() => { });
     }
   }, [isMuted]);
 
   useEffect(() => {
     fetchActiveRoom();
-    setRoomName(localStorage.getItem("roomName") || "Code Synergy Arena");
+    setRoomName(localStorage.getItem("roomName") || "BuddyCode Rooms Arena");
     const savedRoomId = localStorage.getItem("roomId");
     if (savedRoomId && savedRoomId.length >= 3) {
       setRoomId(savedRoomId);
@@ -122,7 +122,6 @@ export default function CreateRoomPopup({ onClose }) {
     setMembersCount(localStorage.getItem("membersCount") || "2");
     setVideo(localStorage.getItem("video") === "true" || true);
     setAudio(localStorage.getItem("audio") === "true" || true);
-
     const storedProblem = localStorage.getItem("selectedProblem");
     if (storedProblem) {
       try {
@@ -159,22 +158,17 @@ export default function CreateRoomPopup({ onClose }) {
       alert("User not authenticated. Please login again.");
       return;
     }
-
-    // ----- front-end validation aligned with backend rules -----
     let finalPeopleCount = parseInt(membersCount, 10);
     const lowerType = String(roomType).toLowerCase();
 
     if (lowerType === "battle") {
-      // Battle must be exactly 2
       finalPeopleCount = 2;
     } else {
-      // Discussion must be within [2..10]
       if (Number.isNaN(finalPeopleCount) || finalPeopleCount < MIN_DISCUSSION || finalPeopleCount > MAX_DISCUSSION) {
         alert(`Discussion room must have between ${MIN_DISCUSSION} and ${MAX_DISCUSSION} participants (including host).`);
         return;
       }
     }
-
     const payload = {
       userId,
       roomname: roomName,
@@ -216,13 +210,8 @@ export default function CreateRoomPopup({ onClose }) {
           "audio",
           "selectedProblem",
         ].forEach((key) => localStorage.removeItem(key));
-
-        
-        socket.emit("join-room", {
-          roomId,
-          userId,
-        });
-
+        // Do NOT emit join-room here — RoomWaitingLobby and DiscussionRoom
+        // emit it on their own mount. Emitting here causes duplicate joins.
         //  route based on room type
         if (lowerType === "discussion") {
           navigate(`/discussion/${roomId}`);
@@ -238,7 +227,7 @@ export default function CreateRoomPopup({ onClose }) {
       console.error("Room creation failed:", err);
       alert(
         err.response?.data?.msg ||
-          "Room creation failed. Please check room ID and try again."
+        "Room creation failed. Please check room ID and try again."
       );
     } finally {
       setLoading(false);
@@ -248,10 +237,6 @@ export default function CreateRoomPopup({ onClose }) {
   const goToProblemSelection = () => {
     navigate("/problems", { state: { fromCreateRoom: true } });
   };
-
-  // Build members options:
-  // - Battle: fixed 2
-  // - Discussion: 2..10
   const memberOptions = useMemo(() => {
     if (!isDiscussion) return [2];
     const arr = [];
@@ -317,7 +302,7 @@ export default function CreateRoomPopup({ onClose }) {
               </button>
               <h2 className="text-lg sm:text-xl font-bold text-center text-white">
                 <span className="bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 to-cyan-400">
-                   Create Room
+                  Create Room
                 </span>
               </h2>
               <div className="flex items-center gap-2">
@@ -506,6 +491,7 @@ export default function CreateRoomPopup({ onClose }) {
                     onChange={(e) => {
                       setAudio(e.target.checked);
                       localStorage.setItem("audio", e.target.checked);
+                      console.log("the  audio stored  in  local createROOM pop");
                     }}
                     className="accent-emerald-400 w-4 h-4"
                   />

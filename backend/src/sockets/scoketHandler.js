@@ -5,11 +5,14 @@ const whiteboardStore = {};
 
 const socketConnection = (io) => {
   io.on("connection", (socket) => {
-  ;
+  
+  console.log("socket connection = "+socket.id);
   // code INIT 
     socket.on("code-init", ({ roomId, code }) => {
   socket.to(roomId).emit("code-init", { code });
 });
+
+
 
 // LIVE CODE EDITS
 socket.on("code-edit", ({ roomId, from, code }) => {
@@ -17,10 +20,13 @@ socket.on("code-edit", ({ roomId, from, code }) => {
   socket.to(roomId).emit("code-edit", { from, code });
 });
 
+let  videoEnabled;
+let  audioEnabled;
     // JOIN ROOM EVENT
     socket.on("join-room", async ({ roomId, userId }) => {
       try {
-       
+        console.log("room for user ====="+userId)
+        
         const room = await Room.findOne({
           $or: [{ roomId }, { _id: mongoose.isValidObjectId(roomId) ? roomId : null }],
         }).populate("problem");
@@ -40,7 +46,7 @@ socket.on("code-edit", ({ roomId, from, code }) => {
         socket.data.userId = userId;
         socket.data.roomId = canonicalRoomId;
         socket.data.paramRoomId = roomId;
-
+    console.log("socket data :", socket.data);
         // Revive room if creator rejoined
         if (!room.isActive && String(room.createdBy) === objectUserId.toString()) {
           await Room.updateOne(
@@ -98,7 +104,8 @@ socket.on("code-edit", ({ roomId, from, code }) => {
           winnerId: updatedRoom?.winnerId || room.winnerId,
           roomStatus: updatedRoom?.roomStatus || room.roomStatus,
         });
-
+      console.log("the  videos  unable : ", videoEnabled);
+       console.log("the  audio unable : ",  audioEnabled);
         // Start room if full
         if (updatedRoom && updatedRoom.participants.length >= room.peopleCount) {
           await Room.updateOne({ roomId: canonicalRoomId }, { $set: { roomStatus: "active" } });
@@ -118,7 +125,6 @@ socket.on("code-edit", ({ roomId, from, code }) => {
     room.roomStatus = "completed";
     room.isActive = false;
     await room.save();
-    // Optionally, notify all users in the room
     io.to(roomId).emit("room-ended");
   }
 });
@@ -203,24 +209,45 @@ socket.on("code-edit", ({ roomId, from, code }) => {
 
     // WEBRTC RELAYS
     socket.on("webrtc-offer", ({ sdp, from, toClientId, roomId }) => {
+      const targetRoom = socket.data?.roomId || roomId;
       if (toClientId) {
         io.to(toClientId).emit("webrtc-offer", { sdp, from, fromClientId: socket.id, toClientId });
-      } else {
-        socket.to(roomId).emit("webrtc-offer", { sdp, from, fromClientId: socket.id });
+      } else if (targetRoom) {
+        socket.to(targetRoom).emit("webrtc-offer", { sdp, from, fromClientId: socket.id });
       }
     });
-    socket.on("webrtc-answer", ({ sdp, toClientId, roomId }) => {
+
+    socket.on("webrtc-answer", ({ sdp, from, toClientId, roomId }) => {
+      const targetRoom = socket.data?.roomId || roomId;
       if (toClientId) {
-        io.to(toClientId).emit("webrtc-answer", { sdp, fromClientId: socket.id });
-      } else {
-        socket.to(roomId).emit("webrtc-answer", { sdp, fromClientId: socket.id });
+        io.to(toClientId).emit("webrtc-answer", { sdp, from, fromClientId: socket.id });
+      } else if (targetRoom) {
+        socket.to(targetRoom).emit("webrtc-answer", { sdp, from, fromClientId: socket.id });
       }
     });
-    socket.on("webrtc-ice", ({ candidate, toClientId, roomId }) => {
+
+    socket.on("webrtc-ice", ({ candidate, from, toClientId, roomId }) => {
+      const targetRoom = socket.data?.roomId || roomId;
       if (toClientId) {
-        io.to(toClientId).emit("webrtc-ice", { candidate, fromClientId: socket.id });
-      } else {
-        socket.to(roomId).emit("webrtc-ice", { candidate, fromClientId: socket.id });
+        io.to(toClientId).emit("webrtc-ice", { candidate, from, fromClientId: socket.id });
+      } else if (targetRoom) {
+        socket.to(targetRoom).emit("webrtc-ice", { candidate, from, fromClientId: socket.id });
+      }
+    });
+
+    // BATTLE PEER READY (Peer signals they arrived and are ready for WebRTC offer)
+    socket.on("battle-peer-ready", ({ roomId, userId }) => {
+      const targetRoom = socket.data?.roomId || roomId;
+      if (targetRoom) {
+        socket.to(targetRoom).emit("battle-peer-ready", { userId, clientId: socket.id });
+      }
+    });
+
+    // MIC TOGGLE NOTIFICATION
+    socket.on("mic-toggle", ({ roomId, userId, micOn }) => {
+      const targetRoom = socket.data?.roomId || roomId;
+      if (targetRoom) {
+        socket.to(targetRoom).emit("mic-toggle", { userId, micOn });
       }
     });
 
@@ -241,6 +268,7 @@ socket.on("code-edit", ({ roomId, from, code }) => {
 
     socket.on("whiteboard-draw", ({ roomId, stroke }) => {
       const canonicalRoom = socket.data?.roomId;
+      
       const targetRoom = canonicalRoom || roomId;
       if (targetRoom && stroke) {
         if (!whiteboardStore[targetRoom]) whiteboardStore[targetRoom] = [];

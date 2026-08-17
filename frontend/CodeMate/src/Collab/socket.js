@@ -7,16 +7,9 @@ import { BASE_URL } from "../api/config";
 const socket = io(BASE_URL, {
   withCredentials: true,
 });
-
+socket.on("connect", () => {
+  console.log("Socket connected!");
+  console.log("Socket ID:", socket.id);
+});
  
-
-
-
-/*
-const  socket = io(BASE_URL,{
-  transports: ["websocket"], -----------------------> this code  is good  for production but for development we can use the above code .
-  withCredentials: true,
-}
-
-*/
 export default socket; 

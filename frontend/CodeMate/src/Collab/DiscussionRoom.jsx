@@ -41,8 +41,15 @@ function VideoFeed({ stream, isMuted, isCamOff, pName }) {
   useEffect(() => {
     if (videoRef.current && stream) {
       videoRef.current.srcObject = stream;
+      videoRef.current.muted = isMuted;
+      videoRef.current.volume = 1.0;
+      videoRef.current.play().catch((err) => {
+        if (err.name !== "AbortError") {
+          console.warn("VideoFeed play error:", err);
+        }
+      });
     }
-  }, [stream]);
+  }, [stream, isMuted]);
 
   if (!stream || isCamOff) {
     return (
@@ -74,8 +81,11 @@ export default function DiscussionRoom() {
   // Refs
   const localVideoRef = useRef(null);
   const peerMapRef = useRef({}); // clientId -> RTCPeerConnection
+  const pendingIceRef = useRef({}); // clientId -> RTCIceCandidate[] (buffered before remoteDesc)
   const myClientIdRef = useRef(null);
   const localStreamRef = useRef(null);
+  // Maps socketId -> userId so video slots survive DB clientId staleness
+  const streamOwnerRef = useRef({}); // { [socketId]: userId }
 
   // State
   const [room, setRoom] = useState(null);
@@ -118,11 +128,15 @@ export default function DiscussionRoom() {
   // Helper to trigger peer offers for new participants in room
   const checkAndConnectPeers = (participantList) => {
     if (!Array.isArray(participantList)) return;
+    console.log("[DiscussionRoom] Host checkAndConnectPeers running. userId:", userId, "participants:", participantList);
     participantList.forEach((p) => {
-      const cId = p.clientId;
-      const myId = socket.id || myClientIdRef.current;
-      if (cId && cId !== myId && !peerMapRef.current[cId]) {
-        createPeerOfferTo(cId);
+      const targetUserId = String(p.userId?._id || p.userId || p._id);
+      if (targetUserId && targetUserId !== String(userId)) {
+        const existingPc = peerMapRef.current[targetUserId];
+        if (!existingPc || existingPc.connectionState !== "connected") {
+          console.log("[DiscussionRoom] Host initiating offer to peer userId:", targetUserId);
+          createPeerOfferTo(targetUserId);
+        }
       }
     });
   };
@@ -164,22 +178,29 @@ export default function DiscussionRoom() {
   useEffect(() => {
     if (!roomId || !userId) return;
 
-    initLocalStream();
-    socket.emit("join-room", { roomId, userId });
+    // Await stream FIRST so tracks are ready before any peer offer is sent
+    initLocalStream().then(() => {
+      socket.emit("join-room", { roomId, userId });
+    });
 
     const onRoomJoined = (data) => {
+      console.log("[DiscussionRoom] onRoomJoined:", data);
       if (data?.clientId) myClientIdRef.current = data.clientId;
+      const creator = data?.creator ?? data?.createdBy;
+      const cId = creator?._id ?? creator;
+      const amIHost = cId ? String(cId) === String(userId) : false;
+
       if (Array.isArray(data?.participants)) {
         setParticipants(data.participants);
-        checkAndConnectPeers(data.participants);
+        if (amIHost) {
+          checkAndConnectPeers(data.participants);
+        }
       }
       if (data?.problem) setProblem(data.problem);
 
-      const creator = data?.creator ?? data?.createdBy;
-      const cId = creator?._id ?? creator;
       if (cId) {
         setHostId(cId);
-        setIsHost(String(cId) === String(userId));
+        setIsHost(amIHost);
         if (!activeDrawerId) {
           setActiveDrawerId(cId);
           setActiveDrawerName(creator?.username || "Host");
@@ -188,15 +209,21 @@ export default function DiscussionRoom() {
     };
 
     const onRoomUpdated = (payload) => {
+      console.log("[DiscussionRoom] onRoomUpdated:", payload);
+      const creator = payload?.creator ?? payload?.createdBy;
+      const cId = creator?._id ?? creator;
+      const amIHost = cId ? String(cId) === String(userId) : false;
+
       if (payload?.participants) {
         setParticipants(payload.participants);
-        checkAndConnectPeers(payload.participants);
+        if (amIHost) {
+          checkAndConnectPeers(payload.participants);
+        }
       }
       if (payload?.problem) setProblem(payload.problem);
-      const cId = payload?.creator?._id ?? payload?.creator;
       if (cId) {
         setHostId(cId);
-        setIsHost(String(cId) === String(userId));
+        setIsHost(amIHost);
       }
     };
 
@@ -224,44 +251,60 @@ export default function DiscussionRoom() {
       }
     };
 
-    // WebRTC Signaling
-    const onWebrtcOffer = async ({ sdp, fromClientId }) => {
+    // WebRTC Signaling using userId
+    const onWebrtcOffer = async ({ sdp, from }) => {
+      if (!from || String(from) === String(userId)) return;
+      console.log("[DiscussionRoom] onWebrtcOffer received from userId:", from);
       try {
         const stream = await initLocalStream();
-        const pc = new RTCPeerConnection({ iceServers: ICE_SERVERS });
+        let pc = peerMapRef.current[from];
+        if (!pc) {
+          pc = new RTCPeerConnection({ iceServers: ICE_SERVERS });
+          peerMapRef.current[from] = pc;
 
-        if (stream) {
-          stream.getTracks().forEach((t) => pc.addTrack(t, stream));
+          if (stream) {
+            stream.getTracks().forEach((t) => pc.addTrack(t, stream));
+          }
+
+          pc.ontrack = (e) => {
+            console.log("[DiscussionRoom] ontrack fired from offer-side for userId:", from, e.streams);
+            if (e.streams && e.streams[0]) {
+              setRemoteStreams((prev) => ({
+                ...prev,
+                [from]: e.streams[0],
+              }));
+            }
+          };
+
+          pc.onicecandidate = (e) => {
+            if (e.candidate) {
+              socket.emit("webrtc-ice", {
+                candidate: e.candidate,
+                from: userId,
+                roomId,
+              });
+            }
+          };
         }
 
-        pc.ontrack = (e) => {
-          if (e.streams && e.streams[0]) {
-            setRemoteStreams((prev) => ({
-              ...prev,
-              [fromClientId]: e.streams[0],
-            }));
-          }
-        };
+        if (pc.signalingState !== "stable") {
+          await Promise.all([
+            pc.setLocalDescription({ type: "rollback" }),
+            pc.setRemoteDescription(new RTCSessionDescription(sdp)),
+          ]);
+        } else {
+          await pc.setRemoteDescription(new RTCSessionDescription(sdp));
+        }
 
-        pc.onicecandidate = (e) => {
-          if (e.candidate) {
-            socket.emit("webrtc-ice", {
-              candidate: e.candidate,
-              toClientId: fromClientId,
-              roomId,
-            });
-          }
-        };
+        await drainIce(from);
 
-        await pc.setRemoteDescription(new RTCSessionDescription(sdp));
         const answer = await pc.createAnswer();
         await pc.setLocalDescription(answer);
-
-        peerMapRef.current[fromClientId] = pc;
+        console.log("[DiscussionRoom] Sending webrtc-answer from userId:", userId, "to:", from);
 
         socket.emit("webrtc-answer", {
           sdp: answer,
-          toClientId: fromClientId,
+          from: userId,
           roomId,
         });
       } catch (err) {
@@ -269,42 +312,60 @@ export default function DiscussionRoom() {
       }
     };
 
-    const onWebrtcAnswer = async ({ sdp, fromClientId }) => {
-      const pc = peerMapRef.current[fromClientId];
-      if (!pc) return;
+    const onWebrtcAnswer = async ({ sdp, from }) => {
+      if (!from || String(from) === String(userId)) return;
+      console.log("[DiscussionRoom] onWebrtcAnswer received from userId:", from);
+      const pc = peerMapRef.current[from];
+      if (!pc || pc.signalingState !== "have-local-offer") {
+        console.log("[DiscussionRoom] Ignoring answer, PC signaling state is:", pc?.signalingState);
+        return;
+      }
       try {
         await pc.setRemoteDescription(new RTCSessionDescription(sdp));
+        await drainIce(from);
       } catch (e) {
         console.error("webrtc answer handling error", e);
       }
     };
 
-    const onWebrtcIce = async ({ candidate, fromClientId }) => {
-      const pc = peerMapRef.current[fromClientId];
-      if (!pc) return;
+    const onWebrtcIce = async ({ candidate, from }) => {
+      if (!from || String(from) === String(userId)) return;
+      const pc = peerMapRef.current[from];
+      if (!pc || !pc.remoteDescription) {
+        if (!pendingIceRef.current[from]) {
+          pendingIceRef.current[from] = [];
+        }
+        pendingIceRef.current[from].push(candidate);
+        return;
+      }
       try {
         await pc.addIceCandidate(new RTCIceCandidate(candidate));
       } catch (e) {
-        console.warn("addIceCandidate candidate failed", e);
+        console.warn("addIceCandidate failed", e);
       }
     };
 
-    const onNewParticipant = ({ clientId }) => {
-      if (!clientId || clientId === (socket.id || myClientIdRef.current)) return;
-      createPeerOfferTo(clientId);
+    // Helper: drain buffered ICE candidates after remoteDescription is set
+    const drainIce = async (fromUserId) => {
+      const pc = peerMapRef.current[fromUserId];
+      const pending = pendingIceRef.current[fromUserId] || [];
+      if (!pc || !pending.length) return;
+      pendingIceRef.current[fromUserId] = [];
+      for (const c of pending) {
+        try { await pc.addIceCandidate(new RTCIceCandidate(c)); } catch (e) {}
+      }
     };
 
-    const onPeerLeft = ({ clientId }) => {
-      const pc = peerMapRef.current[clientId];
+    const onPeerLeft = ({ userId: leftId }) => {
+      if (!leftId) return;
+      const pc = peerMapRef.current[leftId];
       if (pc) {
-        try {
-          pc.close();
-        } catch {}
-        delete peerMapRef.current[clientId];
+        try { pc.close(); } catch {}
+        delete peerMapRef.current[leftId];
       }
       setRemoteStreams((prev) => {
         const copy = { ...prev };
-        delete copy[clientId];
+        delete copy[leftId];
         return copy;
       });
     };
@@ -317,7 +378,6 @@ export default function DiscussionRoom() {
     socket.on("webrtc-offer", onWebrtcOffer);
     socket.on("webrtc-answer", onWebrtcAnswer);
     socket.on("webrtc-ice", onWebrtcIce);
-    socket.on("new-participant", onNewParticipant);
     socket.on("peer-left", onPeerLeft);
 
     return () => {
@@ -329,27 +389,32 @@ export default function DiscussionRoom() {
       socket.off("webrtc-offer", onWebrtcOffer);
       socket.off("webrtc-answer", onWebrtcAnswer);
       socket.off("webrtc-ice", onWebrtcIce);
-      socket.off("new-participant", onNewParticipant);
       socket.off("peer-left", onPeerLeft);
     };
   }, [roomId, userId]);
 
-  // Create Peer Offer
-  const createPeerOfferTo = async (targetClientId) => {
-    if (!targetClientId || peerMapRef.current[targetClientId]) return;
+  // Create Peer Offer using userId
+  const createPeerOfferTo = async (targetUserId) => {
+    if (!targetUserId || peerMapRef.current[targetUserId]) {
+      console.log("[DiscussionRoom] Skipping offer to userId", targetUserId, "already in peerMap");
+      return;
+    }
+    console.log("[DiscussionRoom] createPeerOfferTo starting for userId:", targetUserId);
     try {
       const stream = await initLocalStream();
       const pc = new RTCPeerConnection({ iceServers: ICE_SERVERS });
+      peerMapRef.current[targetUserId] = pc;
 
       if (stream) {
         stream.getTracks().forEach((t) => pc.addTrack(t, stream));
       }
 
       pc.ontrack = (e) => {
+        console.log("[DiscussionRoom] ontrack fired from answer-side for userId:", targetUserId, e.streams);
         if (e.streams && e.streams[0]) {
           setRemoteStreams((prev) => ({
             ...prev,
-            [targetClientId]: e.streams[0],
+            [targetUserId]: e.streams[0],
           }));
         }
       };
@@ -358,7 +423,7 @@ export default function DiscussionRoom() {
         if (e.candidate) {
           socket.emit("webrtc-ice", {
             candidate: e.candidate,
-            toClientId: targetClientId,
+            from: userId,
             roomId,
           });
         }
@@ -366,11 +431,11 @@ export default function DiscussionRoom() {
 
       const offer = await pc.createOffer();
       await pc.setLocalDescription(offer);
-      peerMapRef.current[targetClientId] = pc;
+      console.log("[DiscussionRoom] Emitting webrtc-offer from userId:", userId, "to room:", roomId);
 
       socket.emit("webrtc-offer", {
         sdp: offer,
-        toClientId: targetClientId,
+        from: userId,
         roomId,
       });
     } catch (e) {
@@ -556,8 +621,13 @@ export default function DiscussionRoom() {
                 const pRole = p?.role === "host" || String(p?.userId?._id || p?.userId) === String(hostId) ? "Host" : "Viewer";
                 const isDrawing = String(p?.userId?._id || p?.userId) === String(activeDrawerId);
 
-                const pClientId = p?.clientId;
-                const feedStream = slot.isMe ? localStream : (pClientId ? remoteStreams[pClientId] : null);
+                // Look up stream: match by participant userId or remote stream list
+                const remoteStreamList = Object.values(remoteStreams);
+                const nonMeSlots = videoSlots.filter((s) => !s.isMe);
+                const slotIndexAmongNonMe = nonMeSlots.indexOf(slot);
+                const feedStream = slot.isMe
+                  ? localStream
+                  : (slot.pUserId && remoteStreams[slot.pUserId]) || remoteStreamList[slotIndexAmongNonMe] || null;
                 const isCamOff = slot.isMe ? !localVideoOn : false;
 
                 return (

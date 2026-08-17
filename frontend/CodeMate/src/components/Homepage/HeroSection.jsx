@@ -176,7 +176,7 @@ export default function HeroSection() {
 
           <div className="mt-6 sm:mt-8 flex flex-wrap gap-3 justify-center lg:justify-start">
             <a
-              href="/coming-soon"
+              href="/register"
               className="inline-flex items-center gap-2 rounded-full px-5 py-2.5 font-semibold"
               style={{
                 background: `linear-gradient(180deg, ${GUARDIAN}, ${shadeHex(GUARDIAN, -12)})`,
