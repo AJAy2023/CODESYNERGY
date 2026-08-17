@@ -16,12 +16,26 @@ router.post("/forget-password", forgetPassword);
 router.post('/verifyOtp', verifyForgotPasswordOtp);
 router.post("/reset-password", resetpassword);
 router.post("/logout", verifyToken, logout);
-
 router.post("/refresh-Token", refreshToken);
 
+const User = require("../models/user");
+
 // Protected route (for logged in users)
-router.get("/user-profile", verifyToken, (req, res) => {
-  res.json({ msg: "This is user profile" });
+router.get("/user-profile", verifyToken, async (req, res) => {
+  try {
+    const userId = req.user?.id || req.user?._id;
+    const user = await User.findById(userId)
+      .select("-password")
+      .populate("solvedProblems", "title difficulty problemType")
+      .populate("unlockedProblems");
+    if (!user) {
+      return res.status(404).json({ msg: "User not found" });
+    }
+    return res.status(200).json(user);
+  } catch (err) {
+    console.error("Error fetching user profile:", err);
+    return res.status(500).json({ msg: "Internal server error" });
+  }
 });
 
 // Admin route (only for admins)
