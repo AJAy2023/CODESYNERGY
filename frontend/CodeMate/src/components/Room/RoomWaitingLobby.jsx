@@ -5,6 +5,21 @@ import axios from "axios";
 import { BASE_URL } from "../../api/config";
 import { Mic, MicOff, Target, Rocket, LogOut, Trash2, Copy, Check, Share2, Volume2, VolumeX } from "lucide-react";
 
+const ICE_CONFIG = {
+  iceServers: [
+    { urls: ["stun:stun.l.google.com:19302", "stun:stun1.l.google.com:19302"] },
+    {
+      urls: [
+        "turn:openrelay.metered.ca:80",
+        "turn:openrelay.metered.ca:443",
+        "turn:openrelay.metered.ca:443?transport=tcp",
+      ],
+      username: "openrelayproject",
+      credential: "openrelayproject",
+    },
+  ],
+};
+
 const RoomWaitingLobby = () => {
   const { roomId: routeParam } = useParams();
   const navigate = useNavigate();
@@ -12,20 +27,25 @@ const RoomWaitingLobby = () => {
   const [creator, setCreator] = useState(null);
   const [participant, setParticipant] = useState(null);
   const [problem, setProblem] = useState(null);
-  const [micStatus, setMicStatus] = useState({ creator: false, participant: false });
+  const [micStatus, setMicStatus] = useState({ creator: true, participant: true });
   const [userId, setUserId] = useState(null);
   const [creatorId, setCreatorId] = useState(null);
-  const [joined, setJoined] = useState(false);
   const [copied, setCopied] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
-  const audioRef = useRef(null);
+
+  const themeAudioRef = useRef(null);
+  const localAudioStreamRef = useRef(null);
+  const remoteAudioRef = useRef(null);
+  const peerConnectionRef = useRef(null);
+  const pendingCandidatesRef = useRef([]);
+  const hasJoinedRef = useRef(false);
 
   // Avengers Battle Theme Audio
   useEffect(() => {
     const audio = new Audio("/media/battelsong/TheAvengers.mp4");
     audio.loop = true;
-    audio.volume = 0.5;
-    audioRef.current = audio;
+    audio.volume = 0.35;
+    themeAudioRef.current = audio;
 
     const playPromise = audio.play();
     if (playPromise !== undefined) {
@@ -37,43 +57,245 @@ const RoomWaitingLobby = () => {
     }
 
     return () => {
-      if (audioRef.current) {
-        audioRef.current.pause();
-        audioRef.current.currentTime = 0;
+      if (themeAudioRef.current) {
+        themeAudioRef.current.pause();
+        themeAudioRef.current.currentTime = 0;
       }
     };
   }, []);
 
   useEffect(() => {
-    const audio = audioRef.current;
+    const audio = themeAudioRef.current;
     if (!audio) return;
     if (isMuted) {
       audio.pause();
     } else {
       const p = audio.play();
-      if (p !== undefined) p.catch(() => {});
+      if (p !== undefined) p.catch(() => { });
     }
   }, [isMuted]);
 
   useEffect(() => {
     const uid = localStorage.getItem("userId");
-    console.log("the uid :", uid);
     if (uid) setUserId(uid);
   }, []);
 
-  const handleCopyId = () => {
-    if (!routeParam) return;
-    navigator.clipboard.writeText(routeParam);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+  // Helper to reliably get local microphone stream
+  const getLocalAudio = async () => {
+    if (localAudioStreamRef.current && localAudioStreamRef.current.active) {
+      return localAudioStreamRef.current;
+    }
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true },
+      });
+      localAudioStreamRef.current = stream;
+      return stream;
+    } catch (err) {
+      console.warn("Lobby mic permission error:", err.message);
+      setMicStatus((prev) => ({ ...prev, creator: false, participant: false }));
+      return null;
+    }
   };
 
+  // Helper to ensure lobby peer connection
+  const ensureLobbyPeer = (stream) => {
+    if (peerConnectionRef.current) {
+      if (stream) {
+        stream.getAudioTracks().forEach((t) => {
+          const senders = peerConnectionRef.current.getSenders();
+          if (!senders.some((s) => s.track === t)) {
+            peerConnectionRef.current.addTrack(t, stream);
+          }
+        });
+      }
+      return peerConnectionRef.current;
+    }
+
+    const pc = new RTCPeerConnection(ICE_CONFIG);
+    peerConnectionRef.current = pc;
+
+    if (stream) {
+      stream.getAudioTracks().forEach((t) => {
+        pc.addTrack(t, stream);
+      });
+    }
+
+    pc.ontrack = (event) => {
+      console.log("[Lobby] ontrack received audio stream:", event.streams);
+      const stream = (event.streams && event.streams[0]) || new MediaStream([event.track]);
+      if (remoteAudioRef.current) {
+        remoteAudioRef.current.srcObject = stream;
+        remoteAudioRef.current.play().catch((err) => console.warn("Lobby remote audio play error:", err));
+      }
+    };
+
+    pc.onicecandidate = (event) => {
+      if (event.candidate) {
+        socket.emit("webrtc-ice", {
+          candidate: event.candidate,
+          roomId: routeParam,
+          from: userId,
+        });
+      }
+    };
+
+    return pc;
+  };
+
+  // Main Socket & Lobby Management
   useEffect(() => {
-    if (!userId || !routeParam || joined) return;
+    if (!userId || !routeParam) return;
     let mounted = true;
+
+    // Start audio offer as Creator
+    const startLobbyAudioOffer = async () => {
+      const stream = await getLocalAudio();
+      const pc = ensureLobbyPeer(stream);
+
+      if (pc.signalingState === "have-local-offer" && pc.localDescription) {
+        socket.emit("webrtc-offer", {
+          sdp: pc.localDescription,
+          roomId: routeParam,
+          from: userId,
+        });
+        return;
+      }
+
+      if (pc.signalingState !== "stable") return;
+      try {
+        const offer = await pc.createOffer();
+        await pc.setLocalDescription(offer);
+        socket.emit("webrtc-offer", {
+          sdp: offer,
+          roomId: routeParam,
+          from: userId,
+        });
+      } catch (err) {
+        console.error("Lobby createOffer error:", err);
+      }
+    };
+
+    const onRoomUpdated = async ({ creator: newCreator, participants, problem: newProblem }) => {
+      if (!mounted) return;
+      if (newCreator) {
+        setCreator(newCreator);
+        const cid = newCreator._id || newCreator.id || newCreator;
+        setCreatorId(cid);
+      }
+      const cid = newCreator?._id || newCreator?.id || newCreator || creatorId;
+      const opp = (participants || []).filter((p) => {
+        const pid = p.userId?._id || p.userId?.id || p.userId;
+        return String(pid) !== String(cid);
+      });
+      const oppUser = opp[0]?.userId;
+      const foundParticipant = typeof oppUser === "object" ? oppUser : (opp[0] || null);
+      setParticipant(foundParticipant);
+      if (newProblem) setProblem(newProblem);
+
+      // If Creator and Opponent is present, Creator starts voice chat
+      const isCreator = String(userId) === String(cid);
+      if (isCreator && foundParticipant) {
+        startLobbyAudioOffer();
+      }
+    };
+
+    const onBattleStarted = ({ problem: startedProblem }) => {
+      if (localAudioStreamRef.current) {
+        localAudioStreamRef.current.getTracks().forEach((t) => t.stop());
+        localAudioStreamRef.current = null;
+      }
+      if (peerConnectionRef.current) {
+        try { peerConnectionRef.current.close(); } catch (e) {}
+        peerConnectionRef.current = null;
+      }
+      navigate(`/battle/${routeParam}`, { state: { problem: startedProblem || problem } });
+    };
+
+    const onWebrtcOffer = async ({ sdp, from }) => {
+      if (String(from) === String(userId)) return;
+      console.log("[Lobby] received webrtc-offer from:", from);
+      const stream = await getLocalAudio();
+      const pc = ensureLobbyPeer(stream);
+      try {
+        if (pc.signalingState !== "stable") {
+          await Promise.all([
+            pc.setLocalDescription({ type: "rollback" }),
+            pc.setRemoteDescription(new RTCSessionDescription(sdp)),
+          ]);
+        } else {
+          await pc.setRemoteDescription(new RTCSessionDescription(sdp));
+        }
+        while (pendingCandidatesRef.current.length) {
+          const c = pendingCandidatesRef.current.shift();
+          try { await pc.addIceCandidate(c); } catch (e) {}
+        }
+        const answer = await pc.createAnswer();
+        await pc.setLocalDescription(answer);
+        socket.emit("webrtc-answer", {
+          sdp: answer,
+          roomId: routeParam,
+          from: userId,
+        });
+      } catch (err) {
+        console.error("Lobby handleOffer error:", err);
+      }
+    };
+
+    const onWebrtcAnswer = async ({ sdp, from }) => {
+      if (String(from) === String(userId)) return;
+      console.log("[Lobby] received webrtc-answer from:", from);
+      const pc = peerConnectionRef.current;
+      if (!pc || pc.signalingState !== "have-local-offer") {
+        console.log("[Lobby] Ignoring answer — PC state is", pc?.signalingState);
+        return;
+      }
+      try {
+        await pc.setRemoteDescription(new RTCSessionDescription(sdp));
+        while (pendingCandidatesRef.current.length) {
+          const c = pendingCandidatesRef.current.shift();
+          try { await pc.addIceCandidate(c); } catch (e) {}
+        }
+      } catch (err) {
+        console.error("Lobby handleAnswer error:", err);
+      }
+    };
+
+    const onWebrtcIce = async ({ candidate, from }) => {
+      if (String(from) === String(userId)) return;
+      const pc = peerConnectionRef.current;
+      if (!pc || !pc.remoteDescription) {
+        pendingCandidatesRef.current.push(candidate);
+        return;
+      }
+      try {
+        await pc.addIceCandidate(candidate);
+      } catch (e) {
+        console.warn("Lobby addIceCandidate error:", e);
+      }
+    };
+
+    const onMicToggle = ({ userId: senderId, micOn: senderMicOn }) => {
+      setMicStatus((prev) => {
+        const isSenderCreator = String(senderId) === String(creatorId);
+        return isSenderCreator
+          ? { ...prev, creator: senderMicOn }
+          : { ...prev, participant: senderMicOn };
+      });
+    };
+
+    socket.on("room-updated", onRoomUpdated);
+    socket.on("battle-started", onBattleStarted);
+    socket.on("webrtc-offer", onWebrtcOffer);
+    socket.on("webrtc-answer", onWebrtcAnswer);
+    socket.on("webrtc-ice", onWebrtcIce);
+    socket.on("mic-toggle", onMicToggle);
 
     const fetchRoomInfo = async () => {
       try {
+        // Start microphone acquisition in parallel
+        getLocalAudio();
+
         const token = localStorage.getItem("token");
         if (!token) return;
         const res = await axios.get(`${BASE_URL}/rooms/${routeParam}`, {
@@ -82,62 +304,74 @@ const RoomWaitingLobby = () => {
 
         if (!mounted) return;
         const data = res.data.room;
-        setCreator(data.creator || {});
-        setCreatorId(data.creator?._id || data.creator?.id || null);
-        setProblem(data.problem || null);
+        if (data.creator) {
+          setCreator(data.creator);
+          setCreatorId(data.creator._id || data.creator.id || null);
+        }
+        if (data.problem) setProblem(data.problem);
 
+        const cid = data.creator?._id || data.creator?.id;
         const opponents = (data.participants || []).filter(
           (p) =>
-            String(p.userId?._id || p.userId?.id || p.userId) !==
-            String(data.creator?._id)
+            String(p.userId?._id || p.userId?.id || p.userId) !== String(cid)
         );
-        setParticipant(opponents[0]?.userId || null);
+        const oppUser = opponents[0]?.userId;
+        const foundParticipant = typeof oppUser === "object" ? oppUser : (opponents[0] || null);
+        setParticipant(foundParticipant);
 
-        const onRoomUpdated = ({ creator: newCreator, participants, problem: newProblem }) => {
-          setCreator(newCreator || {});
-          const cid = newCreator?._id || newCreator?.id || null;
-          setCreatorId(cid);
-          const opponents = (participants || []).filter((p) => {
-            const pid = p.userId?._id || p.userId?.id || p.userId;
-            return String(pid) !== String(cid);
-          });
-          setParticipant(opponents[0]?.userId || null);
-          setProblem(newProblem || null);
-        };
-
-        const onBattleStarted = ({ problem: startedProblem }) => {
-          navigate(`/battle/${routeParam}`, { state: { problem: startedProblem || problem } });
-        };
-
-        socket.on("room-updated", onRoomUpdated);
-        socket.on("battle-started", onBattleStarted);
-
-        if (!joined) {
-          if (socket.connected) {
-            socket.emit("join-room", { roomId: data.roomId, userId });
-          } else {
-            socket.once("connect", () => {
-              socket.emit("join-room", { roomId: data.roomId, userId });
-            });
-          }
-          setJoined(true);
+        if (!hasJoinedRef.current) {
+          hasJoinedRef.current = true;
+          socket.emit("join-room", { roomId: data.roomId || routeParam, userId });
         }
 
-        return () => {
-          mounted = false;
-          socket.off("room-updated", onRoomUpdated);
-          socket.off("battle-started", onBattleStarted);
-        };
+        const isCreator = String(userId) === String(cid);
+        if (isCreator && foundParticipant) {
+          startLobbyAudioOffer();
+        }
       } catch (err) {
         console.error("Error fetching room:", err.message);
       }
     };
 
     fetchRoomInfo();
-  }, [userId, routeParam, joined, navigate]);
+
+    return () => {
+      mounted = false;
+      socket.off("room-updated", onRoomUpdated);
+      socket.off("battle-started", onBattleStarted);
+      socket.off("webrtc-offer", onWebrtcOffer);
+      socket.off("webrtc-answer", onWebrtcAnswer);
+      socket.off("webrtc-ice", onWebrtcIce);
+      socket.off("mic-toggle", onMicToggle);
+    };
+  }, [userId, routeParam, creatorId, navigate]);
+
+  const handleCopyId = () => {
+    if (!routeParam) return;
+    navigator.clipboard.writeText(routeParam);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   const handleToggleMic = (type) => {
-    setMicStatus((prev) => ({ ...prev, [type]: !prev[type] }));
+    const isCreator = String(userId) === String(creatorId);
+    const isMyCard = (type === "creator" && isCreator) || (type === "participant" && !isCreator);
+    if (!isMyCard) return; // Only control own microphone
+
+    const stream = localAudioStreamRef.current;
+    if (!stream) return;
+
+    const audioTrack = stream.getAudioTracks()[0];
+    if (audioTrack) {
+      audioTrack.enabled = !audioTrack.enabled;
+      const nextStatus = audioTrack.enabled;
+      setMicStatus((prev) => ({ ...prev, [type]: nextStatus }));
+      socket.emit("mic-toggle", {
+        roomId: routeParam,
+        userId,
+        micOn: nextStatus,
+      });
+    }
   };
 
   const handleDeleteRoom = async () => {
@@ -167,6 +401,14 @@ const RoomWaitingLobby = () => {
 
   const handleStartBattle = () => {
     socket.emit("start-battle", { roomId: routeParam });
+    if (localAudioStreamRef.current) {
+      localAudioStreamRef.current.getTracks().forEach((t) => t.stop());
+      localAudioStreamRef.current = null;
+    }
+    if (peerConnectionRef.current) {
+      try { peerConnectionRef.current.close(); } catch (e) {}
+      peerConnectionRef.current = null;
+    }
     navigate(`/battle/${routeParam}`, { state: { problem } });
   };
 
@@ -285,6 +527,9 @@ const RoomWaitingLobby = () => {
           Compete head-to-head with other coders and earn prestigious badges. Time to prove your skills!
         </p>
       </div>
+
+      {/* Hidden audio element for lobby voice chat */}
+      <audio ref={remoteAudioRef} autoPlay playsInline style={{ display: "none" }} />
     </div>
   );
 };

@@ -41,12 +41,12 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Signup />} />
+          <Route path="/signup" element={<Signup />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
 
-          {/* Protected Application Routes */}
+          {/* Protected Application Routes — specific routes BEFORE the /:id wildcard */}
           <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
           <Route path="/problems" element={<PrivateRoute><Problems /></PrivateRoute>} />
-          <Route path="/:id" element={<PrivateRoute><SolveProblem /></PrivateRoute>} />
           <Route path="/rank/leaderboard" element={<PrivateRoute><Leaderboard /></PrivateRoute>} />
           <Route path="/rooms/createroom" element={<PrivateRoute><CodingRooms /></PrivateRoute>} />
           <Route path="/room/:roomId" element={<PrivateRoute><RoomPage /></PrivateRoute>} />
@@ -54,15 +54,18 @@ function App() {
           <Route path="/waitingroom/:roomId" element={<PrivateRoute><RoomWaitingLobby /></PrivateRoute>} />
           <Route path="/battle/:roomId" element={<PrivateRoute><RoomPage /></PrivateRoute>} />
           <Route path="/discussion/:roomId" element={<PrivateRoute><DiscussionRoom /></PrivateRoute>} />
-          
+
           {/* Protected Profile & Friends Routes */}
-          <Route path="/profile/:id" element={<PrivateRoute><ViewProfile /></PrivateRoute>} />
           <Route path="/profile/update" element={<PrivateRoute><EditProfile /></PrivateRoute>} />
+          <Route path="/profile/:id" element={<PrivateRoute><ViewProfile /></PrivateRoute>} />
           <Route path="/user-profile" element={<PrivateRoute><MyProfile /></PrivateRoute>} />
           <Route path="/friends/list/:id" element={<PrivateRoute><FriendList /></PrivateRoute>} />
           <Route path="/friends/card/:id" element={<PrivateRoute><FriendCard /></PrivateRoute>} />
           <Route path="/friends/requests" element={<PrivateRoute><FriendRequests /></PrivateRoute>} />
           <Route path="/friends" element={<PrivateRoute><FriendsPage /></PrivateRoute>} />
+
+          {/* Wildcard: problem solve — MUST be last to avoid swallowing other paths */}
+          <Route path="/:id" element={<PrivateRoute><SolveProblem /></PrivateRoute>} />
         </Routes>
 
         {/* Modal route for JoinRoom */}

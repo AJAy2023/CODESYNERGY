@@ -44,17 +44,18 @@ const io = new Server(server, {
     methods: ["GET", "POST"]
   }
 });
+console.log("server  is connected...");
 
 app.use((req, res, next) => {
   req.io = io; 
   next();
 })
 
+console.log("socket request  passed");
+
 // connect db 
 connectDB();
 
-// // connect redis
-// connectRedis();
 
 // socket.io
 const socketHandler = require("./sockets/scoketHandler");

@@ -40,7 +40,6 @@ const CreateRoom = () => {
           `${BASE_URL}/rooms/${createdRoom.roomId}`
         );
         const room = res.data.room;
-
         if (room.users.length >= room.peoplecount) {
           clearInterval(interval);
           localStorage.removeItem("selectedProblem");
@@ -95,7 +94,7 @@ const CreateRoom = () => {
       {waiting && (
         <div className="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50">
           <div className="bg-zinc-800 p-6 rounded-lg text-center shadow-xl border border-zinc-600">
-            <h2 className="text-xl font-bold text-white mb-2">⏳ Waiting for others to join...</h2>
+            <h2 className="text-xl font-bold text-white mb-2"> Waiting for others to join...</h2>
             <p className="text-gray-400 text-sm">Room ID: {roomId}</p>
             <p className="text-gray-400 text-sm">Share it to let others join.</p>
           </div>
@@ -119,7 +118,7 @@ const CreateRoom = () => {
 
       <div className="max-w-xl mx-auto bg-zinc-800 border border-zinc-700 rounded-xl p-6 shadow-lg">
         <h2 className="text-xl font-bold text-cyan-400 mb-6 text-center">
-          🎯 Create a New Room
+           Create a New Room
         </h2>
 
         <div className="flex flex-col gap-4">
@@ -178,7 +177,7 @@ const CreateRoom = () => {
             onClick={handleCreateRoom}
             className="bg-green-600 hover:bg-green-500 p-3 rounded text-white mt-4"
           >
-            🚀 Create Room
+             Create Room
           </button>
         </div>
       </div>
